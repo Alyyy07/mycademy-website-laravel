@@ -1,0 +1,36 @@
+[
+    {
+        "name": "Dashboard",
+        "module": "dashboard",
+        "'slug": "dashboard",
+        "icon": "fa fa-dashboard",
+        "url": "/dashboard",
+        "order": 0,
+        "subMenu": []
+    },
+    {
+        "name": "Users",
+        "module": "users",
+        "slug": "users",
+        "icon": "fa-light fa-users",
+        "url": "",
+        "order": 1,
+        "subMenu": [
+            {
+                "name": "user List",
+                "module": "users.user-list",
+                "slug": "users-user-list",
+                "icon": "fa-light fa-user",
+                "url": "/users/list",
+                "order": 0
+            },{
+                "name":"Roles",
+                "module":"users.roles",
+                "slug":"users-roles",
+                "icon":"fa-light fa-user-tie",
+                "url":"/users/roles",
+                "order":1
+            }
+        ]
+    }
+]
