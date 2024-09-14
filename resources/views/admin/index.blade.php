@@ -1,35 +1,20 @@
 <!DOCTYPE html>
-<!--
-Author: Keenthemes
-Product Name: Metronic
-Product Version: 8.2.0
-Purchase: https://1.envato.market/EA4JP
-Website: http://www.keenthemes.com
-Contact: support@keenthemes.com
-Follow: www.twitter.com/keenthemes
-Dribbble: www.dribbble.com/keenthemes
-Like: www.facebook.com/keenthemes
-License: For each use you must have a valid license purchased only from above link in order to legally use the theme for your project.
--->
+
 <html lang="en">
 <!--begin::Head-->
-
 <head>
     <base href="../" />
     <title>Super Admin | E-RPL</title>
     <meta charset="utf-8" />
-
-    <link rel="shortcut icon" href="assets/media/logos/favicon.ico" />
-    <!--begin::Fonts(mandatory for all pages)-->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" href="{{asset('assets/media/logos/favicon.ico')}}" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
-    <!--end::Fonts-->
-    <!--begin::Vendor Stylesheets(used for this page only)-->
-    <link href="assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
-    <link href="assets/plugins/custom/vis-timeline/vis-timeline.bundle.css" rel="stylesheet" type="text/css" />
+    <link href="{{asset('assets/plugins/custom/vis-timeline/vis-timeline.bundle.css')}}" rel="stylesheet" type="text/css" />
     <!--end::Vendor Stylesheets-->
     <!--begin::Global Stylesheets Bundle(mandatory for all pages)-->
-    <link href="assets/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
-    <link href="assets/css/style.bundle.css" rel="stylesheet" type="text/css" />
+    <link href="{{asset('assets/plugins/global/plugins.bundle.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{asset('assets/css/style.bundle.css')}}" rel="stylesheet" type="text/css" />
     <!--end::Global Stylesheets Bundle-->
     <script>
         // Frame-busting to prevent site from being loaded within a frame without permission (click-jacking) if (window.top != window.self) { window.top.location.replace(window.self.location.href); }
