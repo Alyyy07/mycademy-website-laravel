@@ -12,7 +12,7 @@
         "name": "Users",
         "module": "users",
         "slug": "users",
-        "icon": "fa-light fa-users",
+        "icon": "ki-outline ki-people",
         "url": "",
         "order": 1,
         "subMenu": [
@@ -20,14 +20,14 @@
                 "name": "user List",
                 "module": "users.user-list",
                 "slug": "users-user-list",
-                "icon": "fa-light fa-user",
+                "icon": "ki-outline ki-profile-user",
                 "url": "/users/list",
                 "order": 0
             },{
                 "name":"Roles",
                 "module":"users.roles",
                 "slug":"users-roles",
-                "icon":"fa-light fa-user-tie",
+                "icon":"ki-outline ki-medal-star",
                 "url":"/users/roles",
                 "order":1
             }
