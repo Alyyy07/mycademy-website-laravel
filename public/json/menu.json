@@ -1,0 +1,36 @@
+[
+    {
+        "name": "Dashboard",
+        "module": "dashboard",
+        "'slug": "dashboard",
+        "icon": "fa fa-dashboard",
+        "url": "/dashboard",
+        "order": 0,
+        "subMenu": []
+    },
+    {
+        "name": "Users",
+        "module": "users",
+        "slug": "users",
+        "icon": "ki-outline ki-people",
+        "url": "",
+        "order": 1,
+        "subMenu": [
+            {
+                "name": "user List",
+                "module": "users.user-list",
+                "slug": "users-user-list",
+                "icon": "ki-outline ki-profile-user",
+                "url": "/users/list",
+                "order": 0
+            },{
+                "name":"Roles",
+                "module":"users.roles",
+                "slug":"users-roles",
+                "icon":"ki-outline ki-medal-star",
+                "url":"/users/roles",
+                "order":1
+            }
+        ]
+    }
+]

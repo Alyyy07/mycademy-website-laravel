@@ -139,7 +139,9 @@
 					data: $(this).serialize(),
 					success: function(response){
 							toastr.success(response.message);
-							window.location.href = response.redirect;
+							setTimeout(() => {
+								window.location.href = response.redirect;
+							}, 1000);
 					},
 					error: function(xhr){
 						$('form').find('.indicator-label').html('Log In');
