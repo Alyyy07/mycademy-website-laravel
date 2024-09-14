@@ -36,10 +36,10 @@
     <div class="d-flex flex-column flex-root app-root" id="kt_app_root">
         <!--begin::Page-->
         <div class="app-page flex-column flex-column-fluid" id="kt_app_page">
-            @include('partials.admin.topbar')
+            @include('layouts.partials.admin.topbar')
             <!--begin::Wrapper-->
             <div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
-                @include('partials.admin.sidebar')
+                @include('layouts.partials.admin.sidebar')
                 <!--begin::Main-->
                 <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
                     <!--begin::Content wrapper-->
