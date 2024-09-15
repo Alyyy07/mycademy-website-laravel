@@ -145,18 +145,12 @@
 							}, 1000);
 					},
 					error: function(xhr){
-						console.error(xhr);
 						$('form').find('.indicator-label').html('Log In');
 						$('form').find('[type="submit"]').attr('disabled', false);
 						if(xhr.status == 422){
-							console.log(xhr.responseJSON.errors.unauthenticated);
-							if(xhr.responseJSON.errors.unauthenticated){
-								toastr.error(xhr.responseJSON.errors.unauthenticated);
-							}else{
 								$.each(xhr.responseJSON.errors, function(key, value){
 									$('form').find('[name="'+key+'"]').addClass('is-invalid').after('<small class="text-danger">'+value+'</small>');
 								})
-							}
 						}
 						else{
 							toastr.error(xhr.responseJSON.message);
