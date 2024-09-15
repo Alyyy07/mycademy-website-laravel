@@ -22,8 +22,19 @@ class UserDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('action', 'user.action')
-            ->setRowId('id');
+            ->addColumn('action', view('admin.user-list.action'))
+            ->editColumn('roles.name', function ($user) {
+                return match ($user->roles->pluck('name')->first()) {
+                    'admin' => '<span class="badge badge-light-success">Administrator</span>',
+                    'camaba' => '<span class="badge badge-light-primary">Camaba</span>',
+                };
+            })
+            ->editColumn('checkbox', function (User $user) {
+                return "<div class='form-check form-check-sm form-check-custom form-check-solid'>
+                <input class='form-check-input' type='checkbox' value='{$user->id}' />
+            </div>";
+            })
+            ->rawColumns(['roles.name', 'action','checkbox']);
     }
 
     /**
@@ -31,7 +42,7 @@ class UserDataTable extends DataTable
      */
     public function query(User $model): QueryBuilder
     {
-        return $model->newQuery();
+        return $model->newQuery()->with('roles');
     }
 
     /**
@@ -40,20 +51,13 @@ class UserDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId('user-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    //->dom('Bfrtip')
-                    ->orderBy(1)
-                    ->selectStyleSingle()
-                    ->buttons([
-                        Button::make('excel'),
-                        Button::make('csv'),
-                        Button::make('pdf'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    ]);
+            ->setTableId('user-table')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            ->addTableClass('table align-middle table-row-dashed fs-6 gy-5')
+            ->setTableHeadClass('text-start text-muted fw-bold fs-7 text-uppercase gs-0')
+            ->drawCallbackWithLivewire(file_get_contents(public_path('assets/js/custom/custom-datatable.js')))
+            ->orderBy(1);
     }
 
     /**
@@ -62,15 +66,17 @@ class UserDataTable extends DataTable
     public function getColumns(): array
     {
         return [
+            Column::make('checkbox')->title('<div class="form-check form-check-sm form-check-custom form-check-solid me-3">
+																<input class="form-check-input" type="checkbox" data-kt-check="true" data-kt-check-target="#kt_table_users .form-check-input" value="1" />
+															</div>')->addClass('w-10px pe-2')->orderable(false)->searchable(false),
+            Column::make('name')->title('User'),
+            Column::make('email'),
+            Column::make('roles.name')->title('Role')
+            ->orderable(false),
             Column::computed('action')
-                  ->exportable(false)
-                  ->printable(false)
-                  ->width(60)
-                  ->addClass('text-center'),
-            Column::make('id'),
-            Column::make('add your columns'),
-            Column::make('created_at'),
-            Column::make('updated_at'),
+                ->exportable(false)
+                ->printable(false)
+                ->width(60)
         ];
     }
 

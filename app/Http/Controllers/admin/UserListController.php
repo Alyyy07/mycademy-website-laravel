@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\admin;
 
+use App\DataTables\UserDataTable;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -10,9 +11,9 @@ class UserListController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(UserDataTable $dataTable)
     {
-        return view('admin.user-list.index');
+        return $dataTable->render('admin.user-list.index');
     }
 
     /**
