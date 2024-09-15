@@ -28,25 +28,25 @@
                             </span>
                             <span class="menu-title">Dashboard</span>
                         </a>
-                        <div data-kt-menu-trigger="click" class="menu-item here @if (request()->routeIs('users.*')) show @endif menu-accordion">
+                        <div data-kt-menu-trigger="click" class="menu-item here @if (request()->routeIs('user-management.*')) show @endif menu-accordion">
                             <span class="menu-link">
                                 <span class="menu-icon">
                                     <i class="ki-outline ki-people"></i>
                                 </span>
-                                <span class="menu-title">Users</span>
+                                <span class="menu-title">User Management</span>
                                 <span class="menu-arrow"></span>
                             </span>
                             <div class="menu-sub menu-sub-accordion">
                                 <div class="menu-item">
-                                    <a class="menu-link @if (request()->routeIs('users.user-list.index')) active @endif" href="{{ route('users.user-list.index') }}">
+                                    <a class="menu-link @if (request()->routeIs('user-management.users.index')) active @endif" href="{{ route('user-management.users.index') }}">
                                         <span class="menu-icon">
                                             <i class="ki-outline ki-profile-user"></i>
                                         </span>
-                                        <span class="menu-title">User List</span>
+                                        <span class="menu-title">Users</span>
                                     </a>
                                 </div>
                                 <div class="menu-item">
-                                    <a class="menu-link @if (request()->routeIs('users.roles.index')) active @endif" href="{{ route('users.roles.index') }}">
+                                    <a class="menu-link @if (request()->routeIs('user-management.roles.index')) active @endif" href="{{ route('user-management.roles.index') }}">
                                         <span class="menu-icon">
                                             <i class="ki-outline ki-medal-star"></i>
                                         </span>
