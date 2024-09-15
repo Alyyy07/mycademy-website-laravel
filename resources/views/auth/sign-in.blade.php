@@ -73,7 +73,7 @@
 								</div>
 								<div class="fv-row mb-8">
 									<input type="text" placeholder="Email" name="email" value="{{ old('email') }}"
-										autocomplete="off" class="form-control bg-transparent" />
+										autocomplete class="form-control bg-transparent" />
 								</div>
 								<div class="fv-row mb-3">
 									<input type="password" placeholder="Password" name="password" autocomplete="off"
@@ -127,6 +127,7 @@
 			})
 			$('form').on('submit',function(e){
 				e.preventDefault();
+				toastr.remove();
 				$(this).find('.indicator-label').html('Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>');
 				$(this).find('[type="submit"]').attr('disabled', true);
 				$(this).find('.is-invalid').removeClass('is-invalid').next('small').remove();
@@ -147,9 +148,9 @@
 						$('form').find('.indicator-label').html('Log In');
 						$('form').find('[type="submit"]').attr('disabled', false);
 						if(xhr.status == 422){
-							$.each(xhr.responseJSON.errors, function(key, value){
-								$('form').find('[name="'+key+'"]').addClass('is-invalid').after('<small class="text-danger">'+value+'</small>');
-							})
+								$.each(xhr.responseJSON.errors, function(key, value){
+									$('form').find('[name="'+key+'"]').addClass('is-invalid').after('<small class="text-danger">'+value+'</small>');
+								})
 						}
 						else{
 							toastr.error(xhr.responseJSON.message);

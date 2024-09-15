@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\DataTables\UserDataTable;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserListController extends Controller
@@ -21,7 +22,7 @@ class UserListController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.user-list.modal');
     }
 
     /**
@@ -37,7 +38,6 @@ class UserListController extends Controller
      */
     public function show(string $id)
     {
-        //
     }
 
     /**

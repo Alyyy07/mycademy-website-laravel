@@ -8,7 +8,7 @@ $('[data-kt-check="true"]').on("change", function () {
         });
 });
 
-$('[data-kt-menu-trigger="click"]').on('click', function(e) {
+$('table [data-kt-menu-trigger="click"]').on('click', function(e) {
     e.preventDefault();
 
     var $menu = $(this).next('.menu');
@@ -40,9 +40,9 @@ $('[data-kt-menu-trigger="click"]').on('click', function(e) {
 
 // Klik di luar dropdown untuk menutup semua dropdown
 $(document).on('click', function(e) {
-    if (!$(e.target).closest('[data-kt-menu-trigger="click"], .menu').length) {
+    if (!$(e.target).closest('table [data-kt-menu-trigger="click"], .menu').length) {
         $('.menu').removeClass('show').prop('style', '');
-        $('[data-kt-menu-trigger="click"]').removeClass('show menu-dropdown');
+        $('table [data-kt-menu-trigger="click"]').removeClass('show menu-dropdown');
     }
 });
 
