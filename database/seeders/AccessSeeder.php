@@ -13,7 +13,7 @@ class AccessSeeder extends Seeder
      */
     public function run(): void
     {
-        $admin = Role::get()->firstWhere('name', 'admin');
+        $admin = Role::get()->firstWhere('name', 'administrator');
         $admin->givePermissionTo('login dashboard');
     }
 }

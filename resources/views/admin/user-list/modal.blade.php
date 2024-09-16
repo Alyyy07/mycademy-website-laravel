@@ -27,14 +27,14 @@
                                     background-image: url('assets/media/svg/files/blank-image-dark.svg');
                                 }
                             </style>
-                            <div class="image-input image-input-outline image-input-placeholder"
+                            <div class="image-input image-input-circle image-input-placeholder"
                                 data-kt-image-input="true">
                                 <div class="image-input-wrapper w-125px h-125px"
-                                    style="background-image: url(assets/media/avatars/300-6.jpg);">
+                                    style="background-image: url(assets/media/avatars/blank.png);">
                                 </div>
                                 <label
                                     class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                                    data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Change avatar">
+                                    data-kt-image-input-action="change">
                                     <i class="ki-duotone ki-pencil fs-7">
                                         <span class="path1"></span>
                                         <span class="path2"></span>
@@ -44,7 +44,7 @@
                                 </label>
                                 <span
                                     class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                                    data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancel avatar">
+                                    data-kt-image-input-action="cancel">
                                     <i class="ki-duotone ki-cross fs-2">
                                         <span class="path1"></span>
                                         <span class="path2"></span>
@@ -63,79 +63,31 @@
                         </div>
                         <div class="fv-row mb-7">
                             <label class="required fw-semibold fs-6 mb-2">Full Name</label>
-                            <input type="text" name="user_name" class="form-control form-control-solid mb-3 mb-lg-0"
-                                placeholder="Full name" value="Emma Smith" />
+                            <input type="text" name="name" class="form-control form-control-solid mb-3 mb-lg-0"
+                                placeholder="Full name" value="{{ old('name') }}" />
                         </div>
                         <div class="fv-row mb-7">
                             <label class="required fw-semibold fs-6 mb-2">Email</label>
-                            <input type="email" name="user_email" class="form-control form-control-solid mb-3 mb-lg-0"
-                                placeholder="example@domain.com" value="smith@kpmg.com" />
+                            <input type="email" name="email" class="form-control form-control-solid mb-3 mb-lg-0"
+                                placeholder="example@domain.com" value="{{ old('email') }}" />
                         </div>
                         <div class="mb-5">
                             <label class="required fw-semibold fs-6 mb-5">Role</label>
+                            @foreach (App\Models\Roles::all() as $role )
+                                
                             <div class="d-flex fv-row">
                                 <div class="form-check form-check-custom form-check-solid">
-                                    <input class="form-check-input me-3" name="user_role" type="radio" value="0"
-                                        id="kt_modal_update_role_option_0" checked='checked' />
-                                    <label class="form-check-label" for="kt_modal_update_role_option_0">
-                                        <div class="fw-bold text-gray-800">Administrator
+                                    <input class="form-check-input me-3" name="role" type="radio" @if ($loop->first) checked @endif value="{{ $role->id }}"
+                                    id="kt_modal_update_role_option_{{ $role->id }}" />
+                                    <label class="form-check-label" for="kt_modal_update_role_option_{{ $role->id }}">
+                                        <div class="fw-bold text-gray-800 text-capitalize">{{ $role->name }}
                                         </div>
-                                        <div class="text-gray-600">Best for business owners
-                                            and company administrators</div>
-                                    </label>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class='separator separator-dashed my-5'></div>
-                            <div class="d-flex fv-row">
-                                <div class="form-check form-check-custom form-check-solid">
-                                    <input class="form-check-input me-3" name="user_role" type="radio" value="1"
-                                        id="kt_modal_update_role_option_1" />
-                                    <label class="form-check-label" for="kt_modal_update_role_option_1">
-                                        <div class="fw-bold text-gray-800">Developer</div>
-                                        <div class="text-gray-600">Best for developers or
-                                            people primarily using the API</div>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class='separator separator-dashed my-5'></div>
-                            <div class="d-flex fv-row">
-                                <div class="form-check form-check-custom form-check-solid">
-                                    <input class="form-check-input me-3" name="user_role" type="radio" value="2"
-                                        id="kt_modal_update_role_option_2" />
-                                    <label class="form-check-label" for="kt_modal_update_role_option_2">
-                                        <div class="fw-bold text-gray-800">Analyst</div>
-                                        <div class="text-gray-600">Best for people who need
-                                            full access to analytics data, but don't need to
-                                            update business settings</div>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class='separator separator-dashed my-5'></div>
-                            <div class="d-flex fv-row">
-                                <div class="form-check form-check-custom form-check-solid">
-                                    <input class="form-check-input me-3" name="user_role" type="radio" value="3"
-                                        id="kt_modal_update_role_option_3" />
-                                    <label class="form-check-label" for="kt_modal_update_role_option_3">
-                                        <div class="fw-bold text-gray-800">Support</div>
-                                        <div class="text-gray-600">Best for employees who
-                                            regularly refund payments and respond to
-                                            disputes</div>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class='separator separator-dashed my-5'></div>
-                            <div class="d-flex fv-row">
-                                <div class="form-check form-check-custom form-check-solid">
-                                    <input class="form-check-input me-3" name="user_role" type="radio" value="4"
-                                        id="kt_modal_update_role_option_4" />
-                                    <label class="form-check-label" for="kt_modal_update_role_option_4">
-                                        <div class="fw-bold text-gray-800">Trial</div>
-                                        <div class="text-gray-600">Best for people who need
-                                            to preview content data, but don't need to make
-                                            any updates</div>
-                                    </label>
-                                </div>
-                            </div>
+                                @if (!$loop->last)
+                                    <div class='separator separator-dashed my-5'></div>
+                                @endif
+                                @endforeach
                         </div>
                     </div>
                     <div class="text-center pt-10">
@@ -151,6 +103,7 @@
         </div>
     </div>
 </div>
+<script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
 <script>
     $('[modal-action="close"]').on('click', function () {
     console.log('test');

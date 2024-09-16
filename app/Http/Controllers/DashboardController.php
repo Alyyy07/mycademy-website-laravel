@@ -10,7 +10,7 @@ class DashboardController extends Controller
     {
 
         return match ($request->user()->roles->first()->name) {
-            'admin' => view('admin.index'),
+            'administrator' => view('admin.index'),
             default => view('dashboard'),
         };
     }
