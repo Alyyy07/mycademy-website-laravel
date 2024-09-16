@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
             'remember_token' => Str::random(10),
         ]);
 
-        $admin->assignRole('admin');
+        $admin->assignRole('administrator');
 
         $camaba = User::create([
             'name' => 'camaba',

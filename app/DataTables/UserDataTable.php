@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
@@ -24,17 +25,41 @@ class UserDataTable extends DataTable
         return (new EloquentDataTable($query))
             ->addColumn('action', view('admin.user-list.action'))
             ->editColumn('roles.name', function ($user) {
-                return match ($user->roles->pluck('name')->first()) {
-                    'admin' => '<span class="badge badge-light-success">Administrator</span>',
-                    'camaba' => '<span class="badge badge-light-primary">Camaba</span>',
+                $name = $user->roles->pluck('name')->first();
+                $badgeColor = match ($name) {
+                    'administrator' => 'success',
+                    'camaba' => 'primary',
                 };
+                return "<span class='badge badge-light-$badgeColor text-capitalize'>$name</span>";
             })
             ->editColumn('checkbox', function (User $user) {
                 return "<div class='form-check form-check-sm form-check-custom form-check-solid'>
                 <input class='form-check-input' type='checkbox' value='{$user->id}' />
             </div>";
             })
-            ->rawColumns(['roles.name', 'action','checkbox']);
+            ->editColumn('name', function (User $user) {
+                $photo_path = $user->profile_photo ?? asset('assets/media/avatars/blank.png');
+                return "<div class='symbol symbol-circle symbol-50px overflow-hidden me-3'>
+																	<div class='symbol-label'>
+																		<img src='$photo_path' alt='$user->name' class='w-100' />
+																	</div>
+															</div>
+															<div class='d-flex flex-column'>
+																<p class='text-gray-800 mb-1 capitalize'>$user->name</p>
+																<span>$user->email</span>
+															</div>";
+            })
+            ->editColumn('is_active', function (User $user) {
+                return $user->is_active ? '<span class="badge badge-light-success">Active</span>' : '<span class="badge badge-light-danger">Inactive</span>';
+            })
+            ->editColumn('last_login_at', function ($user) {
+                if ($user->is_online) {
+                    return '<span class="badge badge-success fw-bold"><span class="badge badge-circle w-6px h-6px me-1" style="background-color:white"></span>Online</span>';
+                }
+                $last_login = $user->last_login_at ? Carbon::parse($user->last_login_at)->diffForHumans() : "Never";
+                return "<span class='badge badge-light fw-bold'>$last_login</span>";
+            })
+            ->rawColumns(['roles.name', 'name', 'is_active', 'last_login_at', 'action', 'checkbox']);
     }
 
     /**
@@ -69,10 +94,11 @@ class UserDataTable extends DataTable
             Column::make('checkbox')->title('<div class="form-check form-check-sm form-check-custom form-check-solid me-3">
 																<input class="form-check-input" type="checkbox" data-kt-check="true" data-kt-check-target="#kt_table_users .form-check-input" value="1" />
 															</div>')->addClass('w-10px pe-2')->orderable(false)->searchable(false),
-            Column::make('name')->title('User'),
-            Column::make('email'),
+            Column::make('name')->title('User')->addClass('d-flex align-items-center'),
             Column::make('roles.name')->title('Role')
-            ->orderable(false),
+                ->orderable(false),
+                Column::make('last_login_at')->title('Last Login'),
+            Column::make('is_active')->title('Status'),
             Column::computed('action')
                 ->exportable(false)
                 ->printable(false)
