@@ -38,14 +38,14 @@ class UserDataTable extends DataTable
             </div>";
             })
             ->editColumn('name', function (User $user) {
-                $photo_path = $user->profile_photo ?? asset('assets/media/avatars/blank.png');
+                $photo_path = $user->profile_photo ?? 'image/profile-photo/blank.png';
                 return "<div class='symbol symbol-circle symbol-50px overflow-hidden me-3'>
 																	<div class='symbol-label'>
-																		<img src='$photo_path' alt='$user->name' class='w-100' />
+																		<img src='".asset("storage/$photo_path")."' alt='$user->name' class='w-100' />
 																	</div>
 															</div>
 															<div class='d-flex flex-column'>
-																<p class='text-gray-800 mb-1 capitalize'>$user->name</p>
+																<p class='text-gray-800 mb-1 fw-bold text-capitalize'>$user->name</p>
 																<span>$user->email</span>
 															</div>";
             })
