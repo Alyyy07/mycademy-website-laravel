@@ -23,7 +23,11 @@ class UserDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('action', view('admin.user-list.action'))
+            ->addColumn('action', function(User $user) {
+                $editRoute = route('user-management.users.edit', $user->id);
+                $deleteRoute = route('user-management.users.destroy', $user->id);
+                return view('admin.user-list.partials.action', compact('editRoute', 'deleteRoute')); 
+            })
             ->editColumn('roles.name', function ($user) {
                 $name = $user->roles->pluck('name')->first();
                 $badgeColor = match ($name) {

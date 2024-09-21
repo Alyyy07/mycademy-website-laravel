@@ -8,48 +8,44 @@ $('[data-kt-check="true"]').on("change", function () {
         });
 });
 
-$('table [data-kt-menu-trigger="click"]').on('click', function(e) {
+$('table [data-kt-menu-trigger="click"]').on("click", function (e) {
     e.preventDefault();
+    var $menu = $(this).next(".menu");
+    if (!$menu.hasClass("show")) {
+        $(this).addClass("show menu-dropdown");
 
-    var $menu = $(this).next('.menu');
-
-    // Buka dropdown yang diklik
-    if (!$menu.hasClass('show')) {
-        $(this).addClass('show menu-dropdown');
-
-        // Hitung tinggi tombol "Actions"
         var buttonHeight = $(this).outerHeight();
-
-        // Set posisi dropdown di bawah tombol "Actions" dalam elemen induk relatif
         $menu.css({
-            display: 'block',  // Pastikan dropdown terlihat
-            position: 'absolute',
-            top: buttonHeight + 'px', // Posisi tepat di bawah tombol
-            left: '0px', // Sesuaikan posisi horizontal relatif terhadap tombol
-            zIndex: 107 // Sesuaikan z-index agar dropdown muncul di atas konten lain
+            display: "block",
+            position: "absolute",
+            top: buttonHeight + "px",
+            left: "0px",
+            zIndex: 107,
         });
 
-        // Tambahkan class show ke dropdown
-        $menu.addClass('show');
+        $menu.addClass("show");
     } else {
-        // Jika sudah terbuka, tutup dropdown
-        $(this).removeClass('show menu-dropdown');
-        $menu.removeClass('show').prop('style', '');
+        $(this).removeClass("show menu-dropdown");
+        $menu.removeClass("show").prop("style", "");
     }
 });
 
-// Klik di luar dropdown untuk menutup semua dropdown
-$(document).on('click', function(e) {
-    if (!$(e.target).closest('table [data-kt-menu-trigger="click"], .menu').length) {
-        $('.menu').removeClass('show').prop('style', '');
-        $('table [data-kt-menu-trigger="click"]').removeClass('show menu-dropdown');
+$(document).on("click", function (e) {
+    if (
+        !$(e.target).closest('table [data-kt-menu-trigger="click"], .menu')
+            .length
+    ) {
+        $(".menu").removeClass("show").prop("style", "");
+        $('table [data-kt-menu-trigger="click"]').removeClass(
+            "show menu-dropdown"
+        );
     }
 });
 
 $('[data-action="search"]').on(
-    'input',
+    "input",
     debounce(function () {
-        const tableId = $('table').attr('id');
+        const tableId = $("table").attr("id");
         if (window.LaravelDataTables[tableId]) {
             window.LaravelDataTables[tableId].search($(this).val()).draw();
         } else {
@@ -57,3 +53,55 @@ $('[data-action="search"]').on(
         }
     }, 1000)
 );
+
+$('[data-action="edit"]').on("click", function (e) {
+    let modalId = $(this).attr("modal-id");
+    $.ajax({
+        url: $(this).attr("button-url"),
+        type: "GET",
+        timeout: 2000,
+        success: function (response) {
+            $(".app-main").append(response);
+            $(modalId).modal("show");
+        },
+    });
+});
+
+$('[data-action="delete"]').on("click", function (e) {
+    Swal.fire({
+        title: "Apakah Anda Yakin?",
+        text: "Data yang dihapus tidak dapat dikembalikan!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#6c757d",
+        confirmButtonText: "Ya, Hapus!",
+        cancelButtonText: "Batal",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                },
+                url: $(this).attr("button-url"),
+                type: "DELETE",
+                timeout: 2000,
+                success: function (response) {
+                    Swal.fire({
+                        title: "Berhasil!",
+                        text: response.message,
+                        icon: "success",
+                    });
+                    window.LaravelDataTables[$("table").attr("id")].ajax.reload();
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire({
+                        title: "Gagal!",
+                        text: xhr.responseJSON.message,
+                        icon: "error",
+                    });
+                },
+            });
+        }
+    });
+});

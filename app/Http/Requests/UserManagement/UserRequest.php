@@ -21,10 +21,12 @@ class UserRequest extends FormRequest
      */
     public function rules(): array
     {
+        $passwordRule = $this->isMethod('POST') ? 'required|string' : 'nullable|string';
+        $emailRule = $this->isMethod('POST') ? 'required|email|unique:users' : 'required|email|unique:users,email,'.$this->user->id;
         return [
             "name" => "required|string",
-            "email" => "required|email|unique:users",
-            "password" => "required|string",
+            "email" => $emailRule,
+            "password" => $passwordRule,
             "role" => "required|string",
             "profile_photo" => "nullable|image|mimes:jpeg,png,jpg|max:2048",
         ];

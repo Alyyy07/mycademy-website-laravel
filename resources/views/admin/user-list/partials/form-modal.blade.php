@@ -1,4 +1,4 @@
-<div class="modal fade" id="user-modal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="user-modal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered mw-650px">
         <div class="modal-content">
             <div class="modal-header" id="kt_modal_add_user_header">
@@ -11,8 +11,10 @@
                 </div>
             </div>
             <div class="modal-body px-5 my-7">
-                <form id="user-form" class="form" action="{{ route('user-management.users.store') }}"
-                    table-id="user-table" enctype="multipart/form-data">
+                <form id="user-form" class="form" action="{{ $route }}" modal-action="{{ $action }}" enctype="multipart/form-data">
+                    @if($action == 'edit')
+                    @method('PUT')
+                    @endif
                     <div class="d-flex flex-column scroll-y px-5 px-lg-10" id="kt_modal_add_user_scroll"
                         data-kt-scroll="true" data-kt-scroll-activate="true" data-kt-scroll-max-height="auto"
                         data-kt-scroll-dependencies="#kt_modal_add_user_header"
@@ -21,7 +23,7 @@
                             <label class="d-block fw-semibold fs-6 mb-5">Profile Photo</label>
                             <div class="image-input image-input-circle image-input-placeholder">
                                 <div class="image-input-wrapper w-125px h-125px"
-                                    style="background-image: url(assets/media/avatars/blank.png);">
+                                    style="background-image: url('storage/{{ $user->profile_photo ?? 'image/profile-photo/blank.png' }}');">
                                 </div>
                                 <label
                                     class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
@@ -32,14 +34,6 @@
                                     </i>
                                     <input type="file" name="profile_photo" />
                                 </label>
-                                {{-- <span
-                                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                                    data-kt-image-input-action="cancel">
-                                    <i class="ki-duotone ki-cross fs-2">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                    </i>
-                                </span> --}}
                                 <span
                                     class="btn btn-icon btn-circle btn-active-color-primary d-none w-25px h-25px bg-body shadow"
                                     data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remove avatar">
@@ -49,32 +43,32 @@
                                     </i>
                                 </span>
                             </div>
-                            <div class="form-text">Allowed file types: png, jpg, jpeg.</div>
+                            <div class="image-feedback"></div>
                         </div>
                         <div class="fv-row mb-7">
                             <label class="required fw-semibold fs-6 mb-2">Full Name</label>
                             <input type="text" name="name" class="form-control form-control-solid mb-3 mb-lg-0"
-                                placeholder="Full name" value="{{ old('name') }}" />
+                                placeholder="Full name" autofocus value="{{ $user->name ?? old('name') }}" />
                         </div>
                         <div class="fv-row mb-7">
                             <label class="required fw-semibold fs-6 mb-2">Email</label>
                             <input type="email" name="email" class="form-control form-control-solid mb-3 mb-lg-0"
-                                placeholder="example@domain.com" value="{{ old('email') }}" />
+                                placeholder="example@domain.com" value="{{ $user->email ?? old('email') }}" />
                         </div>
                         <div class="fv-row mb-7">
-                            <label class="required fw-semibold fs-6 mb-2">Password</label>
+                            <label class="@if ($action == 'create') required @endif fs-6 mb-2">Password</label>
                             <input type="password" name="password" class="form-control form-control-solid mb-3 mb-lg-0"
                                 value="{{ old('password') }}" />
                         </div>
                         <div class="mb-5">
                             <label class="required fw-semibold fs-6 mb-5">Role</label>
                             @foreach ($roles as $role )
-
                             <div class="d-flex fv-row">
                                 <div class="form-check form-check-custom form-check-solid">
-                                    <input class="form-check-input me-3" name="role" type="radio" @if ($loop->first)
-                                    checked @endif value="{{ $role->name }}"
-                                    id="kt_modal_update_role_option_{{ $role->id }}" />
+                                    <input class="form-check-input me-3" name="role" type="radio"
+                                        @if(isset($user->roles) && $user->roles->contains($role->id)) checked
+                                    @elseif (isset($user->roles) && $loop->first) checked
+                                    @endif value="{{ $role->name }}" id="kt_modal_update_role_option_{{ $role->id }}" />
                                     <label class="form-check-label" for="kt_modal_update_role_option_{{ $role->id }}">
                                         <div class="fw-bold text-gray-800 text-capitalize">{{ $role->name }}
                                         </div>
@@ -88,7 +82,7 @@
                     </div>
                     <div class="text-center pt-10">
                         <button type="reset" class="btn btn-light me-3" modal-action="close">Discard</button>
-                        <button type="submit" class="btn btn-primary" modal-action="submit">
+                        <button type="submit" class="btn btn-primary">
                             <span class="indicator-label">Submit</span>
                         </button>
                     </div>
@@ -115,6 +109,7 @@
     }).then((result) => {
         if (result.isConfirmed) {
             $(this).closest('.modal').modal('hide');
+            $(this).closest('.modal').remove();
         }
         if (result.isDismissed) {
             Swal.fire({
@@ -131,7 +126,6 @@
 });
 $('[data-kt-image-input-action="change"]').on('change', function () {
     var files = $('input[type="file"]').prop('files');
-    console.log(files);
     if (files.length > 0) {
         var file = files[0];
         var reader = new FileReader();
@@ -140,24 +134,25 @@ $('[data-kt-image-input-action="change"]').on('change', function () {
         }
         reader.readAsDataURL(file);
         $('[data-kt-image-input-action="remove"]').removeClass('d-none');
+        $('.image-feedback').html('');
     }
 });
 
 $('[data-kt-image-input-action="remove"]').on('click', function () {
-    $(this).closest('.image-input').find('.image-input-wrapper').css('background-image', 'url(assets/media/avatars/blank.png)');
-    $('input[name="profile_photo"]').val('');
+    $(this).closest('.image-input').find('.image-input-wrapper').css('background-image', 'url(storage/image/profile-photo/blank.png)');
+    $('input[name="profile_photo"]').val('image/profile-photo/blank.png');
     $(this).addClass('d-none');
+    $('.image-feedback').html('');
 });
 
 $('#user-form').on('submit', function (e) {
     e.preventDefault();
-    tableId = $(this).attr('table-id');
     form = $(this);
-    console.log(form.attr('action'));
     url = $(this).attr('action');
+    isCreateAction = $(this).attr('modal-action') === 'create';
     formData = new FormData(this);
     Swal.fire({
-        text: "Apakah anda yakin ingin menyimpan data ini?",
+        text: "Apakah anda yakin ingin "+(isCreateAction ? "menyimpan":"mengedit")+" data ini?",
         icon: 'warning',
         showCancelButton: true,
         buttonsStyling: false,
@@ -170,10 +165,10 @@ $('#user-form').on('submit', function (e) {
         },
 
     }).then((result) => {
-        form.find('.indicator-label').html('Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>');
-				form.find('[type="submit"]').attr('disabled', true);
-				form.find('.is-invalid').removeClass('is-invalid').next('small').remove();
         if (result.isConfirmed) {
+            form.find('.indicator-label').html('Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>');
+            form.find('[type="submit"]').attr('disabled', true);
+            form.find('.is-invalid').removeClass('is-invalid').next('small').remove();
            $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -184,7 +179,7 @@ $('#user-form').on('submit', function (e) {
                 processData: false,
                 contentType: false,
                 success: function (response) {
-                    window.LaravelDataTables[tableId].draw();
+                    window.LaravelDataTables[$("table").attr("id")].ajax.reload();
                     $('#user-modal').modal('hide');
                     Swal.fire({
                         text: response.message,
@@ -199,7 +194,11 @@ $('#user-form').on('submit', function (e) {
                 error: function (xhr) {
                     if (xhr.status == 422) {
                         $.each(xhr.responseJSON.errors, function (key, value) {
-                            $('#user-form').find('[name="' + key + '"]').addClass('is-invalid').after('<small class="text-danger">' + value + '</small>');
+                            if (key == 'profile_photo') {
+                                form.find('.image-feedback').html('<small class="text-danger">' + value + '</small>');
+                            }else{
+                                $('#user-form').find('[name="' + key + '"]').addClass('is-invalid').after('<small class="text-danger">' + value + '</small>');
+                            }
                         })
                     } else {
                         Swal.fire({
