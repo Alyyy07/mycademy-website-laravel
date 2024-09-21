@@ -13,12 +13,10 @@ class Role
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next,string ...$roles): mixed
+    public function handle(Request $request, Closure $next, string $role): mixed
     {
-        foreach($roles as $role){
-            if($request->user()->hasRole($role)){
-                return $next($request);
-            }
+        if ($request->user()->hasRole($role)) {
+            return $next($request);
         }
         abort(403);
     }
