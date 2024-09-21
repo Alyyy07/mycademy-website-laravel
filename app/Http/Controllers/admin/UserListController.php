@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserManagement\UserRequest;
 use App\Models\Roles;
 use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserListController extends Controller
 {
@@ -25,7 +25,10 @@ class UserListController extends Controller
     public function create()
     {
         $roles = Roles::all();
-        return view('admin.user-list.modal', compact('roles'));
+        $user = new User();
+        $action = 'create';
+        $route = route('user-management.users.store');
+        return view('admin.user-list.partials.form-modal', compact('roles', 'route','user', 'action'));
     }
 
     /**
@@ -35,7 +38,7 @@ class UserListController extends Controller
     {
         $request->validated();
         $data = $request->all();
-        $data['password'] = bcrypt($request->password);
+        $data['password'] = Hash::make($request->password);
         if ($request->hasFile('profile_photo')) {
             $file = $request->file('profile_photo');
             $filename = hash('sha256', time() . $file->getClientOriginalName()) . '.' . $file->getClientOriginalExtension();
@@ -54,24 +57,50 @@ class UserListController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(User $user)
     {
-        //
+        $roles = Roles::all();
+        $action = 'edit';
+        $route = route('user-management.users.update', $user->id);
+        return view('admin.user-list.partials.form-modal', compact('roles', 'route', 'user','action'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UserRequest $request,User $user)
     {
-        //
+        $data = $request->all();
+        if ($request->hasFile('profile_photo')) {
+            $oldPhoto = $user->profile_photo;
+            if ($oldPhoto) {
+                unlink(storage_path('app/public/' . $oldPhoto));
+            }
+            $file = $request->file('profile_photo');
+            $filename = hash('sha256', time() . $file->getClientOriginalName()) . '.' . $file->getClientOriginalExtension();
+            $data['profile_photo'] = $file->storeAs('image/profile-photo', $filename, 'public');
+        }
+        if ($request->password) {
+            $data['password'] = Hash::make($request->password);
+        }else{
+            unset($data['password']);
+        }
+        $user->update($data);
+        $user->syncRoles(request()->role);
+        return response()->json(['message' => 'User updated successfully'], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(User $user)
     {
-        //
+        $user->delete();
+        $user->syncRoles([]);
+        $photoPath = $user->profile_photo;
+        if ($photoPath) {
+            unlink(storage_path('app/public/' . $photoPath));
+        }
+        return response()->json(['message' => 'User deleted successfully'], 200);
     }
 }
