@@ -7,16 +7,19 @@
         <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4"
             data-kt-menu="true">
             <!--begin::Menu item-->
-            <div class="menu-item px-3" data-action="edit" button-action="edit" button-url="{{ $editRoute }}"
+            <div class="menu-item px-3" data-action="edit" button-url="{{ $editRoute }}"
                 modal-id="#user-modal">
                 <a class="menu-link px-3">Edit</a>
             </div>
             <!--end::Menu item-->
             <!--begin::Menu item-->
-            <div class="menu-item px-3" data-action="delete" button-action="delete" button-url="{{ $deleteRoute }}">
+            <div class="menu-item px-3" data-action="delete" button-url="{{ $deleteRoute }}">
                 <a class="menu-link px-3" data-kt-users-table-filter="delete_row">Delete</a>
             </div>
             <!--end::Menu item-->
+            <div class="separator mt-3 opacity-75"></div>
+            <div class="menu-item px-3" data-action="set-status" button-url="{{ $setStatusRoute }}">
+                <a class="menu-link px-3">{{ $isActive }} User</a>
         </div>
     </div>
 </div>

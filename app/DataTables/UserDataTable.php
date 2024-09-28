@@ -23,10 +23,12 @@ class UserDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('action', function(User $user) {
+            ->addColumn('action', function (User $user) {
                 $editRoute = route('user-management.users.edit', $user->id);
                 $deleteRoute = route('user-management.users.destroy', $user->id);
-                return view('admin.user-list.partials.action', compact('editRoute', 'deleteRoute')); 
+                $setStatusRoute = route('user-management.users.setStatus', $user->id);
+                $isActive = $user->is_active ? 'Inactive' : 'Active';
+                return view('admin.user-list.partials.action', compact('editRoute', 'deleteRoute', 'setStatusRoute', 'isActive'));
             })
             ->editColumn('roles.name', function ($user) {
                 $name = $user->roles->pluck('name')->first();
@@ -38,14 +40,14 @@ class UserDataTable extends DataTable
             })
             ->editColumn('checkbox', function (User $user) {
                 return "<div class='form-check form-check-sm form-check-custom form-check-solid'>
-                <input class='form-check-input' type='checkbox' value='{$user->id}' />
+                <input class='form-check-input' check-target='user' type='checkbox' value='{$user->id}' />
             </div>";
             })
             ->editColumn('name', function (User $user) {
                 $photo_path = $user->profile_photo ?? 'image/profile-photo/blank.png';
                 return "<div class='symbol symbol-circle symbol-50px overflow-hidden me-3'>
 																	<div class='symbol-label'>
-																		<img src='".asset("storage/$photo_path")."' alt='$user->name' class='w-100' />
+																		<img src='" . asset("storage/$photo_path") . "' alt='$user->name' class='w-100' />
 																	</div>
 															</div>
 															<div class='d-flex flex-column'>
@@ -96,12 +98,12 @@ class UserDataTable extends DataTable
     {
         return [
             Column::make('checkbox')->title('<div class="form-check form-check-sm form-check-custom form-check-solid me-3">
-																<input class="form-check-input" type="checkbox" data-kt-check="true" data-kt-check-target="#kt_table_users .form-check-input" value="1" />
-															</div>')->addClass('w-10px pe-2')->orderable(false)->searchable(false),
+																<input class="form-check-input" type="checkbox" check-action="user" />
+															</div>')->addClass('w-10px pe-2')->orderable(false)->searchable(false)->titleAttr('Select All'),
             Column::make('name')->title('User')->addClass('d-flex align-items-center'),
             Column::make('roles.name')->title('Role')
                 ->orderable(false),
-                Column::make('last_login_at')->title('Last Login'),
+            Column::make('last_login_at')->title('Last Login'),
             Column::make('is_active')->title('Status'),
             Column::computed('action')
                 ->exportable(false)

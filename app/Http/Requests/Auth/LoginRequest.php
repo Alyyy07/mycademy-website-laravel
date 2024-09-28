@@ -42,10 +42,17 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
+
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw new AuthenticationException('Invalid credentials.');
+        }
+
+        if(!Auth::user()->is_active) {
+            Auth::logout();
+            RateLimiter::clear($this->throttleKey());
+            throw  new AuthenticationException('Your account is not active. Please contact the administrator.');
         }
 
         RateLimiter::clear($this->throttleKey());

@@ -26,11 +26,8 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request)
     {
         $request->authenticate();
-
         $request->session()->regenerate();
-
         User::where('email', $request->email)->update(['is_online' => true]);
-
         return response()->json(['message' => 'Login successful', 'redirect' => '/dashboard'], 200);
     }
 
