@@ -26,7 +26,9 @@ class UserDataTable extends DataTable
             ->addColumn('action', function(User $user) {
                 $editRoute = route('user-management.users.edit', $user->id);
                 $deleteRoute = route('user-management.users.destroy', $user->id);
-                return view('admin.user-list.partials.action', compact('editRoute', 'deleteRoute')); 
+                $setStatusRoute = route('user-management.users.setStatus', $user->id);
+                $isActive = $user->is_active ? 'Inactive' : 'Active';
+                return view('admin.user-list.partials.action', compact('editRoute', 'deleteRoute', 'setStatusRoute', 'isActive')); 
             })
             ->editColumn('roles.name', function ($user) {
                 $name = $user->roles->pluck('name')->first();

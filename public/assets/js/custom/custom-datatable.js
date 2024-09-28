@@ -88,7 +88,6 @@ $('[data-action="delete"]').on("click", function (e) {
                 timeout: 2000,
                 success: function (response) {
                     Swal.fire({
-                        title: "Berhasil!",
                         text: response.message,
                         icon: "success",
                     });
@@ -96,7 +95,43 @@ $('[data-action="delete"]').on("click", function (e) {
                 },
                 error: function (xhr, status, error) {
                     Swal.fire({
-                        title: "Gagal!",
+                        text: xhr.responseJSON.message,
+                        icon: "error",
+                    });
+                },
+            });
+        }
+    });
+});
+
+$('[data-action="set-status"]').on("click", function (e) {
+    Swal.fire({
+        title: "Apakah Anda Yakin?",
+        text: "Anda akan mengubah status data ini!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#6c757d",
+        confirmButtonText: "Ya, Ubah!",
+        cancelButtonText: "Batal",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                },
+                url: $(this).attr("button-url"),
+                type: "PATCH",
+                timeout: 2000,
+                success: function (response) {
+                    Swal.fire({
+                        text: response.message,
+                        icon: "success",
+                    });
+                    window.LaravelDataTables[$("table").attr("id")].ajax.reload();
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire({
                         text: xhr.responseJSON.message,
                         icon: "error",
                     });
