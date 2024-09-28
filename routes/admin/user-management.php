@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => 'user-management', 'as' => 'user-management.', 'middleware' => 'role:administrator'], function () {
     Route::resource('/users', UserListController::class)->names('users');
     Route::patch('/users/set-status/{user}', [UserListController::class, 'setStatus'])->name('users.setStatus');
+    Route::delete('/users',[UserListController::class,'bulkDelete'])->name('users.bulkDelete');
     
     Route::resource('/roles', RoleController::class)->names('roles');
 });

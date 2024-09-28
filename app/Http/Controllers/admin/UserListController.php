@@ -99,7 +99,7 @@ class UserListController extends Controller
         $user->syncRoles([]);
         $photoPath = $user->profile_photo;
         if ($photoPath) {
-            unlink(storage_path('app/public/' . $photoPath));
+            unlink(storage_path("app/public/$photoPath"));
         }
         return response()->json(['message' => 'User deleted successfully'], 200);
     }
@@ -109,5 +109,20 @@ class UserListController extends Controller
         $user->is_active = !$user->is_active;
         $user->save();
         return response()->json(['message' => 'User status updated successfully'], 200);
+    }
+
+    public function bulkDelete()
+    {
+        $ids = request()->ids;
+        $users = User::whereIn('id', $ids)->get();
+        foreach ($users as $user) {
+            $user->delete();
+            $user->syncRoles([]);
+            $photoPath = $user->profile_photo;
+            if ($photoPath) {
+                unlink(storage_path("app/public/$photoPath"));
+            }
+        }
+        return response()->json(['message' => 'All selected users deleted successfully'], 200);
     }
 }
