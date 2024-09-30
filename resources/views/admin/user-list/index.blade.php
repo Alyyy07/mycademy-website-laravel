@@ -96,12 +96,23 @@
                                 <button type="button" button-action="show" modal-id="#user-modal" button-url="{{ route('user-management.users.create') }}" class="btn btn-primary">
                                     <i class="ki-duotone ki-plus fs-2"></i>Add User</button>
                             </div>
-                            <div user-toolbar="bulk-delete" class="d-flex justify-content-end align-items-center d-none"
+                            {{-- <div user-toolbar="bulk-delete" class="d-flex justify-content-end align-items-center d-none"
                             data-kt-user-table-toolbar="selected">
                                 <div class="fw-bold me-5">
                                     <span class="me-2" data-user-selected></span>Selected
                                 </div>
                                 <button type="button" class="btn btn-danger" button-url="{{ route('user-management.users.bulkDelete') }}" button-action="bulk-delete">Delete Selected</button>
+                            </div> --}}
+                            <div class="btn-group d-none" user-toolbar="selected-user">
+                                <button type="button" selected-button class="btn btn-danger"></button>
+                                <button type="button" dropdown-option class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" delete-option button-url="{{ route('user-management.users.bulkDelete') }}">Delete 3 Users</a>
+                                    <a class="dropdown-item" deactivate-option button-url="{{ route('user-management.users.bulkSetStatus') }}">Deactivate 5 Users</a>
+                                    <a class="dropdown-item" activate-option button-url="{{ route('user-management.users.bulkSetStatus') }}">Activate 4 Users</a>
+                                </div>
                             </div>
                             @include('admin.user-list.partials.export-modal')
                         </div>

@@ -189,7 +189,12 @@ $('#user-form').on('submit', function (e) {
                         customClass: {
                             confirmButton: 'btn btn-primary',
                         },
-                    })
+                    });
+                    form[0].reset();
+                    $(".image-input-wrapper").prop(
+                        "style",
+                        "background-image: url(storage/image/profile-photo/blank.png)"
+                    );
                 },
                 error: function (xhr) {
                     if (xhr.status == 422) {

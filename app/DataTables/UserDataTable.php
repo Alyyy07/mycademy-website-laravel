@@ -26,9 +26,7 @@ class UserDataTable extends DataTable
             ->addColumn('action', function (User $user) {
                 $editRoute = route('user-management.users.edit', $user->id);
                 $deleteRoute = route('user-management.users.destroy', $user->id);
-                $setStatusRoute = route('user-management.users.setStatus', $user->id);
-                $isActive = $user->is_active ? 'Inactive' : 'Active';
-                return view('admin.user-list.partials.action', compact('editRoute', 'deleteRoute', 'setStatusRoute', 'isActive'));
+                return view('admin.user-list.partials.action', compact('editRoute', 'deleteRoute'));
             })
             ->editColumn('roles.name', function ($user) {
                 $name = $user->roles->pluck('name')->first();
@@ -56,7 +54,14 @@ class UserDataTable extends DataTable
 															</div>";
             })
             ->editColumn('is_active', function (User $user) {
-                return $user->is_active ? '<span class="badge badge-light-success">Active</span>' : '<span class="badge badge-light-danger">Inactive</span>';
+                $checkedLabel = $user->is_active ? 'Active' : 'Inactive';
+                $isChecked = $user->is_active ? 'checked' : '';
+                $setStatusRoute = route('user-management.users.setStatus', $user->id);
+
+                return "<div class='form-check form-switch form-check-custom form-check-success form-check-solid' radio-action='set-status' button-url='$setStatusRoute'>
+                <input class='form-check-input h-20px w-35px' is-active-radio type='checkbox' value='$user->id' $isChecked  id='kt_flexSwitchCustomDefault_$user->id'/>
+                <label class='form-check-label' for='kt_flexSwitchCustomDefault_$user->id'>$checkedLabel</label>
+                </div>";
             })
             ->editColumn('last_login_at', function ($user) {
                 if ($user->is_online) {
