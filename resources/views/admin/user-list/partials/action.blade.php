@@ -17,9 +17,9 @@
                 <a class="menu-link px-3" data-kt-users-table-filter="delete_row">Delete</a>
             </div>
             <!--end::Menu item-->
-            <div class="separator mt-3 opacity-75"></div>
+            {{-- <div class="separator mt-3 opacity-75"></div>
             <div class="menu-item px-3" data-action="set-status" button-url="{{ $setStatusRoute }}">
                 <a class="menu-link px-3">{{ $isActive }} User</a>
-        </div>
+        </div> --}}
     </div>
 </div>

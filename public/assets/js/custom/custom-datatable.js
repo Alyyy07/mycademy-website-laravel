@@ -1,3 +1,11 @@
+let table = $("#user-table").DataTable();
+table.on("order.dt", function () {
+    $('[check-action="user"]').prop("checked", false);
+    $('[user-toolbar="base"]').addClass("d-none");
+    $('[user-toolbar="selected-user"]').removeClass("d-none");
+    $("[selected-button]").text("0 Selected");
+});
+
 $('[check-action="user"]').on("change", function () {
     var isChecked = $(this).prop("checked");
     $(this)
@@ -11,12 +19,12 @@ $('[check-action="user"]').on("change", function () {
 
 $('table [data-kt-menu-trigger="click"]').on("click", function (e) {
     e.preventDefault();
-    var $menu = $(this).next(".menu");
-    if (!$menu.hasClass("show")) {
+    var menu = $(this).next(".menu");
+    if (!menu.hasClass("show")) {
         $(this).addClass("show menu-dropdown");
 
         var buttonHeight = $(this).outerHeight();
-        $menu.css({
+        menu.css({
             display: "block",
             position: "absolute",
             top: buttonHeight + "px",
@@ -24,10 +32,10 @@ $('table [data-kt-menu-trigger="click"]').on("click", function (e) {
             zIndex: 107,
         });
 
-        $menu.addClass("show");
+        menu.addClass("show");
     } else {
         $(this).removeClass("show menu-dropdown");
-        $menu.removeClass("show").prop("style", "");
+        menu.removeClass("show").prop("style", "");
     }
 });
 
@@ -40,6 +48,13 @@ $(document).on("click", function (e) {
         $('table [data-kt-menu-trigger="click"]').removeClass(
             "show menu-dropdown"
         );
+    }
+
+    if (
+        !$(e.target).closest("[dropdown-option], .dropdown-menu").length &&
+        !$(e.target).is("[dropdown-option]")
+    ) {
+        $(".dropdown-menu").removeClass("show").prop("style", "");
     }
 });
 
@@ -109,10 +124,11 @@ $('[data-action="delete"]').on("click", function (e) {
     });
 });
 
-$('[data-action="set-status"]').on("click", function (e) {
+$('[radio-action="set-status"]').on("change", function (e) {
+    let checkbox = $(this).find('input[type="checkbox"]');
+    let isChecked = checkbox.prop("checked");
     Swal.fire({
-        title: "Apakah Anda Yakin?",
-        text: "Anda akan mengubah status data ini!",
+        text: "Apakah anda yakin ingin mengubah status User ini ?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
@@ -147,22 +163,48 @@ $('[data-action="set-status"]').on("click", function (e) {
                 },
             });
         }
+        if (result.isDismissed) {
+            Swal.fire({
+                text: "Aksi Dibatalkan!",
+                icon: "error",
+            });
+            checkbox.prop("checked", !isChecked);
+        }
     });
 });
 
 $('[check-target="user"] ').on("change", function () {
     let checked = $('[check-target="user"]:checked').length;
     let total = $('[check-target="user"]').length;
+    let activeUser = $("[check-target='user']:checked").filter(function () {
+        return $(this).closest("tr").find("[is-active-radio]").is(":checked");
+    });
+    let inactiveUser = $("[check-target='user']:checked").filter(function () {
+        return !$(this).closest("tr").find("[is-active-radio]").is(":checked");
+    });
+
     if (checked === total) {
         $('[check-action="user"]').prop("checked", true);
     } else {
         $('[check-action="user"]').prop("checked", false);
     }
     $('[user-toolbar="base"]').addClass("d-none");
-    $('[user-toolbar="bulk-delete"]').removeClass("d-none");
-    $("[data-user-selected]").text(checked);
+    $('[user-toolbar="selected-user"]').removeClass("d-none");
+    $("[selected-button]").text(checked + " Selected");
 
-    $('[button-action="bulk-delete"]').on("click", function () {
+    $("[delete-option]").text("Delete " + checked + " User");
+    inactiveUser.length
+        ? $("[activate-option]")
+              .removeClass("d-none")
+              .text("Activate " + inactiveUser.length + " User")
+        : $("[activate-option]").addClass("d-none");
+    activeUser.length
+        ? $("[deactivate-option]")
+              .removeClass("d-none")
+              .text("Deactivate " + activeUser.length + " User")
+        : $("[deactivate-option]").addClass("d-none");
+
+    $("[delete-option]").on("click", function () {
         Swal.fire({
             text:
                 "Apakah Anda yakin ingin menghapus " + checked + " data user?",
@@ -174,38 +216,41 @@ $('[check-target="user"] ').on("change", function () {
             cancelButtonText: "Batal",
         }).then((result) => {
             if (result.isConfirmed) {
-                $('[check-target="user"]:checked').each(function () {
-                    let userIds = $(this).val();
-                    $.ajax({
-                        headers: {
-                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
-                                "content"
-                            ),
-                        },
-                        url: $(this).attr("button-url"),
-                        type: "DELETE",
-                        data: {
-                            ids: [userIds],
-                        },
-                        success: function (response) {
-                            Swal.fire({
-                                text: response.message,
-                                icon: "success",
-                            });
-                            window.LaravelDataTables[
-                                $("table").attr("id")
-                            ].ajax.reload();
-                            $('[user-toolbar="base"]').removeClass("d-none");
-                            $('[user-toolbar="bulk-delete"]').addClass("d-none");
-                            $("[data-user-selected").text(checked);
-                        },
-                        error: function (xhr, status, error) {
-                            Swal.fire({
-                                text: xhr.responseJSON.message,
-                                icon: "error",
-                            });
-                        },
-                    });
+                let userIds = [];
+                $("[check-target='user']:checked").each(function () {
+                    userIds.push($(this).val());
+                });
+                $.ajax({
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                            "content"
+                        ),
+                    },
+                    url: $(this).attr("button-url"),
+                    type: "DELETE",
+                    data: {
+                        ids: userIds,
+                    },
+                    success: function (response) {
+                        Swal.fire({
+                            text: response.message,
+                            icon: "success",
+                        });
+                        window.LaravelDataTables[
+                            $("table").attr("id")
+                        ].ajax.reload();
+                        $('[user-toolbar="base"]').removeClass("d-none");
+                        $('[user-toolbar="selected-user"]').addClass(
+                            "d-none"
+                        );
+                        $("[data-user-selected").text(checked);
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            text: xhr.responseJSON.message,
+                            icon: "error",
+                        });
+                    },
                 });
             }
             if (result.isDismissed) {
@@ -217,9 +262,149 @@ $('[check-target="user"] ').on("change", function () {
         });
     });
 
-    if (checked === 0) {
-        $('[user-toolbar="base"]').removeClass("d-none");
-        $('[user-toolbar="bulk-delete"]').addClass("d-none");
-        $("[data-user-selected").text(checked);
+    $("[activate-option]").on("click", function () {
+        Swal.fire({
+            text:
+                "Apakah Anda yakin ingin mengaktifkan " +
+                inactiveUser.length +
+                " data user?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Ya, aktifkan!",
+            cancelButtonText: "Batal",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let userIds = [];
+                inactiveUser.each(function () {
+                    userIds.push($(this).val());
+                });
+                    $.ajax({
+                        headers: {
+                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                                "content"
+                            ),
+                        },
+                        url: $(this).attr("button-url"),
+                        type: "POST",
+                        data: {
+                            ids: userIds,
+                        },
+                        success: function (response) {
+                            Swal.fire({
+                                text: response.message,
+                                icon: "success",
+                            });
+                            window.LaravelDataTables[
+                                $("table").attr("id")
+                            ].ajax.reload();
+                            $('[user-toolbar="base"]').removeClass("d-none");
+                            $('[user-toolbar="selected-user"]').addClass(
+                                "d-none"
+                            );
+                            $("[data-user-selected").text(checked);
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire({
+                                text: xhr.responseJSON.message,
+                                icon: "error",
+                            });
+                        },
+                    });
+            }
+            if (result.isDismissed) {
+                Swal.fire({
+                    text: "Aksi Dibatalkan!",
+                    icon: "error",
+                });
+            }
+        });
+    });
+
+    $("[deactivate-option]").on("click", function () {
+        Swal.fire({
+            text:
+                "Apakah Anda yakin ingin menonaktifkan " +
+                activeUser.length +
+                " data user?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Ya, nonaktifkan!",
+            cancelButtonText: "Batal",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let userIds = [];
+                activeUser.each(function () {
+                    userIds.push($(this).val());
+                });
+                    $.ajax({
+                        headers: {
+                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                                "content"
+                            ),
+                        },
+                        url: $(this).attr("button-url"),
+                        type: "POST",
+                        data: {
+                            ids: userIds,
+                        },
+                        success: function (response) {
+                            Swal.fire({
+                                text: response.message,
+                                icon: "success",
+                            });
+                            window.LaravelDataTables[
+                                $("table").attr("id")
+                            ].ajax.reload();
+                            $('[user-toolbar="base"]').removeClass("d-none");
+                            $('[user-toolbar="selected-user"]').addClass(
+                                "d-none"
+                            );
+                            $("[data-user-selected").text(checked);
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire({
+                                text: xhr.responseJSON.message,
+                                icon: "error",
+                            });
+                        },
+                    });
+            }
+            if (result.isDismissed) {
+                Swal.fire({
+                    text: "Aksi Dibatalkan!",
+                    icon: "error",
+                });
+            }
+        });
+
+        if (checked === 0) {
+            $('[user-toolbar="base"]').removeClass("d-none");
+            $('[user-toolbar="selected-user"]').addClass("d-none");
+            $("[data-user-selected").text(checked);
+        }
+    });
+});
+
+$("[dropdown-option]").on("click", function () {
+    let parentWidth = $(this).closest('[user-toolbar="selected-user"]').width();
+    let dropdown = $(this).next(".dropdown-menu");
+    if (!dropdown.hasClass("show")) {
+        var buttonHeight = $(this).outerHeight();
+        dropdown.css({
+            display: "block",
+            width: parentWidth + "px",
+            position: "absolute",
+            top: buttonHeight + "px",
+            left: "0px",
+            zIndex: 107,
+        });
+
+        dropdown.addClass("show");
+    } else {
+        dropdown.removeClass("show").prop("style", "");
     }
 });

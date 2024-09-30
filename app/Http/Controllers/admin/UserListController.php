@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserManagement\UserRequest;
 use App\Models\Roles;
 use App\Models\User;
+use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Hash;
 
 class UserListController extends Controller
@@ -114,8 +115,8 @@ class UserListController extends Controller
     public function bulkDelete()
     {
         $ids = request()->ids;
-        $users = User::whereIn('id', $ids)->get();
-        foreach ($users as $user) {
+        foreach ($ids as $id) {
+            $user = User::find($id);
             $user->delete();
             $user->syncRoles([]);
             $photoPath = $user->profile_photo;
@@ -124,5 +125,16 @@ class UserListController extends Controller
             }
         }
         return response()->json(['message' => 'All selected users deleted successfully'], 200);
+    }
+
+    public function bulkSetStatus()
+    {
+        $ids = request()->ids;
+        foreach ($ids as $id) {
+            $user = User::find($id);
+            $user->is_active = !$user->is_active;
+            $user->save();
+        }
+        return response()->json(['message' => 'All selected users status updated successfully'], 200);
     }
 }
