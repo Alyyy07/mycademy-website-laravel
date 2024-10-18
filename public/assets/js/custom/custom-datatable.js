@@ -1,8 +1,8 @@
 let table = $("#user-table").DataTable();
 table.on("order.dt", function () {
     $('[check-action="user"]').prop("checked", false);
-    $('[user-toolbar="base"]').addClass("d-none");
-    $('[user-toolbar="selected-user"]').removeClass("d-none");
+    $('[user-toolbar="base"]').removeClass("d-none");
+    $('[user-toolbar="selected-user"]').addClass("d-none");
     $("[selected-button]").text("0 Selected");
 });
 
@@ -380,16 +380,16 @@ $('[check-target="user"] ').on("change", function () {
                 });
             }
         });
-
-        if (checked === 0) {
-            $('[user-toolbar="base"]').removeClass("d-none");
-            $('[user-toolbar="selected-user"]').addClass("d-none");
-            $("[data-user-selected").text(checked);
-        }
     });
+    if (checked === 0) {
+        $('[user-toolbar="base"]').removeClass("d-none");
+        $('[user-toolbar="selected-user"]').addClass("d-none");
+        $("[data-user-selected").text(checked);
+    }
 });
 
-$("[dropdown-option]").on("click", function () {
+$("[dropdown-option]").off('click').on("click", function () {
+    console.log('test');
     let parentWidth = $(this).closest('[user-toolbar="selected-user"]').width();
     let dropdown = $(this).next(".dropdown-menu");
     if (!dropdown.hasClass("show")) {
