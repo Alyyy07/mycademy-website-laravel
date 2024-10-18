@@ -109,9 +109,9 @@
                                     <span class="sr-only">Toggle Dropdown</span>
                                 </button>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" delete-option button-url="{{ route('user-management.users.bulkDelete') }}">Delete 3 Users</a>
-                                    <a class="dropdown-item" deactivate-option button-url="{{ route('user-management.users.bulkSetStatus') }}">Deactivate 5 Users</a>
-                                    <a class="dropdown-item" activate-option button-url="{{ route('user-management.users.bulkSetStatus') }}">Activate 4 Users</a>
+                                    <a class="dropdown-item cursor-pointer" delete-option button-url="{{ route('user-management.users.bulkDelete') }}">Delete 3 Users</a>
+                                    <a class="dropdown-item cursor-pointer" deactivate-option button-url="{{ route('user-management.users.bulkSetStatus') }}">Deactivate 5 Users</a>
+                                    <a class="dropdown-item cursor-pointer" activate-option button-url="{{ route('user-management.users.bulkSetStatus') }}">Activate 4 Users</a>
                                 </div>
                             </div>
                             @include('admin.user-list.partials.export-modal')
