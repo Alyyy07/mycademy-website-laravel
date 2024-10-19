@@ -3,10 +3,13 @@
         "role": "administrator",
         "permissions": [
             "dashboard",
+            "user-management",
+            "user-management.user-list",
             "user-management.user-list-create",
             "user-management.user-list-read",
             "user-management.user-list-update",
             "user-management.user-list-delete",
+            "user-management.roles",
             "user-management.roles-create",
             "user-management.roles-read",
             "user-management.roles-update",
