@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
             'name' => 'admin',
             'email' => 'admin@gmail.com',
             'email_verified_at' => now(),
-            'password' => Hash::make('password'),
+            'password' => Hash::make('12345'),
             'remember_token' => Str::random(10),
         ]);
 
@@ -28,7 +28,7 @@ class UserSeeder extends Seeder
             'name' => 'camaba',
             'email' => 'camaba@gmail.com',
             'email_verified_at' => now(),
-            'password' => Hash::make('password'),
+            'password' => Hash::make('12345'),
             'remember_token' => Str::random(10),
         ]);
 

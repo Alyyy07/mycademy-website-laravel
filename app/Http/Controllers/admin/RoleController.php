@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
+    protected $modules = ['user-management','user-management.roles'];
     /**
      * Display a listing of the resource.
      */

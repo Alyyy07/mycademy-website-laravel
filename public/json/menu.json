@@ -2,11 +2,11 @@
     {
         "name": "Dashboard",
         "module": "dashboard",
-        "'slug": "dashboard",
+        "slug": "dashboard",
         "icon": "fa fa-dashboard",
         "url": "/dashboard",
         "order": 0,
-        "subMenu": []
+        "childrens": []
     },
     {
         "name": "User Management",
@@ -15,21 +15,23 @@
         "icon": "ki-outline ki-people",
         "url": "",
         "order": 1,
-        "subMenu": [
+        "childrens": [
             {
-                "name": "user List",
+                "name": "User List",
                 "module": "user-management.user-list",
                 "slug": "user-management-user-list",
                 "icon": "ki-outline ki-profile-user",
                 "url": "/user-management/users",
-                "order": 0
+                "order": 0,
+                "childrens": []
             },{
                 "name":"Roles",
                 "module":"user-management.roles",
                 "slug":"user-management-roles",
                 "icon":"ki-outline ki-medal-star",
                 "url":"/user-management/roles",
-                "order":1
+                "order":1,
+                "childrens": []
             }
         ]
     }
