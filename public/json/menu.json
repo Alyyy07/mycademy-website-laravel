@@ -17,7 +17,7 @@
         "order": 1,
         "childrens": [
             {
-                "name": "user List",
+                "name": "User List",
                 "module": "user-management.user-list",
                 "slug": "user-management-user-list",
                 "icon": "ki-outline ki-profile-user",
