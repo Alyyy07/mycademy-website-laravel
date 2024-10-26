@@ -11,7 +11,8 @@
                 </div>
             </div>
             <div class="modal-body px-5 my-7">
-                <form id="user-form" class="form" action="{{ $route }}" modal-action="{{ $action }}" enctype="multipart/form-data">
+                <form id="user-form" class="form" action="{{ $route }}" modal-action="{{ $action }}"
+                    enctype="multipart/form-data">
                     @if($action == 'edit')
                     @method('PUT')
                     @endif
@@ -56,10 +57,19 @@
                                 placeholder="example@domain.com" value="{{ $user->email ?? old('email') }}" />
                         </div>
                         <div class="fv-row mb-7">
-                            <label class="@if ($action == 'create') required @endif fs-6 mb-2">Password</label>
+                            <label class="@if ($action == 'create') required @endif fs-6 mb-2"> @if ($action ==
+                                'create') Password @else New Password (empty if not required) @endif</label>
                             <input type="password" name="password" class="form-control form-control-solid mb-3 mb-lg-0"
                                 value="{{ old('password') }}" />
                         </div>
+                        @if ($action == 'edit')
+                        <div class="fv-row mb-7">
+                            <label class="fs-6 mb-2"> Confirm Password</label>
+                            <input type="password" name="password_confirmation"
+                                class="form-control form-control-solid mb-3 mb-lg-0"
+                                value="{{ old('password_confirmation') }}" />
+                        </div>
+                        @endif
                         <div class="mb-5">
                             <label class="required fw-semibold fs-6 mb-5">Role</label>
                             @foreach ($roles as $role )
