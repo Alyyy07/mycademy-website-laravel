@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserListController extends Controller
 {
+    protected $modules = ['user-management','user-management.user-list'];
     /**
      * Display a listing of the resource.
      */
