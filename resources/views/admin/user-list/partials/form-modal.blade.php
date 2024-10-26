@@ -91,7 +91,7 @@
                         </div>
                     </div>
                     <div class="text-center pt-10">
-                        <button type="reset" class="btn btn-light me-3" modal-action="close">Discard</button>
+                        <button type="reset" class="btn btn-light me-3">Reset</button>
                         <button type="submit" class="btn btn-primary">
                             <span class="indicator-label">Submit</span>
                         </button>
