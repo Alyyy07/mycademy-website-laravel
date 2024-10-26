@@ -2,6 +2,7 @@
 
 <html lang="en">
 <!--begin::Head-->
+
 <head>
     <base href="../" />
     <title>Super Admin | E-RPL</title>
@@ -29,7 +30,69 @@
             @include('layouts.partials.admin.topbar')
             <div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
                 @include('layouts.partials.admin.sidebar')
-                @yield('content')
+                <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+                    <div class="d-flex flex-column">
+                        <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
+                            <div id="kt_app_toolbar_container" class="app-container container-xxl d-flex flex-stack">
+                                <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+                                    <h1
+                                        class="page-heading d-flex text-dark fw-bold text-capitalize fs-3 flex-column justify-content-center my-0">
+                                        {{ str_replace("-"," ",last(request()->segments())) }}
+                                    </h1>
+                                    @php
+                                    $menuItems = json_decode(file_get_contents(public_path('json/menu.json')),true);
+                                    $breadcrumbs = generateBreadCrumbs($menuItems,"/".request()->path());
+                                    @endphp
+
+                                    <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
+                                        @foreach ($breadcrumbs as $breadcrumb)
+                                        <li class="breadcrumb-item text-muted">
+                                            @if ($breadcrumb['url'])
+                                            <a href="{{ $breadcrumb['url'] }}" class="text-muted text-hover-primary">{{
+                                                $breadcrumb['name'] }}</a>
+                                            @else
+                                            <span>{{ $breadcrumb['name'] }}</span>
+                                            @endif
+                                        </li>
+                                        @if (!$loop->last)
+                                        <li class="breadcrumb-item">
+                                            <span class="bullet bg-gray-400 w-5px h-2px"></span>
+                                        </li>
+                                        @endif
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="kt_app_content" class="app-content flex-column-fluid">
+                        <div id="kt_app_content_container" class="app-container container-xxl">
+                            @yield('content')
+                        </div>
+                    </div>
+                </div>
+                <div id="kt_app_footer" class="app-footer">
+                    <div
+                        class="app-container container-fluid d-flex flex-column flex-md-row flex-center flex-md-stack py-3">
+                        <div class="text-dark order-2 order-md-1">
+                            <span class="text-muted fw-semibold me-1">2023&copy;</span>
+                            <a href="https://keenthemes.com" target="_blank"
+                                class="text-gray-800 text-hover-primary">Keenthemes</a>
+                        </div>
+                        <ul class="menu menu-gray-600 menu-hover-primary fw-semibold order-1">
+                            <li class="menu-item">
+                                <a href="https://keenthemes.com" target="_blank" class="menu-link px-2">About</a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="https://devs.keenthemes.com" target="_blank" class="menu-link px-2">Support</a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="https://1.envato.market/EA4JP" target="_blank"
+                                    class="menu-link px-2">Purchase</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
