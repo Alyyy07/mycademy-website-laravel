@@ -1,44 +1,41 @@
 <?php
 
+use App\Models\Setting\Menus;
+
 if (!function_exists('generateBreadCrumbs')) {
-    function generateBreadCrumbs($menuItems, $currentUrl, $isRoot = true)
+    function generateBreadCrumbs($currentUrl, $isRoot = true)
     {
         $breadcrumbs = [];
+        $dashboardUrl = route('dashboard', [], false);
 
-        // Tambahkan "Dashboard" di awal jika ini adalah level pertama dan bukan halaman dashboard
-        if ($isRoot && $currentUrl !== route('dashboard', [], false)) {
+        if ($isRoot && $currentUrl !== $dashboardUrl) {
             $breadcrumbs[] = [
                 'name' => 'Dashboard',
                 'url' => route('dashboard'),
             ];
         }
 
-        $found = false;
-        foreach ($menuItems as $menuItem) {
-            if ($menuItem['url'] === $currentUrl) {
-                $breadcrumbs[] = [
-                    'name' => $menuItem['name'],
-                    'url' => count($menuItem['childrens']) == 0 ? $menuItem['url'] : null,
-                ];
-                $found = true;
-                break;
-            }
+        // Cari item menu yang cocok dengan URL saat ini
+        $menu = Menus::where('url', $currentUrl)->where('is_active', '1')->first();
 
-            if (count($menuItem['childrens']) > 0) {
-                $breadcrumbs[] = [
-                    'name' => $menuItem['name'],
-                    'url' => null,
-                ];
+        if ($menu) {
+            $parents = [];
+            $parentMenu = $menu->parent;
 
-                $subBreadcrumbs = generateBreadCrumbs($menuItem['childrens'], $currentUrl, false);
-                if (!empty($subBreadcrumbs)) {
-                    $breadcrumbs = array_merge($breadcrumbs, $subBreadcrumbs);
-                    $found = true;
-                    break;
-                }
+            while ($parentMenu) {
+                $parents[] = [
+                    'name' => $parentMenu->name,
+                    'url' => $parentMenu->childrens->isEmpty() ? $parentMenu->url : null,
+                ];
+                $parentMenu = $parentMenu->parent;
             }
+            $breadcrumbs = array_merge($breadcrumbs, array_reverse($parents));
+            $breadcrumbs[] = [
+                'name' => $menu->name,
+                'url' => $menu->childrens->isEmpty() ? $menu->url : null,
+            ];
         }
 
-        return $found ? $breadcrumbs : [];
+        return $breadcrumbs;
     }
 }

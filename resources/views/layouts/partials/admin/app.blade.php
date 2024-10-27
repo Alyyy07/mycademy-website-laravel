@@ -40,8 +40,7 @@
                                         {{ str_replace("-"," ",last(request()->segments())) }}
                                     </h1>
                                     @php
-                                    $menuItems = json_decode(file_get_contents(public_path('json/menu.json')),true);
-                                    $breadcrumbs = generateBreadCrumbs($menuItems,"/".request()->path());
+                                    $breadcrumbs = generateBreadCrumbs("/" . request()->path());
                                     @endphp
 
                                     <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
