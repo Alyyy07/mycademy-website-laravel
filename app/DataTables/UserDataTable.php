@@ -33,6 +33,7 @@ class UserDataTable extends DataTable
                 $badgeColor = match ($name) {
                     'administrator' => 'success',
                     'camaba' => 'primary',
+                    default => 'info',
                 };
                 return "<span class='badge badge-light-$badgeColor text-capitalize'>$name</span>";
             })
