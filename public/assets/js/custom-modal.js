@@ -109,6 +109,9 @@ $("form").on("submit", function (e) {
                             $("table").attr("id")
                         ].ajax.reload();
                     }
+                    else{
+                        window.location.reload();
+                    }
                     $(".modal").modal("hide");
                     Swal.fire({
                         text: response.message,
@@ -188,34 +191,24 @@ $("form").on("submit", function (e) {
     });
 });
 
-const selectAllCheckbox = document.getElementById("kt_roles_select_all");
-const permissionCheckboxes = document.querySelectorAll(".permission-checkbox");
-
-selectAllCheckbox.addEventListener("change", function () {
-    if (selectAllCheckbox.checked) {
-        permissionCheckboxes.forEach((checkbox) => {
-            $(checkbox).prop("checked", true);
+$('#kt_roles_select_all').on('change', function () {
+    if ($(this).prop('checked')) {
+        $('.permission-checkbox').each(function () {
+            $(this).prop("checked", true);
         });
     } else {
-        permissionCheckboxes.forEach((checkbox) => {
-            $(checkbox).prop("checked", false);
-            checkbox.disabled = false;
+        $('.permission-checkbox').each(function () {
+            $(this).prop("checked", false);
+            $(this).prop("disabled", false);
         });
     }
 });
 
-permissionCheckboxes.forEach((checkbox) => {
-    checkbox.addEventListener("change", function () {
-        if (!checkbox.checked) {
-            selectAllCheckbox.checked = false;
-        }
-        if (
-            permissionCheckboxes.length ===
-            Array.from(permissionCheckboxes).filter(
-                (checkbox) => checkbox.checked
-            ).length
-        ) {
-            selectAllCheckbox.checked = true;
-        }
-    });
+$('.permission-checkbox').on('change', function () {
+    if (!$(this).prop('checked')) {
+        $('#kt_roles_select_all').prop('checked', false);
+    }
+    if ($('.permission-checkbox').length === $('.permission-checkbox:checked').length) {
+        $('#kt_roles_select_all').prop('checked', true);
+    }
 });
