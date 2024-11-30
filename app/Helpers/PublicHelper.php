@@ -39,3 +39,93 @@ if (!function_exists('generateBreadCrumbs')) {
         return $breadcrumbs;
     }
 }
+
+if (!function_exists('simplifyPermissions')) {
+    function simplifyPermissions($data)
+    {
+        $result = [];
+
+        // Iterasi data role
+        foreach ($data as $roleData) {
+            $groupedPermissions = [];
+
+            // Group permissions berdasarkan menu dan submenu
+            foreach ($roleData['permissions'] as $permission) {
+                $parts = explode('.', $permission);
+                $lastPart = end($parts);
+                $menu = in_array($lastPart, ['create', 'read', 'update', 'delete']) ? implode('.', array_slice($parts, 0, -1)) : $permission;
+                $action = in_array($lastPart, ['create', 'read', 'update', 'delete']) ? $lastPart : null;
+
+                // Kelompokkan aksi berdasarkan menu
+                $groupedPermissions[$menu][] = $action;
+            }
+
+            // Generate simplified permissions
+            $simplifiedPermissions = [];
+            foreach ($groupedPermissions as $menu => $actions) {
+                $uniqueActions = array_unique(array_filter($actions));  // Menghapus null dan aksi duplikat
+                $uniqueActions = mapActionsToNames($uniqueActions); // Memetakan nama aksi
+                sort($uniqueActions); // Urutkan untuk konsistensi
+
+                // Menentukan output berdasarkan jumlah aksi
+                $simplifiedPermissions[] = formatPermissionsName($uniqueActions, capitalize($menu));
+            }
+
+            $result[] = [
+                'role' => $roleData['role'],
+                'permissions' => $simplifiedPermissions,
+                'users' => $roleData['users'],
+            ];
+        }
+
+        return $result;
+    }
+}
+
+if (!function_exists('mapActionsToNames')) {
+    function mapActionsToNames($actions)
+    {
+        // Memetakan aksi ke nama yang lebih mudah dibaca
+        $map = [
+            'create' => 'store',
+            'read' => 'view',
+            'update' => 'edit',
+            'delete' => 'remove'
+        ];
+
+        return array_map(function($action) use ($map) {
+            return isset($map[$action]) ? $map[$action] : $action;
+        }, $actions);
+    }
+}
+
+if (!function_exists('formatPermissionsName')) {
+    function formatPermissionsName($actions, $menu)
+    {
+        $actionCount = count($actions);
+        
+        // Jika ada 4 aksi (Full Control)
+        if ($actionCount === 4) {
+            return "$menu Full Controls";
+        }
+
+        // Jika hanya ada 1 aksi
+        if ($actionCount === 1) {
+            return ucfirst($actions[0]) . " $menu";
+        }
+
+        // Jika ada lebih dari 1 aksi
+        $lastAction = array_pop($actions);
+        $actionsString = $actions ? implode(', ', array_map('ucfirst', $actions)) . " and " . ucfirst($lastAction) : ucfirst($lastAction);
+        return "$actionsString $menu";
+    }
+}
+
+if (!function_exists('capitalize')) {
+    function capitalize($string)
+    {
+        // Menggunakan ucwords dan mengganti simbol yang diinginkan
+        $string = str_replace(['_', '.'], [' ', ' - '], $string);
+        return ucwords($string);
+    }
+}

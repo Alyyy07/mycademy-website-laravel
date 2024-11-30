@@ -12,13 +12,28 @@ use Spatie\Permission\Models\Role as PermissionModelsRole;
 
 class RoleController extends Controller
 {
-    protected $modules = ['user-management', 'user-management.roles'];
+    protected $modules = ['user_management', 'user_management.roles'];
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('admin.role.index');
+        $roles = Roles::with('permissions', 'users')->get();
+        $roles = $roles->map(function ($role) {
+            $permissions = $role->permissions->pluck('name')->map(function ($permission) {
+                return str_replace('-', '.', $permission);
+            })->toArray();
+
+            return [
+                'role' => $role->name,
+                'permissions' => $permissions,
+                'users' => $role->users->count(),
+            ];
+        });
+        
+        $roles = simplifyPermissions($roles);
+
+        return view('admin.role.index', compact('roles'));
     }
 
     /**
