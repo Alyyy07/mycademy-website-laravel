@@ -10,15 +10,15 @@
     },
     {
         "name": "User Management",
-        "module": "user-management",
-        "slug": "user-management",
+        "module": "user_management",
+        "slug": "user_management",
         "icon": "ki-outline ki-people",
         "url": "",
         "order": 1,
         "childrens": [
             {
                 "name": "User List",
-                "module": "user-management.user-list",
+                "module": "user_management.user_list",
                 "slug": "user-management-user-list",
                 "icon": "ki-outline ki-profile-user",
                 "url": "/user-management/users",
@@ -26,7 +26,7 @@
                 "childrens": []
             },{
                 "name":"Roles",
-                "module":"user-management.roles",
+                "module":"user_management.roles",
                 "slug":"user-management-roles",
                 "icon":"ki-outline ki-medal-star",
                 "url":"/user-management/roles",
