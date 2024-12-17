@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserListController extends Controller
 {
-    protected $modules = ['user-management','user-management.user-list'];
+    protected $modules = ['user_management','user_management.user_list'];
     /**
      * Display a listing of the resource.
      */
@@ -97,12 +97,12 @@ class UserListController extends Controller
      */
     public function destroy(User $user)
     {
-        $user->delete();
         $user->syncRoles([]);
         $photoPath = $user->profile_photo;
         if ($photoPath) {
             unlink(storage_path("app/public/$photoPath"));
         }
+        $user->delete();
         return response()->json(['message' => 'User deleted successfully'], 200);
     }
 

@@ -72,6 +72,9 @@ $('[data-action="search"]').on(
 
 $('[data-action="edit"]').on("click", function (e) {
     let modalId = $(this).attr("modal-id");
+    if ($(modalId).length) {
+        $(modalId).remove();
+    }
     $.ajax({
         url: $(this).attr("button-url"),
         type: "GET",

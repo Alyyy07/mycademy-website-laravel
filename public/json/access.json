@@ -3,21 +3,35 @@
         "role": "administrator",
         "permissions": [
             "dashboard",
-            "user-management",
-            "user-management.user-list",
-            "user-management.user-list-create",
-            "user-management.user-list-read",
-            "user-management.user-list-update",
-            "user-management.user-list-delete",
-            "user-management.roles",
-            "user-management.roles-create",
-            "user-management.roles-read",
-            "user-management.roles-update",
-            "user-management.roles-delete"
+            "dashboard-create",
+            "dashboard-read",
+            "dashboard-update",
+            "dashboard-delete",
+            "user_management",
+            "user_management-create",
+            "user_management-read",
+            "user_management-update",
+            "user_management-delete",
+            "user_management.user_list",
+            "user_management.user_list-read",
+            "user_management.user_list-create",
+            "user_management.user_list-update",
+            "user_management.user_list-delete",
+            "user_management.roles",
+            "user_management.roles-create",
+            "user_management.roles-read",
+            "user_management.roles-delete",
+            "user_management.roles-update"
         ]
     },
     {
         "role": "camaba",
-        "permissions": ["dashboard"]
+        "permissions": [
+            "dashboard",
+            "dashboard-read",
+            "dashboard-update",
+            "dashboard-create",
+            "dashboard-delete"
+        ]
     }
 ]
