@@ -100,19 +100,6 @@ $("form").on("submit", function (e) {
                 processData: false,
                 contentType: false,
                 success: function (response) {
-                    if (
-                        $("table").length > 0 &&
-                        window.LaravelDataTables &&
-                        window.LaravelDataTables[$("table").attr("id")]
-                    ) {
-                        window.LaravelDataTables[
-                            $("table").attr("id")
-                        ].ajax.reload();
-                    }
-                    else{
-                        window.location.reload();
-                    }
-                    $(".modal").modal("hide");
                     Swal.fire({
                         text: response.message,
                         icon: "success",
@@ -121,12 +108,27 @@ $("form").on("submit", function (e) {
                         customClass: {
                             confirmButton: "btn btn-primary",
                         },
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            if (
+                                $("table").length > 0 &&
+                                window.LaravelDataTables &&
+                                window.LaravelDataTables[$("table").attr("id")]
+                            ) {
+                                window.LaravelDataTables[
+                                    $("table").attr("id")
+                                ].ajax.reload();
+                            } else {
+                                window.location.reload();
+                            }
+                            $(".modal").modal("hide");
+                            form[0].reset();
+                            $(".image-input-wrapper").prop(
+                                "style",
+                                "background-image: url(storage/image/profile-photo/blank.png)"
+                            );
+                        }
                     });
-                    form[0].reset();
-                    $(".image-input-wrapper").prop(
-                        "style",
-                        "background-image: url(storage/image/profile-photo/blank.png)"
-                    );
                 },
                 error: function (xhr) {
                     if (xhr.status == 422) {
@@ -191,24 +193,27 @@ $("form").on("submit", function (e) {
     });
 });
 
-$('#kt_roles_select_all').on('change', function () {
-    if ($(this).prop('checked')) {
-        $('.permission-checkbox').each(function () {
+$("#kt_roles_select_all").on("change", function () {
+    if ($(this).prop("checked")) {
+        $(".permission-checkbox").each(function () {
             $(this).prop("checked", true);
         });
     } else {
-        $('.permission-checkbox').each(function () {
+        $(".permission-checkbox").each(function () {
             $(this).prop("checked", false);
             $(this).prop("disabled", false);
         });
     }
 });
 
-$('.permission-checkbox').on('change', function () {
-    if (!$(this).prop('checked')) {
-        $('#kt_roles_select_all').prop('checked', false);
+$(".permission-checkbox").on("change", function () {
+    if (!$(this).prop("checked")) {
+        $("#kt_roles_select_all").prop("checked", false);
     }
-    if ($('.permission-checkbox').length === $('.permission-checkbox:checked').length) {
-        $('#kt_roles_select_all').prop('checked', true);
+    if (
+        $(".permission-checkbox").length ===
+        $(".permission-checkbox:checked").length
+    ) {
+        $("#kt_roles_select_all").prop("checked", true);
     }
 });

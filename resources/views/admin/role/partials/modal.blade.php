@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered mw-750px">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="fw-bold">Add a Role</h2>
+                <h2 class="fw-bold">@if ($action == 'create') Create @else Edit @endif a Role</h2>
                 <div class="btn btn-icon btn-sm btn-active-icon-primary" modal-action="close">
                     <i class="ki-duotone ki-cross fs-1">
                         <span class="path1"></span>
@@ -17,11 +17,12 @@
                     @endif
                     <div class="d-flex flex-column scroll-y me-n7 pe-7 ps-1">
                         <div class="fv-row mb-10">
+                            <input type="hidden" name="id" value="{{ $role->id }}">
                             <label class="fs-5 fw-bold form-label mb-2">
                                 <span class="required">Role name</span>
                             </label>
                             <input class="form-control form-control-solid" placeholder="Enter a role name"
-                                name="role_name" />
+                                name="name" @if ($action == 'edit') value="{{ $role->name }}" @endif>
                         </div>
                         <div class="fv-row">
                             <label class="fs-5 fw-bold form-label mb-2">Role Permissions</label>
@@ -41,8 +42,12 @@
                                                 </span>
                                             </td>
                                             <td>
+                                                @php
+                                                    $allPermissions = Spatie\Permission\Models\Permission::all();
+                                                @endphp
                                                 <label class="form-check form-check-custom form-check-solid me-9">
-                                                    <input class="form-check-input" type="checkbox"
+                                                    <input class="form-check-input" type="checkbox" @if ($action == 'edit' && $role->hasAllPermissions($allPermissions) ) checked
+                                                    @endif
                                                         id="kt_roles_select_all" />
                                                     <span class="form-check-label" for="kt_roles_select_all">Select
                                                         all</span>
@@ -61,7 +66,8 @@
                                                     <label
                                                         class="form-check form-check-sm form-check-custom form-check-solid me-5 me-lg-20">
                                                         <input class="form-check-input permission-checkbox"
-                                                            type="checkbox" value="{{ $menu->module . '-' . $permission }}"
+                                                            type="checkbox" value="{{ $menu->module . '-' . $permission }}" @if ($action == 'edit' && $role->hasPermissionTo($menu->module . '-' . $permission)) checked
+                                                            @endif
                                                             name="permissions[]" />
                                                         <span class="form-check-label">{{ ucfirst($permission) }}</span>
                                                     </label>
@@ -78,7 +84,8 @@
                                                     <label
                                                         class="form-check form-check-sm form-check-custom form-check-solid me-5 me-lg-20">
                                                         <input class="form-check-input permission-checkbox"
-                                                            type="checkbox" value="{{ $submenu->module . '-' . $permission }}"
+                                                            type="checkbox" value="{{ $submenu->module . '-' . $permission }}" @if ($action == 'edit' && $role->hasPermissionTo($submenu->module . '-' . $permission)) checked
+                                                            @endif
                                                             name="permissions[]" />
                                                         <span class="form-check-label">{{ ucfirst($permission) }}</span>
                                                     </label>

@@ -1,6 +1,6 @@
 @extends('layouts.partials.admin.app')
 @section('content')
-<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-5 g-xl-9">
+<div class="role-card-container row row-cols-1 row-cols-md-2 row-cols-xl-3 g-5 g-xl-9">
     @foreach ($roles as $role)
     <div class="col-md-4">
         <div class="card card-flush h-md-100">
@@ -16,7 +16,7 @@
                     <div class="d-flex align-items-center py-2">
                         <span class="bullet bg-primary me-3"></span>{{ $permission }}
                     </div>
-                    @if($loop->iteration >= 5)
+                    @if($loop->iteration >= 3 && $loop->remaining > 1)
                     <div class="d-flex align-items-center py-2">
                         <span class="bullet bg-primary me-3 italic"></span> and {{ $loop->remaining }} more...
                     </div>
@@ -25,9 +25,17 @@
                     @endforeach
                 </div>
             </div>
-            <div class="card-footer flex-wrap pt-0 justify-content-center d-flex">
-                <button type="button" class="btn btn-light btn-active-light-primary my-1" data-bs-toggle="modal"
-                    data-bs-target="#kt_modal_update_role">Edit Role</button>
+            <div class="card-footer flex-wrap pt-0 gap-3 justify-content-center d-flex">
+                @can($globalModule['delete'])
+                <button type="button" class="btn btn-active-danger btn-light-danger my-1" button-action="delete"
+                    button-url="{{ route('user-management.roles.destroy',$role['id']) }}"> Delete
+                    Role</button>
+                @endcan
+                @can($globalModule['update'])
+                <button type="button" class="btn btn-warning btn-active-light-warning my-1" button-action="show"
+                    modal-id="#role-modal" button-url="{{ route('user-management.roles.edit',$role['id']) }}"> Edit
+                    Role</button>
+                @endcan
             </div>
         </div>
     </div>
@@ -45,9 +53,3 @@
     </div>
 </div>
 @endsection
-
-@push('scripts')
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"
-    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-<script src="{{ asset('assets/js/custom.js') }}"></script>
-@endpush

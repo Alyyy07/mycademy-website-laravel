@@ -29,7 +29,7 @@ class UserDataTable extends DataTable
                 return view('admin.user-list.partials.action', compact('editRoute', 'deleteRoute'));
             })
             ->editColumn('roles.name', function ($user) {
-                $name = $user->roles->pluck('name')->first();
+                $name = $user->roles?->pluck('name')->first() ?? 'No Role';
                 $badgeColor = match ($name) {
                     'administrator' => 'success',
                     'camaba' => 'primary',

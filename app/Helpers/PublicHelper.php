@@ -72,6 +72,7 @@ if (!function_exists('simplifyPermissions')) {
             }
 
             $result[] = [
+                'id' => $roleData['id'],
                 'role' => $roleData['role'],
                 'permissions' => $simplifiedPermissions,
                 'users' => $roleData['users'],

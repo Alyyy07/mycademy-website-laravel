@@ -22,7 +22,8 @@ class RoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'role_name' => 'required|string|max:255|unique:roles,name',
+            'id'=> 'nullable|exists:roles,id',
+            'name' => 'required|string|max:255|unique:roles,name' . ($this->isMethod('PUT') ? ",$this->id" : ''),
             'permissions' => 'required',
         ];
     }
