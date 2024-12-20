@@ -84,11 +84,11 @@
         <!--end::Menu wrapper-->
         <!--begin::Toolbar-->
         <div class="flex-equal text-end ms-1">
-            @if (auth()->check())
+            @auth
                 <a href="{{ route('dashboard') }}" class="btn btn-success">Dashboard</a>
             @else
             <a href="{{ route('login') }}" class="btn btn-success">Sign In</a>
-            @endif
+            @endauth
         </div>
         <!--end::Toolbar-->
     </div>
