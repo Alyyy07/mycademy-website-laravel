@@ -3,14 +3,20 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
+use Lab404\Impersonate\Services\ImpersonateManager;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Support\Str;
+use Lab404\Impersonate\Models\Impersonate;
 
 class User extends Authenticatable
 {
-    use HasFactory, HasRoles, Notifiable;
+    use HasFactory, HasRoles, Notifiable, HasUuids,Impersonate;
 
     /**
      * The attributes that are mass assignable.
@@ -31,6 +37,7 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+
     /**
      * Get the attributes that should be cast.
      *
@@ -42,5 +49,13 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    public function getImpersonator(){
+        return app(ImpersonateManager::class)->getImpersonator();   
+    }
+
+    public function canImpersonate()
+    {
+        return $this->hasRole('administrator');
     }
 }

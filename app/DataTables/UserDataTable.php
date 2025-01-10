@@ -26,7 +26,9 @@ class UserDataTable extends DataTable
             ->addColumn('action', function (User $user) {
                 $editRoute = route('user-management.users.edit', $user->id);
                 $deleteRoute = route('user-management.users.destroy', $user->id);
-                return view('admin.user-list.partials.action', compact('editRoute', 'deleteRoute'));
+                $impersonateRoute = route('user-management.impersonate', $user->id);
+                $userId = $user->id;
+                return view('admin.user-list.partials.action', compact('editRoute', 'deleteRoute', 'impersonateRoute','userId'));
             })
             ->editColumn('roles.name', function ($user) {
                 $name = $user->roles?->pluck('name')->first() ?? 'No Role';
@@ -68,7 +70,7 @@ class UserDataTable extends DataTable
                 if ($user->is_online) {
                     return '<span class="badge badge-success fw-bold"><span class="badge badge-circle w-6px h-6px me-1" style="background-color:white"></span>Online</span>';
                 }
-                $last_login = $user->last_login_at ? Carbon::parse($user->last_login_at)->diffForHumans() : "Never";
+                $last_login = $user->last_login_at ? Carbon::parse($user->last_login_at)->diffForHumans() : "Belum Login";
                 return "<span class='badge badge-light fw-bold'>$last_login</span>";
             })
             ->rawColumns(['roles.name', 'name', 'is_active', 'last_login_at', 'action', 'checkbox']);

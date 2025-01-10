@@ -8,25 +8,31 @@
             data-kt-menu="true">
 
             @can($globalModule['update'])
-                <div class="menu-item px-3" data-action="edit" button-url="{{ $editRoute }}" modal-id="#user-modal">
-                    <a class="menu-link px-3">Edit</a>
-                </div>
+            <div class="menu-item px-3" data-action="edit" button-url="{{ $editRoute }}" modal-id="#user-modal">
+                <a class="menu-link px-3">Edit</a>
+            </div>
             @else
-                <div class="menu-item px-3">
-                    <a class="menu-link px-3 text-muted" style="pointer-events: none; opacity: 0.5;">Edit</a>
-                </div>
+            <div class="menu-item px-3">
+                <a class="menu-link px-3 text-muted" style="pointer-events: none; opacity: 0.5;">Edit</a>
+            </div>
             @endcan
 
             @can($globalModule['delete'])
-                <div class="menu-item px-3" data-action="delete" button-url="{{ $deleteRoute }}">
-                    <a class="menu-link px-3" data-kt-users-table-filter="delete_row">Delete</a>
-                </div>
+            <div class="menu-item px-3" data-action="delete" button-url="{{ $deleteRoute }}">
+                <a class="menu-link px-3" data-kt-users-table-filter="delete_row">Delete</a>
+            </div>
             @else
-                <div class="menu-item px-3">
-                    <a class="menu-link px-3 text-muted" style="pointer-events: none; opacity: 0.5;">Delete</a>
-                </div>
+            <div class="menu-item px-3">
+                <a class="menu-link px-3 text-muted" style="pointer-events: none; opacity: 0.5;">Delete</a>
+            </div>
             @endcan
-
+            @if ($userId != auth()->id())
+            @canImpersonate()
+            <div class="menu-item px-3">
+                <a class="menu-link px-3" href={{ $impersonateRoute}}>Impersonate</a>
+            </div>
+            @endCanImpersonate
+            @endif
         </div>
     </div>
 </div>
