@@ -285,11 +285,15 @@
                         <!--end::Menu item-->
                         <!--begin::Menu item-->
                         <div class="menu-item px-5">
+                            @impersonating($guard='web')
+                            <a href="{{ route('user-management.impersonate.leave') }}" class="menu-link px-5">Leave Impersonation</a>
+                            @else
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();"
                                 class="menu-link px-5">Sign Out</a>
                             </form>
+                            @endImpersonating
                         </div>
                         <!--end::Menu item-->
                     </div>
