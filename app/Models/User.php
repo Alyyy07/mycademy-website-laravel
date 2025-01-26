@@ -10,13 +10,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Lab404\Impersonate\Services\ImpersonateManager;
+use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Str;
 use Lab404\Impersonate\Models\Impersonate;
 
 class User extends Authenticatable
 {
-    use HasFactory, HasRoles, Notifiable, HasUuids,Impersonate;
+    use HasApiTokens,HasFactory, HasRoles, Notifiable, HasUuids,Impersonate;
 
     /**
      * The attributes that are mass assignable.
