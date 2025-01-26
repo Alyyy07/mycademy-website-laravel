@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserManagement\RoleRequest;
 use App\Models\Roles;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role as PermissionModelsRole;
 
@@ -92,7 +93,9 @@ class RoleController extends Controller
 
     private function getSimplifiedRole()
     {
-        $rawRoles = Roles::with('permissions', 'users')->get();
+        $rawRoles = Cache::rememberForever('roles_with_permissions', function () {
+            return Roles::with('permissions', 'users')->get();
+        });
         $integratedRoles = $rawRoles->map(function ($role) {
             $permissions = $role->permissions->pluck('name')->map(function ($permission) {
                 return str_replace('-', '.', $permission);

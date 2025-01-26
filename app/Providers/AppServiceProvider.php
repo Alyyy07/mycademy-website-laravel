@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\Roles;
+use App\Models\Setting\Menus;
+use App\Models\User;
 use Illuminate\Support\ServiceProvider;
+use Spatie\Permission\Contracts\Role;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +23,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        User::observe(\App\Observers\UserObserver::class);
+        Roles::observe(\App\Observers\RoleObserver::class);
+        Menus::observe(\App\Observers\MenuObserver::class);
     }
 }

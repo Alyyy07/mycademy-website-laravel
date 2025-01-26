@@ -8,11 +8,13 @@ use App\Http\Requests\UserManagement\UserRequest;
 use App\Models\Roles;
 use App\Models\User;
 use GuzzleHttp\Psr7\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 
 class UserListController extends Controller
 {
-    protected $modules = ['user_management','user_management.user_list'];
+
+    protected $modules = ['user_management', 'user_management.user_list'];
     /**
      * Display a listing of the resource.
      */
@@ -26,11 +28,13 @@ class UserListController extends Controller
      */
     public function create()
     {
-        $roles = Roles::all();
+        $roles = Cache::rememberForever('roles', function () {
+            return Roles::all();
+        });
         $user = new User();
         $action = 'create';
         $route = route('user-management.users.store');
-        return view('admin.user-list.partials.form-modal', compact('roles', 'route','user', 'action'));
+        return view('admin.user-list.partials.form-modal', compact('roles', 'route', 'user', 'action'));
     }
 
     /**
@@ -48,6 +52,7 @@ class UserListController extends Controller
         }
         $user = User::create($data);
         $user->assignRole($request->role);
+
         return response()->json(['message' => 'User created successfully'], 200);
     }
 
@@ -61,16 +66,18 @@ class UserListController extends Controller
      */
     public function edit(User $user)
     {
-        $roles = Roles::all();
+        $roles = Cache::rememberForever('roles', function () {
+            return Roles::all();
+        });
         $action = 'edit';
         $route = route('user-management.users.update', $user->id);
-        return view('admin.user-list.partials.form-modal', compact('roles', 'route', 'user','action'));
+        return view('admin.user-list.partials.form-modal', compact('roles', 'route', 'user', 'action'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UserRequest $request,User $user)
+    public function update(UserRequest $request, User $user)
     {
         $data = $request->all();
         if ($request->hasFile('profile_photo')) {
@@ -84,7 +91,7 @@ class UserListController extends Controller
         }
         if ($request->password) {
             $data['password'] = Hash::make($request->password);
-        }else{
+        } else {
             unset($data['password']);
         }
         $user->update($data);
