@@ -1,42 +1,47 @@
 <?php
 
 use App\Models\Setting\Menus;
+use Illuminate\Support\Facades\Cache;
 
 if (!function_exists('generateBreadCrumbs')) {
     function generateBreadCrumbs($currentUrl, $isRoot = true)
     {
-        $breadcrumbs = [];
-        $dashboardUrl = route('dashboard', [], false);
+        $cacheKey = 'breadcrumbs_' . md5($currentUrl);
 
-        if ($isRoot && $currentUrl !== $dashboardUrl) {
-            $breadcrumbs[] = [
-                'name' => 'Dashboard',
-                'url' => route('dashboard'),
-            ];
-        }
+        return Cache::remember($cacheKey, 60 * 60 * 24 * 7, function () use ($currentUrl, $isRoot) {
+            $breadcrumbs = [];
+            $dashboardUrl = route('dashboard', [], false);
 
-        // Cari item menu yang cocok dengan URL saat ini
-        $menu = Menus::where('url', $currentUrl)->where('is_active', '1')->first();
-
-        if ($menu) {
-            $parents = [];
-            $parentMenu = $menu->parent;
-
-            while ($parentMenu) {
-                $parents[] = [
-                    'name' => $parentMenu->name,
-                    'url' => $parentMenu->childrens->isEmpty() ? $parentMenu->url : null,
+            if ($isRoot && $currentUrl !== $dashboardUrl) {
+                $breadcrumbs[] = [
+                    'name' => 'Dashboard',
+                    'url' => route('dashboard'),
                 ];
-                $parentMenu = $parentMenu->parent;
             }
-            $breadcrumbs = array_merge($breadcrumbs, array_reverse($parents));
-            $breadcrumbs[] = [
-                'name' => $menu->name,
-                'url' => $menu->childrens->isEmpty() ? $menu->url : null,
-            ];
-        }
 
-        return $breadcrumbs;
+            // Cari item menu yang cocok dengan URL saat ini
+            $menu = Menus::where('url', $currentUrl)->where('is_active', '1')->first();
+
+            if ($menu) {
+                $parents = [];
+                $parentMenu = $menu->parent;
+
+                while ($parentMenu) {
+                    $parents[] = [
+                        'name' => $parentMenu->name,
+                        'url' => $parentMenu->childrens->isEmpty() ? $parentMenu->url : null,
+                    ];
+                    $parentMenu = $parentMenu->parent;
+                }
+                $breadcrumbs = array_merge($breadcrumbs, array_reverse($parents));
+                $breadcrumbs[] = [
+                    'name' => $menu->name,
+                    'url' => $menu->childrens->isEmpty() ? $menu->url : null,
+                ];
+            }
+
+            return $breadcrumbs;
+        });
     }
 }
 
@@ -94,7 +99,7 @@ if (!function_exists('mapActionsToNames')) {
             'delete' => 'remove'
         ];
 
-        return array_map(function($action) use ($map) {
+        return array_map(function ($action) use ($map) {
             return isset($map[$action]) ? $map[$action] : $action;
         }, $actions);
     }
@@ -104,7 +109,7 @@ if (!function_exists('formatPermissionsName')) {
     function formatPermissionsName($actions, $menu)
     {
         $actionCount = count($actions);
-        
+
         // Jika ada 4 aksi (Full Control)
         if ($actionCount === 4) {
             return "$menu Full Controls";

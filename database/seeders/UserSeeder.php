@@ -24,14 +24,32 @@ class UserSeeder extends Seeder
 
         $admin->assignRole('administrator');
 
-        $camaba = User::create([
-            'name' => 'camaba',
-            'email' => 'camaba@gmail.com',
+        $mentor = User::create([
+            'name' => 'mentor',
+            'email' => 'mentor@gmail.com',
+            'email_verified_at' => null,
+            'password' => Hash::make('12345'),
+            'remember_token' => Str::random(10),
+        ]);
+
+        $mentor->assignRole('mentor');
+
+        $siswa = User::create([
+            'name' => 'siswa',
+            'email' => 'siswa@gmail.com',
             'email_verified_at' => now(),
             'password' => Hash::make('12345'),
             'remember_token' => Str::random(10),
         ]);
 
-        $camaba->assignRole('camaba');
+        $siswa->assignRole('siswa');
+
+        User::create([
+            'name' => 'user',
+            'email' => 'user@gmail.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('12345'),
+            'remember_token' => Str::random(10),
+        ]);
     }
 }

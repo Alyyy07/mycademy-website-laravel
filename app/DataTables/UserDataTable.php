@@ -5,6 +5,8 @@ namespace App\DataTables;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
@@ -28,14 +30,15 @@ class UserDataTable extends DataTable
                 $deleteRoute = route('user-management.users.destroy', $user->id);
                 $impersonateRoute = route('user-management.impersonate', $user->id);
                 $userId = $user->id;
-                return view('admin.user-list.partials.action', compact('editRoute', 'deleteRoute', 'impersonateRoute','userId'));
+                return view('admin.user-list.partials.action', compact('editRoute', 'deleteRoute', 'impersonateRoute', 'userId'));
             })
             ->editColumn('roles.name', function ($user) {
                 $name = $user->roles?->pluck('name')->first() ?? 'No Role';
                 $badgeColor = match ($name) {
                     'administrator' => 'success',
-                    'camaba' => 'primary',
-                    default => 'info',
+                    'mentor' => 'primary',
+                    'siswa' => 'info',
+                    default => 'dark'
                 };
                 return "<span class='badge badge-light-$badgeColor text-capitalize'>$name</span>";
             })
@@ -47,14 +50,14 @@ class UserDataTable extends DataTable
             ->editColumn('name', function (User $user) {
                 $photo_path = $user->profile_photo ?? 'image/profile-photo/blank.png';
                 return "<div class='symbol symbol-circle symbol-50px overflow-hidden me-3'>
-																	<div class='symbol-label'>
-																		<img src='" . asset("storage/$photo_path") . "' alt='$user->name' class='w-100' />
-																	</div>
-															</div>
-															<div class='d-flex flex-column'>
-																<p class='text-gray-800 mb-1 fw-bold text-capitalize'>$user->name</p>
-																<span>$user->email</span>
-															</div>";
+                            <div class='symbol-label'>
+                                <img src='" . asset("storage/$photo_path") . "' alt='$user->name' class='w-100' />
+                            </div>
+                        </div>
+                        <div class='d-flex flex-column'>
+                            <p class='text-gray-800 mb-1 fw-bold text-capitalize'>$user->name</p>
+                            <span>$user->email</span>
+                        </div>";
             })
             ->editColumn('is_active', function (User $user) {
                 $checkedLabel = $user->is_active ? 'Active' : 'Inactive';
@@ -81,7 +84,13 @@ class UserDataTable extends DataTable
      */
     public function query(User $model): QueryBuilder
     {
-        return $model->newQuery()->with('roles');
+        $users = Cache::rememberForever('users_with_roles', function () use ($model) {
+            return $model->newQuery()->with('roles')->get()->toArray();
+        });
+
+        Log::info('Users from cache:', $users);
+
+        return $model->newQuery()->whereIn('id', array_column($users, 'id'))->with('roles');
     }
 
     /**
