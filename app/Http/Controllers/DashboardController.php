@@ -10,9 +10,6 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
 
-        return match ($request->user()->roles->first()->name) {
-            'administrator' => view('admin.index'),
-            default => view('dashboard'),
-        };
+        return view('admin.index');
     }
 }

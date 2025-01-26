@@ -25,7 +25,7 @@
         ]
     },
     {
-        "role": "camaba",
+        "role": "mentor",
         "permissions": [
             "dashboard",
             "dashboard-read",
@@ -33,5 +33,9 @@
             "dashboard-create",
             "dashboard-delete"
         ]
+    },
+    {
+        "role": "siswa",
+        "permissions": []
     }
 ]
