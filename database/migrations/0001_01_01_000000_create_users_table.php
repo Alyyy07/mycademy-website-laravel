@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('is_online')->default(0);
             $table->string('is_active')->default(1);
             $table->timestamp('last_login_at')->nullable();
+            $table->string('verification_code')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
