@@ -1,52 +1,21 @@
 <?php
 
-use App\Http\Resources\UserResource;
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\Api\AuthApiController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
-    Route::get('/users', function (Request $request) {
-        return UserResource::collection(User::all());
-    });
-
-    Route::get('logout', function (Request $request) {
-        $request->user()->currentAccessToken()->delete();
-    
-        return response()->json(['message' => 'Logged out']);
-    });
+Route::prefix('auth')->middleware('auth:sanctum')->group(function () {
+    Route::get('logout',[AuthApiController::class, 'logout']);
 });
 
-Route::post('login', function (Request $request) {
-    $user = User::where('email', $request->email)->first();
+Route::middleware(['checkClientId', 'throttle:60,1'])->group(function () {
+    Route::post('login', [AuthApiController::class, 'login']);
 
-    if ($user && Hash::check($request->password, $user->password)) {
-        $token = $user->createToken('MyCademy')->plainTextToken;
+    Route::post('register',[AuthApiController::class, 'register']);
 
-        return response()->json([
-            'token' => $token,
-        ]);
-    }
+    Route::get('verify-email',[AuthApiController::class, 'sendVerificationEmail']);
 
-    return response()->json(['message' => 'Unauthorized'], 401);
-});
+    Route::post('verify-email', [AuthApiController::class, 'verifyEmail']);
 
-Route::post('register', function (Request $request) {
-    // Validasi data pengguna
-    $request->validate([
-        'fullName' => 'required',
-        'email' => 'required|email',
-        'password' => 'required',
-    ]);
-
-    // Membuat pengguna baru
-    $user = new User();
-    $user->name = $request->fullName;
-    $user->email = $request->email;
-    $user->password = Hash::make($request->password);
-    $user->save();
-
-    return response()->json(['message' => 'User created'], 201);
+    Route::get('verification-code', [AuthApiController::class, 'getVerificationCode']);
 });

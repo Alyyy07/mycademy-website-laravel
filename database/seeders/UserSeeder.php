@@ -27,8 +27,8 @@ class UserSeeder extends Seeder
         $mentor = User::create([
             'name' => 'mentor',
             'email' => 'mentor@gmail.com',
-            'email_verified_at' => null,
-            'password' => Hash::make('12345'),
+            'email_verified_at' => now(),
+            'password' => Hash::make('password'),
             'remember_token' => Str::random(10),
         ]);
 
@@ -38,17 +38,28 @@ class UserSeeder extends Seeder
             'name' => 'siswa',
             'email' => 'siswa@gmail.com',
             'email_verified_at' => now(),
-            'password' => Hash::make('12345'),
+            'password' => Hash::make('password'),
             'remember_token' => Str::random(10),
         ]);
 
         $siswa->assignRole('siswa');
 
+        $siswa2 = User::create([
+            'name' => 'siswa2',
+            'email' => 'siswa2@gmail.com',
+            'verification_code' => '123456',
+            'email_verified_at' => null,
+            'password' => Hash::make('password'),
+            'remember_token' => Str::random(10),
+        ]);
+
+        $siswa2->assignRole('siswa');
+
         User::create([
             'name' => 'user',
             'email' => 'user@gmail.com',
-            'email_verified_at' => now(),
-            'password' => Hash::make('12345'),
+            'email_verified_at' => null,
+            'password' => Hash::make('password'),
             'remember_token' => Str::random(10),
         ]);
     }

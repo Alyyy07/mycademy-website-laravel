@@ -5,6 +5,7 @@ namespace App\DataTables;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\EloquentDataTable;
@@ -26,10 +27,10 @@ class UserDataTable extends DataTable
     {
         return (new EloquentDataTable($query))
             ->addColumn('action', function (User $user) {
-                $editRoute = route('user-management.users.edit', $user->id);
-                $deleteRoute = route('user-management.users.destroy', $user->id);
-                $impersonateRoute = route('user-management.impersonate', $user->id);
                 $userId = $user->id;
+                $editRoute = route('user-management.users.edit', $userId);
+                $deleteRoute = route('user-management.users.destroy', $userId);
+                $impersonateRoute = route('user-management.impersonate', $userId);
                 return view('admin.user-list.partials.action', compact('editRoute', 'deleteRoute', 'impersonateRoute', 'userId'));
             })
             ->editColumn('roles.name', function ($user) {
@@ -43,6 +44,9 @@ class UserDataTable extends DataTable
                 return "<span class='badge badge-light-$badgeColor text-capitalize'>$name</span>";
             })
             ->editColumn('checkbox', function (User $user) {
+                if($user->id === Auth::id()) {
+                    return '';
+                }   
                 return "<div class='form-check form-check-sm form-check-custom form-check-solid'>
                 <input class='form-check-input' check-target='user' type='checkbox' value='{$user->id}' />
             </div>";
@@ -62,10 +66,11 @@ class UserDataTable extends DataTable
             ->editColumn('is_active', function (User $user) {
                 $checkedLabel = $user->is_active ? 'Active' : 'Inactive';
                 $isChecked = $user->is_active ? 'checked' : '';
+                $isDisabled = $user->id === Auth::id() ? 'disabled' : '';
                 $setStatusRoute = route('user-management.users.setStatus', $user->id);
 
                 return "<div class='form-check form-switch form-check-custom form-check-success form-check-solid' radio-action='set-status' button-url='$setStatusRoute'>
-                <input class='form-check-input h-20px w-35px' is-active-radio type='checkbox' value='$user->id' $isChecked  id='kt_flexSwitchCustomDefault_$user->id'/>
+                <input class='form-check-input h-20px w-35px' is-active-radio type='checkbox' value='$user->id' $isChecked $isDisabled id='kt_flexSwitchCustomDefault_$user->id'/>
                 <label class='form-check-label' for='kt_flexSwitchCustomDefault_$user->id'>$checkedLabel</label>
                 </div>";
             })
