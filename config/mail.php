@@ -49,6 +49,11 @@ return [
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
         ],
 
+        'from'=> [
+            'address' => env('MAIL_FROM_ADDRESS', 'mycademy07@gmail.com'),
+            'name' => env('MAIL_FROM_NAME', 'MyCademy'),
+        ],
+
         'ses' => [
             'transport' => 'ses',
         ],
