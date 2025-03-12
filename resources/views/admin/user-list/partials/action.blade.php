@@ -16,17 +16,23 @@
                 <a class="menu-link px-3 text-muted" style="pointer-events: none; opacity: 0.5;">Edit</a>
             </div>
             @endcan
+            <div class="menu-item px-3" @can($globalModule['delete']) @if ($user->id != auth()->id())
+                data-action="delete" button-url="{{ $deleteRoute }}"
+                @else
+                style="pointer-events: none; opacity: 0.5;"
+                @endif
+                @else
+                style="pointer-events: none; opacity: 0.5;"
+                @endcan
+                >
+                <a class="menu-link px-3" @cannot($globalModule['delete']) style="pointer-events: none; opacity: 0.5;"
+                    @endcannot @if($user->id == auth()->id()) style="pointer-events: none; opacity: 0.5;" @endif
+                    >
+                    Delete
+                </a>
+            </div>
 
-            @can($globalModule['delete'] && $userId != auth()->id())
-            <div class="menu-item px-3"  data-action="delete" button-url="{{ $deleteRoute }}">
-                <a class="menu-link px-3" data-kt-users-table-filter="delete_row">Delete</a>
-            </div>
-            @else
-            <div class="menu-item px-3">
-                <a class="menu-link px-3 text-muted" style="pointer-events: none; opacity: 0.5;">Delete</a>
-            </div>
-            @endcan
-            @if ($userId != auth()->id())
+            @if($user->id != auth()->id())
             @canImpersonate()
             <div class="menu-item px-3">
                 <a class="menu-link px-3" href={{ $impersonateRoute}}>Impersonate</a>
