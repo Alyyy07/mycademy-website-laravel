@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\admin;
 
+use App\Events\RoleUpdated;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserManagement\RoleRequest;
 use App\Models\Roles;
@@ -16,6 +17,7 @@ class RoleController extends Controller
      * Display a listing of the resource.
      */
 
+    
     public function index()
     {
         $roles = $this->getSimplifiedRole();
@@ -46,6 +48,7 @@ class RoleController extends Controller
             $permissions = $request->permissions;
             $role->syncPermissions($permissions);
             DB::commit();
+            event(new RoleUpdated());
             return response()->json(['type' => 'roles', 'message' => 'Role created successfully'], 200);
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -84,6 +87,7 @@ class RoleController extends Controller
 
             $rolePermission->syncPermissions($result);
             DB::commit();
+            event(new RoleUpdated());
             return response()->json(['type' => 'roles', 'message' => 'Role updated successfully'], 200);
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -103,7 +107,7 @@ class RoleController extends Controller
 
             return [
                 'id' => $role->id,
-                'role' => $role->name,
+                'role' => str_replace("-"," ",$role->name),
                 'permissions' => $permissions,
                 'users' => $role->users->count(),
             ];
@@ -121,6 +125,7 @@ class RoleController extends Controller
             $role = Roles::find($id);
             $role->delete();
             DB::commit();
+            event(new RoleUpdated());
             return response()->json(['type' => 'roles', 'message' => 'Role deleted successfully'], 200);
         } catch (\Throwable $th) {
             DB::rollBack();
