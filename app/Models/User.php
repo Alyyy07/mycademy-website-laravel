@@ -59,4 +59,24 @@ class User extends Authenticatable
     {
         return $this->hasRole('administrator');
     }
+
+    public function matakuliahAsDosen()
+    {
+        return $this->hasMany(MappingMatakuliah::class, 'dosen_id');
+    }
+
+    public function matakuliahAsAdminVerifier()
+    {
+        return $this->hasMany(MappingMatakuliah::class, 'admin_verifier_id');
+    }
+
+    public function materisAsUploader()
+    {
+        return $this->hasMany(Materi::class, 'uploaded_by');
+    }
+
+    public function materisAsVerifier()
+    {
+        return $this->hasMany(Materi::class, 'verified_by');
+    }
 }
