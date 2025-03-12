@@ -1,6 +1,6 @@
 [
     {
-        "role": "administrator",
+        "role": "super-admin",
         "permissions": [
             "dashboard",
             "dashboard-create",
@@ -25,7 +25,17 @@
         ]
     },
     {
-        "role": "mentor",
+        "role": "admin-matakuliah",
+        "permissions":[
+            "dashboard",
+            "dashboard-read",
+            "dashboard-update",
+            "dashboard-create",
+            "dashboard-delete"
+        ]
+    },
+    {
+        "role": "dosen",
         "permissions": [
             "dashboard",
             "dashboard-read",
@@ -35,7 +45,7 @@
         ]
     },
     {
-        "role": "siswa",
+        "role": "mahasiswa",
         "permissions": []
     }
 ]

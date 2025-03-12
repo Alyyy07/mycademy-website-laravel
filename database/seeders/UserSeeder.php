@@ -14,53 +14,55 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $admin = User::create([
-            'name' => 'admin',
-            'email' => 'admin@gmail.com',
+        $superAdmin = User::create([
+            'name' => 'Super Admin',
+            'email' => 'superadmin@gmail.com',
             'email_verified_at' => now(),
-            'password' => Hash::make('12345'),
+            'password' => '12345',
             'remember_token' => Str::random(10),
         ]);
 
-        $admin->assignRole('administrator');
+        $superAdmin->assignRole('super-admin');
 
-        $mentor = User::create([
-            'name' => 'mentor',
-            'email' => 'mentor@gmail.com',
+        $adminMatakuliah = User::create([
+            'name' => 'Admin Matakuliah',
+            'email' => 'adminmatakuliah@gmail.com',
             'email_verified_at' => now(),
-            'password' => Hash::make('password'),
+            'password' => '12345',
             'remember_token' => Str::random(10),
         ]);
 
-        $mentor->assignRole('mentor');
+        $adminMatakuliah->assignRole('admin-matakuliah');
 
-        $siswa = User::create([
-            'name' => 'siswa',
-            'email' => 'siswa@gmail.com',
+        $dosen = User::create([
+            'name' => 'dosen',
+            'email' => 'dosen@gmail.com',
             'email_verified_at' => now(),
-            'password' => Hash::make('password'),
+            'password' => '12345',
             'remember_token' => Str::random(10),
         ]);
 
-        $siswa->assignRole('siswa');
+        $dosen->assignRole('dosen');
 
-        $siswa2 = User::create([
-            'name' => 'siswa2',
-            'email' => 'siswa2@gmail.com',
+        $mahasiswa = User::create([
+            'name' => 'mahasiswa',
+            'email' => 'mahasiswa@gmail.com',
+            'email_verified_at' => now(),
+            'password' =>'12345',
+            'remember_token' => Str::random(10),
+        ]);
+
+        $mahasiswa->assignRole('mahasiswa');
+
+        $mahasiswa2 = User::create([
+            'name' => 'mahasiswa2',
+            'email' => 'mahasiswa2@gmail.com',
             'verification_code' => '123456',
             'email_verified_at' => null,
-            'password' => Hash::make('password'),
+            'password' =>'12345',
             'remember_token' => Str::random(10),
         ]);
 
-        $siswa2->assignRole('siswa');
-
-        User::create([
-            'name' => 'user',
-            'email' => 'user@gmail.com',
-            'email_verified_at' => null,
-            'password' => Hash::make('password'),
-            'remember_token' => Str::random(10),
-        ]);
+        $mahasiswa2->assignRole('mahasiswa');
     }
 }
