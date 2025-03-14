@@ -3,10 +3,29 @@
         "name": "Dashboard",
         "module": "dashboard",
         "slug": "dashboard",
-        "icon": "fa fa-dashboard",
+        "icon": "ki-outline ki-category",
         "url": "/dashboard",
         "order": 0,
         "childrens": []
+    },
+    {
+        "name": "Akademik",
+        "module": "akademik",
+        "slug": "akademik",
+        "icon": "ki-outline ki-teacher",
+        "url": "",
+        "order": 1,
+        "childrens": [
+            {
+                "name": "Tahun Ajaran",
+                "module": "akademik.tahun_ajaran",
+                "slug": "akademik-tahun-ajaran",
+                "icon": "ki-outline ki-calendar",
+                "url": "/akademik/tahun-ajaran",
+                "order": 0,
+                "childrens": []
+            }
+        ]
     },
     {
         "name": "User Management",
@@ -14,7 +33,7 @@
         "slug": "user_management",
         "icon": "ki-outline ki-people",
         "url": "",
-        "order": 1,
+        "order": 2,
         "childrens": [
             {
                 "name": "User List",
