@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('kode_tahun_ajaran', 5)->unique();
             $table->date('tanggal_mulai')->nullable();
             $table->date('tanggal_selesai')->nullable();
-            $table->enum('is_active', ['0', '1'])->default('1');
+            $table->boolean('is_active')->default(0);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
         });
