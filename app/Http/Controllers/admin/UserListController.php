@@ -44,7 +44,6 @@ class UserListController extends Controller
     {
         $request->validated();
         $data = $request->all();
-        $data['password'] = Hash::make($request->password);
         if ($request->hasFile('profile_photo')) {
             $file = $request->file('profile_photo');
             $filename = hash('sha256', time() . $file->getClientOriginalName()) . '.' . $file->getClientOriginalExtension();
@@ -89,9 +88,7 @@ class UserListController extends Controller
             $filename = hash('sha256', time() . $file->getClientOriginalName()) . '.' . $file->getClientOriginalExtension();
             $data['profile_photo'] = $file->storeAs('image/profile-photo', $filename, 'public');
         }
-        if ($request->password) {
-            $data['password'] = Hash::make($request->password);
-        } else {
+        if (!$request->password) {
             unset($data['password']);
         }
         $user->update($data);

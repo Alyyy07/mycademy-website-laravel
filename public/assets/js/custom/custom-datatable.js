@@ -19,15 +19,32 @@ $('[check-action="user"]').on("change", function () {
 
 $('table [data-kt-menu-trigger="click"]').on("click", function (e) {
     e.preventDefault();
+
     var menu = $(this).next(".menu");
+    var parentTd = $(this).closest("td, th"); // Ambil parent terdekat (td atau th)
+
     if (!menu.hasClass("show")) {
         $(this).addClass("show menu-dropdown");
 
+        // Pastikan parent memiliki position relative agar dropdown tetap dalam tabel
+        parentTd.css("position", "relative");
+
         var buttonHeight = $(this).outerHeight();
+        var menuHeight = menu.outerHeight();
+        var parentHeight = parentTd.outerHeight();
+        var tableHeight = $("table").outerHeight();
+
+        // Cek apakah dropdown akan keluar dari batas bawah tabel
+        var topPosition = buttonHeight;
+
+        if (parentTd.offset().top + buttonHeight + menuHeight > tableHeight) {
+            topPosition = -menuHeight; // Munculkan dropdown ke atas jika melebihi batas
+        }
+
         menu.css({
-            display: "block",
-            position: "absolute",
-            top: buttonHeight + "px",
+            display: "flex",
+            position: "absolute", // Tetap dalam tabel
+            top: topPosition + "px",
             left: "0px",
             zIndex: 107,
         });

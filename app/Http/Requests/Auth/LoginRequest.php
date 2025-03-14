@@ -63,7 +63,7 @@ class LoginRequest extends FormRequest
         }
 
 
-        if(Role::findByName('siswa')->users->contains(Auth::user())) {
+        if(Role::findByName('mahasiswa')->users->contains(Auth::user())) {
             Auth::logout();
             RateLimiter::clear($this->throttleKey());
             throw  new AuthenticationException('You are not allowed to access this page.');

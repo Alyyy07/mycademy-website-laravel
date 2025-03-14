@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered mw-650px">
         <div class="modal-content">
             <div class="modal-header" id="kt_modal_add_user_header">
-                <h2 class="fw-bold">Add User</h2>
+                <h2 class="fw-bold">{{ $action === 'edit'? 'Edit' : "Tambah" }} Pengguna</h2>
                 <div class="btn btn-icon btn-sm btn-active-icon-primary" modal-action="close">
                     <i class="ki-duotone ki-cross fs-1">
                         <span class="path1"></span>
@@ -21,7 +21,7 @@
                         data-kt-scroll-dependencies="#kt_modal_add_user_header"
                         data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
                         <div class="fv-row mb-7">
-                            <label class="d-block fw-semibold fs-6 mb-5">Profile Photo</label>
+                            <label class="d-block fw-semibold fs-6 mb-5">Foto Profil</label>
                             <div class="image-input image-input-circle image-input-placeholder">
                                 <div class="image-input-wrapper w-125px h-125px"
                                     style="background-image: url('storage/{{ $user->profile_photo ?? 'image/profile-photo/blank.png' }}');">
@@ -47,7 +47,7 @@
                             <div class="image-feedback"></div>
                         </div>
                         <div class="fv-row mb-7">
-                            <label class="required fw-semibold fs-6 mb-2">Full Name</label>
+                            <label class="required fw-semibold fs-6 mb-2">Nama Lengkap</label>
                             <input type="text" name="name" class="form-control form-control-solid mb-3 mb-lg-0"
                                 placeholder="Full name" autofocus value="{{ $user->name ?? old('name') }}" />
                         </div>
@@ -58,13 +58,13 @@
                         </div>
                         <div class="fv-row mb-7">
                             <label class="@if ($action == 'create') required @endif fs-6 mb-2"> @if ($action ==
-                                'create') Password @else New Password (empty if not required) @endif</label>
+                                'create') Password @else Password Baru (Kosongkan jika tidak ingin Diubah) @endif</label>
                             <input type="password" name="password" class="form-control form-control-solid mb-3 mb-lg-0"
                                 value="{{ old('password') }}" />
                         </div>
                         @if ($action == 'edit')
                         <div class="fv-row mb-7">
-                            <label class="fs-6 mb-2"> Confirm Password</label>
+                            <label class="fs-6 mb-2"> Konfirmasi Password</label>
                             <input type="password" name="password_confirmation"
                                 class="form-control form-control-solid mb-3 mb-lg-0"
                                 value="{{ old('password_confirmation') }}" />
@@ -80,8 +80,9 @@
                                     @elseif (isset($user->roles) && $loop->first) checked
                                     @endif value="{{ $role->name }}" id="kt_modal_update_role_option_{{ $role->id }}" />
                                     <label class="form-check-label" for="kt_modal_update_role_option_{{ $role->id }}">
-                                        <div class="fw-bold text-gray-800 text-capitalize">{{ $role->name }}
+                                        <div class="fw-bold text-gray-800 text-capitalize">{{ str_replace("-"," ",$role->name) }}
                                         </div>
+                                        <div class="text-gray-600">{{ $role->description }}</div>
                                 </div>
                             </div>
                             @if (!$loop->last)
