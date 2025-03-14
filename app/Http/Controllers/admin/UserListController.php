@@ -52,7 +52,7 @@ class UserListController extends Controller
         $user = User::create($data);
         $user->assignRole($request->role);
 
-        return response()->json(['message' => 'User created successfully'], 200);
+        return response()->json(['message' => 'User berhasil dibuat!'], 200);
     }
 
     /**
@@ -93,7 +93,7 @@ class UserListController extends Controller
         }
         $user->update($data);
         $user->syncRoles(request()->role);
-        return response()->json(['message' => 'User updated successfully'], 200);
+        return response()->json(['message' => 'User berhasil diupdate!'], 200);
     }
 
     /**
@@ -107,14 +107,14 @@ class UserListController extends Controller
             unlink(storage_path("app/public/$photoPath"));
         }
         $user->delete();
-        return response()->json(['message' => 'User deleted successfully'], 200);
+        return response()->json(['message' => 'User berhasil dihapus!'], 200);
     }
 
     public function setStatus(User $user)
     {
         $user->is_active = !$user->is_active;
         $user->save();
-        return response()->json(['message' => 'User status updated successfully'], 200);
+        return response()->json(['message' => 'Status user berhasil diupdate!'], 200);
     }
 
     public function bulkDelete()
@@ -129,7 +129,7 @@ class UserListController extends Controller
                 unlink(storage_path("app/public/$photoPath"));
             }
         }
-        return response()->json(['message' => 'All selected users deleted successfully'], 200);
+        return response()->json(['message' => 'User yang dipilih berhasil dihapus!'], 200);
     }
 
     public function bulkSetStatus()
@@ -140,6 +140,6 @@ class UserListController extends Controller
             $user->is_active = !$user->is_active;
             $user->save();
         }
-        return response()->json(['message' => 'All selected users status updated successfully'], 200);
+        return response()->json(['message' => 'Status user yang dipilih berhasil diupdate!'], 200);
     }
 }

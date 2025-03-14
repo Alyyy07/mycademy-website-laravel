@@ -92,8 +92,6 @@ class UserDataTable extends DataTable
             return $model->newQuery()->with('roles')->get()->toArray();
         });
 
-        Log::info('Users from cache:', $users);
-
         return $model->newQuery()->whereIn('id', array_column($users, 'id'))->with('roles');
     }
 

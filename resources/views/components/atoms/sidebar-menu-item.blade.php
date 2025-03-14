@@ -13,7 +13,7 @@
 <div data-kt-menu-trigger="click" class="menu-item @if ($isActiveParent) show @endif menu-accordion">
     <span class="menu-link">
         <span class="menu-icon">
-            <i class="{{ $menuData->icon }}"></i>
+            <i class="{{ $menuData->icon }} fs-1"></i>
         </span>
         <span class="menu-title">{{ $menuData->name }}</span>
         <span class="menu-arrow"></span>
@@ -32,7 +32,7 @@
 <div class="menu-item">
     <a class="menu-link @if (request()->is(trim($menuData->url, '/'))) active @endif" href="{{ $menuData->url }}">
         <span class="menu-icon">
-            <i class="{{ $menuData->icon }}"></i>
+            <i class="{{ $menuData->icon }} fs-1"></i>
         </span>
         <span class="menu-title">{{ $menuData->name }}</span>
     </a>

@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('profile_photo', 2048)->nullable();
-            $table->string('is_online')->default(0);
-            $table->string('is_active')->default(1);
+            $table->boolean('is_online')->default(0);
+            $table->boolean('is_active')->default(1);
             $table->timestamp('last_login_at')->nullable();
             $table->string('verification_code')->nullable();
             $table->timestamp('email_verified_at')->nullable();
