@@ -82,6 +82,7 @@
                                     <label class="form-check-label" for="kt_modal_update_role_option_{{ $role->id }}">
                                         <div class="fw-bold text-gray-800 text-capitalize">{{ str_replace("-"," ",$role->name) }}
                                         </div>
+                                        <div class="text-gray-600">{{ $role->description }}</div>
                                 </div>
                             </div>
                             @if (!$loop->last)

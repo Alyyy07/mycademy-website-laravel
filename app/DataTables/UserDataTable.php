@@ -40,7 +40,7 @@ class UserDataTable extends DataTable
                     'dosen' => 'info',
                     default => 'dark'
                 };
-                return "<span class='badge badge-light-$badgeColor text-capitalize'>".str_replace("-"," ",$name)."</span>";
+                return "<span class='badge badge-light-$badgeColor fs-7 py-3 px-4 text-capitalize'>".str_replace("-"," ",$name)."</span>";
             })
             ->editColumn('checkbox', function (User $user) {
                 if($user->id === Auth::id()) {
@@ -75,10 +75,10 @@ class UserDataTable extends DataTable
             })
             ->editColumn('last_login_at', function ($user) {
                 if ($user->is_online) {
-                    return '<span class="badge badge-success fw-bold"><span class="badge badge-circle w-6px h-6px me-1" style="background-color:white"></span>Online</span>';
+                    return '<span class="badge badge-success fs-7 py-3 px-4 fw-bold"><span class="badge badge-circle w-6px h-6px me-1" style="background-color:white"></span>Online</span>';
                 }
                 $last_login = $user->last_login_at ? Carbon::parse($user->last_login_at)->diffForHumans() : "Belum Login";
-                return "<span class='badge badge-light fw-bold'>$last_login</span>";
+                return "<span class='badge badge-light fs-7 py-3 px-4 fw-bold'>$last_login</span>";
             })
             ->rawColumns(['roles.name', 'name', 'is_active', 'last_login_at', 'action', 'checkbox']);
     }
