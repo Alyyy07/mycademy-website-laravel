@@ -11,30 +11,40 @@ class TahunAjaran extends Model
 
     protected $guarded = ['id'];
 
-    protected static function boot() : void
+    protected static function boot(): void
     {
         parent::boot();
 
-        // Register the event to deactivate all other academic year when creating new academic year
+        // Saat membuat data baru, jika is_active = 1, maka nonaktifkan tahun ajaran lain
         static::creating(function ($model) {
-            if($model->is_active == '1'){
+            if ($model->is_active == '1') {
+                $model->deactivateAll();
+            }
+        });
+
+        // Saat memperbarui data, jika is_active diubah ke 1, maka nonaktifkan tahun ajaran lain
+        static::updating(function ($model) {
+            if ($model->is_active == '1') {
                 $model->deactivateAll();
             }
         });
     }
 
-    public function deactivateAll() : void
+    /**
+     * Menonaktifkan semua tahun ajaran kecuali yang sedang diaktifkan
+     */
+    public function deactivateAll(): void
     {
-        self::where('id', '!=', '0')->update(['is_current' => '0']);
+        self::where('id', '!=', $this->id)->update(['is_active' => '0']);
     }
 
+    /**
+     * Mengambil tahun ajaran yang sedang aktif
+     */
     public static function getActive(): ?array
     {
         $data = self::where('is_active', '1')->first();
-        if ($data) {
-            return $data->toArray();
-        }
-        return null;
+        return $data ? $data->toArray() : null;
     }
 
     public function semesters()

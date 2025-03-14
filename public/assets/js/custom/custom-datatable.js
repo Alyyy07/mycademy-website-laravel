@@ -20,39 +20,47 @@ $('[check-action="user"]').on("change", function () {
 $('table [data-kt-menu-trigger="click"]').on("click", function (e) {
     e.preventDefault();
 
-    var menu = $(this).next(".menu");
-    var parentTd = $(this).closest("td, th"); // Ambil parent terdekat (td atau th)
+    var button = $(this); // Tombol yang diklik
+    var menu = button.next(".menu"); // Dropdown terkait
 
     if (!menu.hasClass("show")) {
-        $(this).addClass("show menu-dropdown");
+        // Tutup semua dropdown lain sebelum menampilkan yang baru
+        $(".menu.show").removeClass("show").prop("style", "");
 
-        // Pastikan parent memiliki position relative agar dropdown tetap dalam tabel
-        parentTd.css("position", "relative");
+        button.addClass("show menu-dropdown");
 
-        var buttonHeight = $(this).outerHeight();
-        var menuHeight = menu.outerHeight();
-        var parentHeight = parentTd.outerHeight();
-        var tableHeight = $("table").outerHeight();
+        function updateDropdownPosition() {
+            var buttonOffset = button.offset(); // Posisi tombol di layar
+            var buttonHeight = button.outerHeight();
 
-        // Cek apakah dropdown akan keluar dari batas bawah tabel
-        var topPosition = buttonHeight;
-
-        if (parentTd.offset().top + buttonHeight + menuHeight > tableHeight) {
-            topPosition = -menuHeight; // Munculkan dropdown ke atas jika melebihi batas
+            menu.css({
+                display: "flex",
+                position: "fixed",
+                top: (buttonOffset.top + buttonHeight) + "px", // Selalu di bawah tombol
+                left: buttonOffset.left + "px",
+                zIndex: 107,
+            });
         }
 
-        menu.css({
-            display: "flex",
-            position: "absolute", // Tetap dalam tabel
-            top: topPosition + "px",
-            left: "0px",
-            zIndex: 107,
-        });
+        updateDropdownPosition(); // Set posisi awal dropdown
+        $(window).on("scroll resize", updateDropdownPosition); // Update saat scroll/resize
 
         menu.addClass("show");
+
+        // Tutup dropdown jika klik di luar
+        $(document).on("click.menuDismiss", function (event) {
+            if (!button.is(event.target) && !menu.is(event.target) && menu.has(event.target).length === 0) {
+                menu.removeClass("show").prop("style", "");
+                button.removeClass("show menu-dropdown");
+                $(window).off("scroll resize", updateDropdownPosition);
+                $(document).off("click.menuDismiss"); // Hapus event klik di luar setelah dropdown ditutup
+            }
+        });
     } else {
-        $(this).removeClass("show menu-dropdown");
         menu.removeClass("show").prop("style", "");
+        button.removeClass("show menu-dropdown");
+        $(window).off("scroll resize", updateDropdownPosition);
+        $(document).off("click.menuDismiss");
     }
 });
 
