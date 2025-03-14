@@ -15,9 +15,9 @@ class RoleSeeder extends Seeder
     {
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        Role::create(['name' => 'super-admin']);
-        Role::create(['name' => 'admin-matakuliah']);
-        Role::create(['name' => 'dosen']);
-        Role::create(['name' => 'mahasiswa']);
+        Role::create(['name' => 'super-admin', 'description' => 'Bertanggung jawab atas pengelolaan pengguna, pembuatan RPS dan pengelolaan matakuliah']);
+        Role::create(['name' => 'admin-matakuliah','description' => 'Bertanggung jawab atas pengelolaan materi, tugas, dan ujian yang diunggah oleh dosen']);
+        Role::create(['name' => 'dosen','description'=> 'Bertanggung jawab atas pengunggahan materi, tugas, dan ujian,berpartisipasi dalam forum diskusi, serta memberikan nilai kepada mahasiswa']);
+        Role::create(['name' => 'mahasiswa','description'=> 'Bertanggung jawab atas mengikuti perkuliahan, berpartisipasi dalam forum diskusi, mengumpulkan tugas, dan ujian']);
     }
 }
