@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\TahunAjaran;
+use App\Models\Akademik\TahunAjaran;
 use Illuminate\Support\Facades\Cache;
 
 class TahunAjaranObserver

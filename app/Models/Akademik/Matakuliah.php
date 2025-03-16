@@ -1,7 +1,7 @@
 <?php
+namespace App\Models\Akademik;
 
-namespace App\Models;
-
+use App\Models\MappingMatakuliah;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

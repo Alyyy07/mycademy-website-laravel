@@ -2,13 +2,10 @@
 
 namespace App\Providers;
 
-use App\Models\Matakuliah;
-use App\Models\Roles;
-use App\Models\Setting\Menus;
-use App\Models\TahunAjaran;
+use App\Models\Akademik\Matakuliah;
+use App\Models\Akademik\TahunAjaran;
 use App\Models\User;
 use Illuminate\Support\ServiceProvider;
-use Spatie\Permission\Models\Permission;
 
 class AppServiceProvider extends ServiceProvider
 {

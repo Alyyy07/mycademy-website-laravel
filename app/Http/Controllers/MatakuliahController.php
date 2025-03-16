@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DataTables\MatakuliahDataTable;
 use App\Http\Requests\MatakuliahRequest;
-use App\Models\Matakuliah;
+use App\Models\Akademik\Matakuliah;
 use Illuminate\Http\Request;
 
 class MatakuliahController extends Controller

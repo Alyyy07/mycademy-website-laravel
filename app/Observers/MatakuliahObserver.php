@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\Matakuliah;
+use App\Models\Akademik\Matakuliah;
 use Illuminate\Support\Facades\Cache;
 
 class MatakuliahObserver
@@ -10,7 +10,7 @@ class MatakuliahObserver
     /**
      * Handle the Matakuliah "created" event.
      *
-     * @param  \App\Models\Matakuliah  $matakuliah
+     * @param  \App\Models\Akademik\Matakuliah  $matakuliah
      * @return void
      */
     public function created(Matakuliah $matakuliah)
@@ -21,7 +21,7 @@ class MatakuliahObserver
     /**
      * Handle the Matakuliah "updated" event.
      *
-     * @param  \App\Models\Matakuliah  $matakuliah
+     * @param  \App\Models\Akademik\Matakuliah  $matakuliah
      * @return void
      */
     public function updated(Matakuliah $matakuliah)
@@ -32,7 +32,7 @@ class MatakuliahObserver
     /**
      * Handle the Matakuliah "deleted" event.
      *
-     * @param  \App\Models\Matakuliah  $matakuliah
+     * @param  \App\Models\Akademik\Matakuliah  $matakuliah
      * @return void
      */
     public function deleted(Matakuliah $matakuliah)
@@ -43,7 +43,7 @@ class MatakuliahObserver
     /**
      * Handle the Matakuliah "restored" event.
      *
-     * @param  \App\Models\Matakuliah  $matakuliah
+     * @param  \App\Models\Akademik\Matakuliah  $matakuliah
      * @return void
      */
     public function restored(Matakuliah $matakuliah)
@@ -54,7 +54,7 @@ class MatakuliahObserver
     /**
      * Handle the Matakuliah "force deleted" event.
      *
-     * @param  \App\Models\Matakuliah  $matakuliah
+     * @param  \App\Models\Akademik\Matakuliah  $matakuliah
      * @return void
      */
     public function forceDeleted(Matakuliah $matakuliah)

@@ -2,7 +2,7 @@
 
 namespace App\DataTables;
 
-use App\Models\Matakuliah;
+use App\Models\Akademik\Matakuliah;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Illuminate\Support\Facades\Cache;
 use Yajra\DataTables\EloquentDataTable;

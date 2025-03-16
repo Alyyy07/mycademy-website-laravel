@@ -2,7 +2,7 @@
 
 namespace App\DataTables;
 
-use App\Models\TahunAjaran;
+use App\Models\Akademik\TahunAjaran;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Illuminate\Support\Facades\Cache;
 use Yajra\DataTables\EloquentDataTable;
