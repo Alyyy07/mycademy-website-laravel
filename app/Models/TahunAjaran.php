@@ -46,9 +46,4 @@ class TahunAjaran extends Model
         $data = self::where('is_active', '1')->first();
         return $data ? $data->toArray() : null;
     }
-
-    public function semesters()
-    {
-        return $this->hasMany(Semester::class);
-    }
 }

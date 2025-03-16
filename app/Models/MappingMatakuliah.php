@@ -11,10 +11,6 @@ class MappingMatakuliah extends Model
 
     protected $guarded = ['id'];
 
-    public function semester()
-    {
-        return $this->belongsTo(Semester::class);
-    }
     public function matakuliah()
     {
         return $this->belongsTo(Matakuliah::class);
