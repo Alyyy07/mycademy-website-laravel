@@ -26,12 +26,30 @@
                 "childrens": []
             },
             {
+                "name": "Fakultas",
+                "module": "akademik.fakultas",
+                "slug": "akademik-fakultas",
+                "icon": "ki-outline ki-bank",
+                "url": "/akademik/fakultas",
+                "order": 1,
+                "childrens": []
+            },
+            {
+                "name": "Prodi",
+                "module": "akademik.prodi",
+                "slug": "akademik-prodi",
+                "icon": "ki-outline ki-financial-schedule",
+                "url": "/akademik/prodi",
+                "order": 2,
+                "childrens": []
+            },
+            {
                 "name": "Matakuliah",
                 "module": "akademik.matakuliah",
                 "slug": "akademik-matakuliah",
                 "icon": "ki-outline ki-book",
                 "url": "/akademik/matakuliah",
-                "order": 1,
+                "order": 3,
                 "childrens": []
             }
         ]

@@ -16,11 +16,8 @@
                     @if($action == 'edit')
                     @method('PUT')
                     @endif
-                    <div class="d-flex flex-column scroll-y px-5 px-lg-10" id="kt_modal_add_user_scroll"
-                        data-kt-scroll="true" data-kt-scroll-activate="true" data-kt-scroll-max-height="auto"
-                        data-kt-scroll-dependencies="#kt_modal_add_user_header"
-                        data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
-                        <div class="fv-row mb-7">
+                    <div class="d-flex flex-column scroll-y px-5 px-lg-10" >
+                        <div class="fv-row text-center mb-7">
                             <label class="d-block fw-semibold fs-6 mb-5">Foto Profil</label>
                             <div class="image-input image-input-circle image-input-placeholder">
                                 <div class="image-input-wrapper w-125px h-125px"

@@ -11,7 +11,7 @@
                 </div>
             </div>
             <div class="modal-body px-5 my-7">
-                <form id="user-form" class="form" action="{{ $route }}" modal-action="{{ $action }}"
+                <form id="matakuliah-form" class="form" action="{{ $route }}" modal-action="{{ $action }}"
                     enctype="multipart/form-data">
                     @if($action == 'edit')
                     @method('PUT')
