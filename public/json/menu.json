@@ -24,6 +24,15 @@
                 "url": "/akademik/tahun-ajaran",
                 "order": 0,
                 "childrens": []
+            },
+            {
+                "name": "Matakuliah",
+                "module": "akademik.matakuliah",
+                "slug": "akademik-matakuliah",
+                "icon": "ki-outline ki-book",
+                "url": "/akademik/matakuliah",
+                "order": 1,
+                "childrens": []
             }
         ]
     },

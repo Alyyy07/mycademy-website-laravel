@@ -17,6 +17,8 @@ $('[check-action="user"]').on("change", function () {
     $(this).closest("table").find("[check-target='user']").trigger("change");
 });
 
+var activeDropdown = null; // Variabel untuk menyimpan dropdown yang aktif
+
 $('table [data-kt-menu-trigger="click"]').on("click", function (e) {
     e.preventDefault();
 
@@ -24,62 +26,110 @@ $('table [data-kt-menu-trigger="click"]').on("click", function (e) {
     var menu = button.next(".menu"); // Dropdown terkait
 
     if (!menu.hasClass("show")) {
-        // Tutup semua dropdown lain sebelum menampilkan yang baru
-        $(".menu.show").removeClass("show").prop("style", "");
+        // Tutup dropdown lain sebelum membuka yang baru
+        $(".menu.show")
+            .removeClass("show")
+            .prop("style", "")
+            .appendTo(button.parent());
+        $('table [data-kt-menu-trigger="click"]').removeClass("show menu-dropdown");
 
         button.addClass("show menu-dropdown");
+        activeDropdown = menu; // Simpan dropdown yang sedang aktif
+
+        // Styling default untuk dropdown agar terlihat saat pertama kali muncul
+        menu.css({
+            display: "block",
+            position: "absolute",
+            zIndex: 107,
+        });
 
         function updateDropdownPosition() {
-            var buttonOffset = button.offset(); // Posisi tombol di layar
-            var buttonHeight = button.outerHeight();
+            if (!menu.hasClass("show")) return; // Jangan jalankan jika dropdown sudah tertutup
 
-            menu.css({
-                display: "flex",
-                position: "fixed",
-                top: (buttonOffset.top + buttonHeight) + "px", // Selalu di bawah tombol
-                left: buttonOffset.left + "px",
-                zIndex: 107,
-            });
+            var buttonOffset = button.offset(); // Posisi relatif terhadap dokumen
+            var buttonHeight = button.outerHeight();
+            var menuHeight = menu.outerHeight();
+            var windowHeight = $(window).height();
+            var scrollTop = $(window).scrollTop();
+
+            // Pindahkan menu ke body agar tidak terpengaruh layout tabel
+            if (!menu.parent().is("body")) {
+                menu.appendTo("body");
+            }
+
+            setTimeout(function () {
+                var topPosition = buttonOffset.top + buttonHeight;
+                var leftPosition = buttonOffset.left;
+
+                // Jika dropdown keluar dari batas bawah viewport, tampilkan di atas tombol
+                if (topPosition + menuHeight > windowHeight + scrollTop) {
+                    topPosition = buttonOffset.top - menuHeight;
+                }
+
+                menu.css({
+                    top: topPosition + "px",
+                    left: leftPosition + "px",
+                });
+            }, 1); // Timeout 0ms untuk menunggu DOM update
         }
 
-        updateDropdownPosition(); // Set posisi awal dropdown
-        $(window).on("scroll resize", updateDropdownPosition); // Update saat scroll/resize
+        // Pastikan posisi diperbarui setelah appendTo("body")
+        setTimeout(updateDropdownPosition, 0);
+        $(window).on("resize scroll", updateDropdownPosition);
 
         menu.addClass("show");
 
         // Tutup dropdown jika klik di luar
         $(document).on("click.menuDismiss", function (event) {
-            if (!button.is(event.target) && !menu.is(event.target) && menu.has(event.target).length === 0) {
-                menu.removeClass("show").prop("style", "");
+            if (
+                !button.is(event.target) &&
+                !menu.is(event.target) &&
+                menu.has(event.target).length === 0
+            ) {
+                menu.removeClass("show")
+                    .prop("style", "")
+                    .appendTo(button.parent());
                 button.removeClass("show menu-dropdown");
-                $(window).off("scroll resize", updateDropdownPosition);
-                $(document).off("click.menuDismiss"); // Hapus event klik di luar setelah dropdown ditutup
+                $(window).off("resize scroll", updateDropdownPosition);
+                $(document).off("click.menuDismiss");
+                activeDropdown = null; // Reset dropdown aktif setelah ditutup
             }
         });
     } else {
-        menu.removeClass("show").prop("style", "");
+        menu.removeClass("show").prop("style", "").appendTo(button.parent());
         button.removeClass("show menu-dropdown");
-        $(window).off("scroll resize", updateDropdownPosition);
+        $(window).off("resize scroll", updateDropdownPosition);
         $(document).off("click.menuDismiss");
+        activeDropdown = null; // Reset dropdown aktif setelah ditutup
     }
 });
 
+// Tutup dropdown jika klik di luar area
 $(document).on("click", function (e) {
-    if (
-        !$(e.target).closest('table [data-kt-menu-trigger="click"], .menu')
-            .length
-    ) {
-        $(".menu").removeClass("show").prop("style", "");
-        $('table [data-kt-menu-trigger="click"]').removeClass(
-            "show menu-dropdown"
-        );
+    if (!$(e.target).closest('table [data-kt-menu-trigger="click"], .menu').length) {
+        $(".menu")
+            .removeClass("show")
+            .prop("style", "")
+            .each(function () {
+                $(this).appendTo($(this).prev().parent());
+            });
+        $('table [data-kt-menu-trigger="click"]').removeClass("show menu-dropdown");
+        activeDropdown = null; // Reset dropdown aktif
     }
+});
 
-    if (
-        !$(e.target).closest("[dropdown-option], .dropdown-menu").length &&
-        !$(e.target).is("[dropdown-option]")
-    ) {
-        $(".dropdown-menu").removeClass("show").prop("style", "");
+
+// Hapus event scroll jika dropdown sudah tertutup agar tidak muncul kembali saat scroll
+$(window).on("scroll", function () {
+    if (!activeDropdown || !activeDropdown.hasClass("show")) {
+        $(window).off("scroll resize"); // Hapus event scroll & resize jika dropdown tertutup
+    }
+});
+
+// Hapus event scroll jika dropdown sudah tertutup agar tidak muncul kembali saat scroll
+$(window).on("scroll", function () {
+    if (!activeDropdown || !activeDropdown.hasClass("show")) {
+        $(window).off("scroll resize"); // Hapus event scroll & resize jika dropdown tertutup
     }
 });
 
@@ -268,9 +318,7 @@ $('[check-target="user"] ').on("change", function () {
                             $("table").attr("id")
                         ].ajax.reload();
                         $('[user-toolbar="base"]').removeClass("d-none");
-                        $('[user-toolbar="selected-user"]').addClass(
-                            "d-none"
-                        );
+                        $('[user-toolbar="selected-user"]').addClass("d-none");
                         $("[data-user-selected").text(checked);
                     },
                     error: function (xhr, status, error) {
@@ -308,38 +356,36 @@ $('[check-target="user"] ').on("change", function () {
                 inactiveUser.each(function () {
                     userIds.push($(this).val());
                 });
-                    $.ajax({
-                        headers: {
-                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
-                                "content"
-                            ),
-                        },
-                        url: $(this).attr("button-url"),
-                        type: "POST",
-                        data: {
-                            ids: userIds,
-                        },
-                        success: function (response) {
-                            Swal.fire({
-                                text: response.message,
-                                icon: "success",
-                            });
-                            window.LaravelDataTables[
-                                $("table").attr("id")
-                            ].ajax.reload();
-                            $('[user-toolbar="base"]').removeClass("d-none");
-                            $('[user-toolbar="selected-user"]').addClass(
-                                "d-none"
-                            );
-                            $("[data-user-selected").text(checked);
-                        },
-                        error: function (xhr, status, error) {
-                            Swal.fire({
-                                text: xhr.responseJSON.message,
-                                icon: "error",
-                            });
-                        },
-                    });
+                $.ajax({
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                            "content"
+                        ),
+                    },
+                    url: $(this).attr("button-url"),
+                    type: "POST",
+                    data: {
+                        ids: userIds,
+                    },
+                    success: function (response) {
+                        Swal.fire({
+                            text: response.message,
+                            icon: "success",
+                        });
+                        window.LaravelDataTables[
+                            $("table").attr("id")
+                        ].ajax.reload();
+                        $('[user-toolbar="base"]').removeClass("d-none");
+                        $('[user-toolbar="selected-user"]').addClass("d-none");
+                        $("[data-user-selected").text(checked);
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            text: xhr.responseJSON.message,
+                            icon: "error",
+                        });
+                    },
+                });
             }
             if (result.isDismissed) {
                 Swal.fire({
@@ -368,38 +414,36 @@ $('[check-target="user"] ').on("change", function () {
                 activeUser.each(function () {
                     userIds.push($(this).val());
                 });
-                    $.ajax({
-                        headers: {
-                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
-                                "content"
-                            ),
-                        },
-                        url: $(this).attr("button-url"),
-                        type: "POST",
-                        data: {
-                            ids: userIds,
-                        },
-                        success: function (response) {
-                            Swal.fire({
-                                text: response.message,
-                                icon: "success",
-                            });
-                            window.LaravelDataTables[
-                                $("table").attr("id")
-                            ].ajax.reload();
-                            $('[user-toolbar="base"]').removeClass("d-none");
-                            $('[user-toolbar="selected-user"]').addClass(
-                                "d-none"
-                            );
-                            $("[data-user-selected").text(checked);
-                        },
-                        error: function (xhr, status, error) {
-                            Swal.fire({
-                                text: xhr.responseJSON.message,
-                                icon: "error",
-                            });
-                        },
-                    });
+                $.ajax({
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                            "content"
+                        ),
+                    },
+                    url: $(this).attr("button-url"),
+                    type: "POST",
+                    data: {
+                        ids: userIds,
+                    },
+                    success: function (response) {
+                        Swal.fire({
+                            text: response.message,
+                            icon: "success",
+                        });
+                        window.LaravelDataTables[
+                            $("table").attr("id")
+                        ].ajax.reload();
+                        $('[user-toolbar="base"]').removeClass("d-none");
+                        $('[user-toolbar="selected-user"]').addClass("d-none");
+                        $("[data-user-selected").text(checked);
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            text: xhr.responseJSON.message,
+                            icon: "error",
+                        });
+                    },
+                });
             }
             if (result.isDismissed) {
                 Swal.fire({
@@ -416,23 +460,27 @@ $('[check-target="user"] ').on("change", function () {
     }
 });
 
-$("[dropdown-option]").off('click').on("click", function () {
-    console.log('test');
-    let parentWidth = $(this).closest('[user-toolbar="selected-user"]').width();
-    let dropdown = $(this).next(".dropdown-menu");
-    if (!dropdown.hasClass("show")) {
-        var buttonHeight = $(this).outerHeight();
-        dropdown.css({
-            display: "block",
-            width: parentWidth + "px",
-            position: "absolute",
-            top: buttonHeight + "px",
-            left: "0px",
-            zIndex: 107,
-        });
+$("[dropdown-option]")
+    .off("click")
+    .on("click", function () {
+        console.log("test");
+        let parentWidth = $(this)
+            .closest('[user-toolbar="selected-user"]')
+            .width();
+        let dropdown = $(this).next(".dropdown-menu");
+        if (!dropdown.hasClass("show")) {
+            var buttonHeight = $(this).outerHeight();
+            dropdown.css({
+                display: "block",
+                width: parentWidth + "px",
+                position: "absolute",
+                top: buttonHeight + "px",
+                left: "0px",
+                zIndex: 107,
+            });
 
-        dropdown.addClass("show");
-    } else {
-        dropdown.removeClass("show").prop("style", "");
-    }
-});
+            dropdown.addClass("show");
+        } else {
+            dropdown.removeClass("show").prop("style", "");
+        }
+    });

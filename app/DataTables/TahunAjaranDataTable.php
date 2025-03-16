@@ -53,7 +53,7 @@ class TahunAjaranDataTable extends DataTable
     public function query(TahunAjaran $model)
     {
         $tahunAjaran = Cache::rememberForever('tahun_ajaran', function () use ($model) {
-            return $model->all(); // Ambil semua data, bukan newQuery()
+            return $model->all();
         });
 
         return TahunAjaran::whereIn('id', $tahunAjaran->pluck('id'));

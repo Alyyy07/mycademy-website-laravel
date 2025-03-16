@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Matakuliah;
 use App\Models\Roles;
 use App\Models\Setting\Menus;
 use App\Models\TahunAjaran;
@@ -26,5 +27,6 @@ class AppServiceProvider extends ServiceProvider
     {
         User::observe(\App\Observers\UserObserver::class);
         TahunAjaran::observe(\App\Observers\TahunAjaranObserver::class);
+        Matakuliah::observe(\App\Observers\MatakuliahObserver::class);
     }
 }
