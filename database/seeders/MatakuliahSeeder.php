@@ -1,0 +1,51 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Matakuliah;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+
+class MatakuliahSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        Matakuliah::create([
+            'kode_matakuliah' => 'MK001',
+            'nama_matakuliah' => 'Pemrograman Web',
+            'deskripsi' => 'Matakuliah ini membahas tentang pemrograman web',
+            'sks' => 3,
+        ]);
+
+        Matakuliah::create([
+            'kode_matakuliah' => 'MK002',
+            'nama_matakuliah' => 'Pengembangan Android',
+            'deskripsi' => 'Matakuliah ini membahas tentang pengembangan aplikasi android',
+            'sks' => 3,
+        ]);
+
+        Matakuliah::create([
+            'kode_matakuliah' => 'MK003',
+            'nama_matakuliah' => 'Pemrograman Desktop',
+            'deskripsi' => 'Matakuliah ini membahas tentang pemrograman desktop',
+            'sks' => 3,
+        ]);
+        
+        Matakuliah::create([
+            'kode_matakuliah' => 'MK004',
+            'nama_matakuliah' => 'Pemrograman Berorientasi Objek',
+            'deskripsi' => 'Matakuliah ini membahas tentang pemrograman berorientasi objek',
+            'sks' => 3,
+        ]);
+
+        Matakuliah::create([
+            'kode_matakuliah' => 'MK005',
+            'nama_matakuliah' => 'Interaksi Manusia dan Komputer',
+            'deskripsi' => 'Matakuliah ini membahas tentang interaksi manusia dan komputer',
+            'sks' => 3,
+        ]);
+    }
+}
