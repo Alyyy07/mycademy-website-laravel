@@ -121,12 +121,13 @@ $("form").on("submit", function (e) {
                             } else {
                                 window.location.reload();
                             }
-                            $(".modal").modal("hide");
                             form[0].reset();
                             $(".image-input-wrapper").prop(
                                 "style",
                                 "background-image: url(storage/image/profile-photo/blank.png)"
                             );
+                            $(".modal").remove();
+                            $(".modal-backdrop").remove();
                         }
                     });
                 },
