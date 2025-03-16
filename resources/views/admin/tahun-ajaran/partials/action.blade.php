@@ -1,4 +1,4 @@
-<div style="height: 60px">
+<div>
     <div class="position-relative">
         <button class="btn btn-light btn-active-light-primary btn-flex btn-center btn-sm" data-kt-menu-trigger="click"
             data-kt-menu-placement="bottom-end">Actions
