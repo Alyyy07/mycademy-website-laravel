@@ -35,13 +35,14 @@ class MatakuliahDataTable extends DataTable
     /**
      * Get the query source of dataTable.
      */
-    public function query(Matakuliah $model)
+    public function query(Matakuliah $model): QueryBuilder
     {
         $matakuliah = Cache::rememberForever('matakuliah', function () use ($model) {
-            return $model->all();
+            return $model->newQuery()->with('prodi')->get()->toArray(); // Disimpan sebagai array
         });
-
-        return Matakuliah::whereIn('id', $matakuliah->pluck('id'));
+        
+        // Ubah ke collection sebelum `pluck()`
+        return $model->newQuery()->whereIn('id', collect($matakuliah)->pluck('id'))->with('prodi');
     }
 
     /**
@@ -70,6 +71,7 @@ class MatakuliahDataTable extends DataTable
         return [
             Column::make('id')->title('No')->addClass('w-10px pe-2')->orderable(false)->searchable(false)->titleAttr('No'),
             Column::make('kode_matakuliah')->title('Kode Matakuliah')->addClass('text-center')->orderable(false),
+            Column::make('prodi.nama_prodi')->title('Prodi'),
             Column::make('nama_matakuliah')->title('Nama Matakuliah'),
             Column::make('deskripsi')->title('Deskripsi'),
             Column::make('sks')->title('SKS'),

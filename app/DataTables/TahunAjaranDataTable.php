@@ -56,7 +56,7 @@ class TahunAjaranDataTable extends DataTable
             return $model->all();
         });
 
-        return TahunAjaran::whereIn('id', $tahunAjaran->pluck('id'));
+        return $model->newQuery()->whereIn('id', array_column($tahunAjaran->toArray(), 'id'));
     }
 
     /**

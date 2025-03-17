@@ -52,7 +52,7 @@ class FakultasDataTable extends DataTable
         $fakultas = Cache::rememberForever('fakultas', function () use ($model) {
             return $model->all();
         });
-        return Fakultas::whereIn('id', $fakultas->pluck('id'));
+        return $model->newQuery()->whereIn('id', array_column($fakultas->toArray(), 'id'));
     }
 
     /**
