@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('kode_matakuliah', 5)->unique();
             $table->string('nama_matakuliah', 100);
             $table->text('deskripsi');
+            $table->foreignId('prodi_id')->constrained('prodis')->onDelete('cascade');
             $table->string('sks', 1);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();

@@ -11,8 +11,13 @@ class Matakuliah extends Model
 
     protected $guarded = ['id'];
 
+    public function prodi()
+    {
+        return $this->belongsTo(Prodi::class);
+    }
+
     public function mappingMatakuliahs()
     {
-        return $this->hasMany(MappingMatakuliah::class);
+        return $this->hasMany(MappingMatakuliah::class, 'matakuliah_id', 'id');
     }   
 }

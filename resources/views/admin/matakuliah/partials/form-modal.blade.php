@@ -32,6 +32,18 @@
                                 value="{{ $matakuliah->nama_matakuliah ?? old('nama_matakuliah') }}" />
                         </div>
                         <div class="fv-row mb-7">
+                            <label class="required fw-semibold fs-6 mb-2">Prodi</label>
+                            <select name="prodi_id" data-control="select2" data-placeholder="Pilih Prodi"
+                                class="form-select form-select-solid fw-bold">
+                                <option value="">Pilih Prodi</option>
+                                @foreach($prodi as $p)
+                                <option value="{{ $p->id }}" {{ $matakuliah->prodi_id == $p->id ? 'selected'
+                                    : '' }}>
+                                    {{ $p->nama_prodi }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="fv-row mb-7">
                             <label class="required fw-semibold fs-6 mb-2">Deskripsi</label>
                             <textarea name="deskripsi" class="form-control form-control-solid mb-3 mb-lg-0"
                                 placeholder="Masukkan Deskripsi Matakuliah">{{ $matakuliah->deskripsi ?? old('deskripsi') }}</textarea>

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Akademik\Matakuliah;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

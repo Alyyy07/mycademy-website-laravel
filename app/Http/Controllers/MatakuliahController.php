@@ -6,6 +6,7 @@ use App\DataTables\MatakuliahDataTable;
 use App\Http\Requests\MatakuliahRequest;
 use App\Models\Akademik\Matakuliah;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class MatakuliahController extends Controller
 {
@@ -24,9 +25,12 @@ class MatakuliahController extends Controller
     public function create()
     {
         $matakuliah = new Matakuliah();
+        $prodi = Cache::rememberForever('prodi', function () {
+            return \App\Models\Akademik\Prodi::all();
+        });
         $action = 'create';
         $route = route('akademik.matakuliah.store');
-        return view('admin.matakuliah.partials.form-modal', compact('route', 'matakuliah', 'action'));
+        return view('admin.matakuliah.partials.form-modal', compact('route', 'prodi', 'matakuliah', 'action'));
     }
 
     /**
@@ -56,8 +60,11 @@ class MatakuliahController extends Controller
     public function edit(Matakuliah $matakuliah)
     {
         $action = 'edit';
+        $prodi = Cache::rememberForever('prodi', function () {
+            return \App\Models\Akademik\Prodi::all();
+        });
         $route = route('akademik.matakuliah.update', $matakuliah->id);
-        return view('admin.matakuliah.partials.form-modal', compact('matakuliah', 'route', 'action'));
+        return view('admin.matakuliah.partials.form-modal', compact('matakuliah', 'prodi', 'route', 'action'));
     }
 
     /**
