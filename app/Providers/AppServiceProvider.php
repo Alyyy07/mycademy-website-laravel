@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Akademik\Fakultas;
 use App\Models\Akademik\Matakuliah;
+use App\Models\Akademik\Prodi;
 use App\Models\Akademik\TahunAjaran;
 use App\Models\User;
 use Illuminate\Support\ServiceProvider;
@@ -27,5 +28,6 @@ class AppServiceProvider extends ServiceProvider
         TahunAjaran::observe(\App\Observers\TahunAjaranObserver::class);
         Matakuliah::observe(\App\Observers\MatakuliahObserver::class);
         Fakultas::observe(\App\Observers\FakultasObserver::class);
+        Prodi::observe(\App\Observers\ProdiObserver::class);
     }
 }
