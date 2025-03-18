@@ -5,14 +5,25 @@
 @section('content')
 <div class="card">
     <div class="card-header border-0 pt-6">
-        <div class="card-title">
+        <div class="card-title gap-3">
             <div class="d-flex align-items-center position-relative my-1">
                 <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-5">
                     <span class="path1"></span>
                     <span class="path2"></span>
                 </i>
                 <input type="text" data-action="search" class="form-control form-control-solid w-250px ps-13"
-                    placeholder="Search Prodi" />
+                    placeholder="Cari" />
+            </div>
+            <div class="d-flex align-items-center position-relative my-1">
+                <select name="fakultas_id" data-table="#prodi-table" data-action="filter" data-url="{{ route('akademik.prodi.index') }}"
+                    data-control="select2" data-placeholder="Pilih Fakultas"
+                    class="form-select form-select-solid w-250px fw-bold">
+                    <option value="">Pilih Fakultas</option>
+                    @foreach($fakultas as $f)
+                    <option value="{{ $f->id }}">
+                        {{ $f->nama_fakultas }}</option>
+                    @endforeach
+                </select>
             </div>
         </div>
         <div class="card-toolbar">

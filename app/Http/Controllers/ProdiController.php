@@ -7,6 +7,7 @@ use App\Http\Requests\ProdiRequest;
 use App\Models\Akademik\Prodi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Yajra\DataTables\DataTables;
 
 class ProdiController extends Controller
 {
@@ -16,7 +17,27 @@ class ProdiController extends Controller
      */
     public function index(ProdiDataTable $dataTable)
     {
-        return $dataTable->render('admin.prodi.index');
+        if (request()->ajax() && request()->has('filter')) {
+            $search = request('filter') ?? '';
+            $data = Prodi::with('fakultas')->where('fakultas_id',$search)->get();
+            return DataTables::of($data)
+                ->addColumn('action', function ($prodi) {
+                    $editRoute = route('akademik.prodi.edit', $prodi->id);
+                    $deleteRoute = route('akademik.prodi.destroy', $prodi->id);
+                    return view('admin.prodi.partials.action', compact('editRoute', 'prodi', 'deleteRoute'));
+                })
+                ->editColumn('kode_prodi', function (Prodi $prodi) {
+                    return "<span class='badge badge-light-primary fs-7 py-3 px-4 text-capitalize'>$prodi->kode_prodi</span>";
+                })
+                ->rawColumns(['action', 'kode_prodi'])
+                ->make(true);
+        }
+
+        $fakultas = Cache::rememberForever('fakultas', function () {
+            return \App\Models\Akademik\Fakultas::all();
+        });
+
+        return $dataTable->render('admin.prodi.index', compact('fakultas'));
     }
 
     /**
