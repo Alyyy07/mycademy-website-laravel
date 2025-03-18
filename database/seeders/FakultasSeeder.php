@@ -20,5 +20,11 @@ class FakultasSeeder extends Seeder
             'deskripsi' => 'Fakultas ini adalah fakultas kedokteran',
             'logo' => 'image/fakultas-logo/dd1cfe2f182da4742bd948fd4bf6e03c8cbb08a3aadfbd99af0df876b648bf03.png',
         ]);
+        Fakultas::create([
+            'kode_fakultas' => 'FT',
+            'nama_fakultas' => 'Fakultas Teknik',
+            'email' => 'teknik@gmail.com',
+            'deskripsi' => 'Fakultas ini adalah fakultas teknik',
+        ]);
     }
 }
