@@ -3,6 +3,7 @@
 namespace App\Models\Akademik;
 
 
+use App\Models\MappingMatakuliah;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -46,5 +47,10 @@ class TahunAjaran extends Model
     {
         $data = self::where('is_active', '1')->first();
         return $data ? $data->toArray() : null;
+    }
+
+    public function mappingMatakuliah()
+    {
+        return $this->hasMany(MappingMatakuliah::class, 'tahun_ajaran_id', 'id');
     }
 }

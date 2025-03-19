@@ -51,5 +51,12 @@ class MatakuliahSeeder extends Seeder
             'deskripsi' => 'Matakuliah ini membahas tentang interaksi manusia dan komputer',
             'sks' => 3,
         ]);
+        Matakuliah::create([
+            'prodi_id' => 2,
+            'kode_matakuliah' => 'MK006',
+            'nama_matakuliah' => 'Pemrograman Web',
+            'deskripsi' => 'Matakuliah ini membahas tentang pemrograman web',
+            'sks' => 3,
+        ]);
     }
 }

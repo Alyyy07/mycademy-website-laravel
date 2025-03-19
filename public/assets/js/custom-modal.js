@@ -220,7 +220,6 @@ $(".permission-checkbox").on("change", function () {
 });
 
 $('.modal').on('shown.bs.modal', function () {
-    console.log('sda00');
     $('[data-control="select2"]').select2({
         dropdownParent: $(this),
         placeholder: $(this).attr('data-placeholder'),

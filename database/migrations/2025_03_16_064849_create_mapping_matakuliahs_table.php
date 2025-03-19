@@ -13,12 +13,17 @@ return new class extends Migration
     {
         Schema::create('mapping_matakuliahs', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('tahun_ajaran_id')->constrained('tahun_ajarans')->onDelete('cascade');
             $table->foreignId('matakuliah_id')->constrained('matakuliahs')->onDelete('cascade');
-            $table->foreignUlid('dosen_id')->constrained('users')->onDelete('cascade');
-            $table->foreignUlid('admin_verifier_id')->constrained('users')->onDelete('cascade');
+            $table->char('dosen_id', 36);
+            $table->char('admin_verifier_id', 36);
             $table->enum('semester', ['1', '2', '3', '4', '5', '6', '7', '8']);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
+
+            // Tambahkan foreign key secara manual
+            $table->foreign('dosen_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('admin_verifier_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

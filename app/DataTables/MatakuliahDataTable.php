@@ -38,10 +38,9 @@ class MatakuliahDataTable extends DataTable
     public function query(Matakuliah $model): QueryBuilder
     {
         $matakuliah = Cache::rememberForever('matakuliah', function () use ($model) {
-            return $model->newQuery()->with('prodi')->get()->toArray(); // Disimpan sebagai array
+            return $model->newQuery()->with('prodi')->get()->toArray();
         });
         
-        // Ubah ke collection sebelum `pluck()`
         return $model->newQuery()->whereIn('id', collect($matakuliah)->pluck('id'))->with('prodi');
     }
 

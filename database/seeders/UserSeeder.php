@@ -25,8 +25,8 @@ class UserSeeder extends Seeder
         $superAdmin->assignRole('super-admin');
 
         $adminMatakuliah = User::create([
-            'name' => 'Admin Matakuliah',
-            'email' => 'adminmatakuliah@gmail.com',
+            'name' => 'Admin Web',
+            'email' => 'adminweb@gmail.com',
             'email_verified_at' => now(),
             'password' => '12345',
             'remember_token' => Str::random(10),
@@ -35,8 +35,8 @@ class UserSeeder extends Seeder
         $adminMatakuliah->assignRole('admin-matakuliah');
 
         $dosen = User::create([
-            'name' => 'dosen',
-            'email' => 'dosen@gmail.com',
+            'name' => 'Dosen Web',
+            'email' => 'dosenweb@gmail.com',
             'email_verified_at' => now(),
             'password' => '12345',
             'remember_token' => Str::random(10),
@@ -44,11 +44,31 @@ class UserSeeder extends Seeder
 
         $dosen->assignRole('dosen');
 
+        $adminMatakuliah1 = User::create([
+            'name' => 'Admin OOP',
+            'email' => 'adminoop@gmail.com',
+            'email_verified_at' => now(),
+            'password' => '12345',
+            'remember_token' => Str::random(10),
+        ]);
+
+        $adminMatakuliah1->assignRole('admin-matakuliah');
+
+        $dosen1 = User::create([
+            'name' => 'Dosen OOP',
+            'email' => 'dosenoop@gmail.com',
+            'email_verified_at' => now(),
+            'password' => '12345',
+            'remember_token' => Str::random(10),
+        ]);
+
+        $dosen1->assignRole('dosen');
+
         $mahasiswa = User::create([
             'name' => 'mahasiswa',
             'email' => 'mahasiswa@gmail.com',
             'email_verified_at' => now(),
-            'password' =>'12345',
+            'password' => '12345',
             'remember_token' => Str::random(10),
         ]);
 
@@ -59,7 +79,7 @@ class UserSeeder extends Seeder
             'email' => 'mahasiswa2@gmail.com',
             'verification_code' => '123456',
             'email_verified_at' => null,
-            'password' =>'12345',
+            'password' => '12345',
             'remember_token' => Str::random(10),
         ]);
 

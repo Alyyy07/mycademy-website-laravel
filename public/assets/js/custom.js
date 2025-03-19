@@ -84,6 +84,5 @@ $('[data-action="filter"]').on('change', function () {
     let params = $(this).val();
     let url = $(this).attr('data-url');
     let table = $(this).attr('data-table');
-    console.log(params, url, table);
     $(table).DataTable().ajax.url(`${url}?filter=${params}`).load();
 });

@@ -55,6 +55,15 @@
         ]
     },
     {
+        "name": "Mapping Matakuliah",
+        "module": "mapping_matakuliah",
+        "slug": "mapping-matakuliah",
+        "icon": "ki-outline ki-clipboard",
+        "url": "/mapping-matakuliah",
+        "order": 2,
+        "childrens": []
+    },
+    {
         "name": "User Management",
         "module": "user_management",
         "slug": "user_management",
