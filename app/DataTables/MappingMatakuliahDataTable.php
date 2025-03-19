@@ -66,7 +66,7 @@ class MappingMatakuliahDataTable extends DataTable
     {
         $mappingMatakuliah = Cache::rememberForever('mapping_matakuliah', function () use ($model) {
             return $model->newQuery()
-                ->with(['tahunAjaran', 'matakuliah', 'dosen', 'adminVerifier']);
+                ->with(['tahunAjaran', 'matakuliah', 'dosen', 'adminVerifier'])->get();
         });
 
         return $model->newQuery()->whereIn('id', collect($mappingMatakuliah)->pluck('id'))->with(['tahunAjaran', 'matakuliah', 'dosen', 'adminVerifier']);
