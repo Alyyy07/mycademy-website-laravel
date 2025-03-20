@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mapping_matakuliahs', function (Blueprint $table) {
+        Schema::create('fakultas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('semester_id')->constrained('semesters')->onDelete('cascade');
-            $table->foreignId('matakuliah_id')->constrained('matakuliahs')->onDelete('cascade');
-            $table->foreignUlid('dosen_id')->constrained('users')->onDelete('cascade');
-            $table->foreignUlid('admin_verifier_id')->constrained('users')->onDelete('cascade');
+            $table->string('kode_fakultas', 5)->unique();
+            $table->string('nama_fakultas', 50);
+            $table->text('deskripsi')->nullable();
+            $table->string('logo',2048)->nullable();
+            $table->string('email')->unique();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
         });
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('mapping_matakuliahs');
+        Schema::dropIfExists('fakultas');
     }
 };

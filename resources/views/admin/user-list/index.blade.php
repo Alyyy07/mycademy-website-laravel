@@ -12,17 +12,11 @@
                     <span class="path2"></span>
                 </i>
                 <input type="text" data-action="search" class="form-control form-control-solid w-250px ps-13"
-                    placeholder="Search user" />
+                    placeholder="Cari" />
             </div>
         </div>
         <div class="card-toolbar">
             <div class="d-flex justify-content-end" user-toolbar="base">
-                {{-- <button type="button" class="btn btn-light-primary me-3" data-bs-toggle="modal"
-                    data-bs-target="#kt_modal_export_users">
-                    <i class="ki-duotone ki-exit-up fs-2">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                    </i>Export</button> --}}
                 @can($globalModule['create'])
                 <button type="button" button-action="show" modal-id="#user-modal"
                     button-url="{{ route('user-management.users.create') }}" class="btn btn-primary">
@@ -51,7 +45,6 @@
                     @endcan
                 </div>
             </div>
-            {{-- @include('admin.user-list.partials.export-modal') --}}
         </div>
     </div>
     <div class="card-body py-4">

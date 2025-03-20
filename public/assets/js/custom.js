@@ -79,3 +79,10 @@ $('[button-action="delete"]').on("click", function (e) {
         }
     });
 });
+
+$('[data-action="filter"]').on('change', function () {
+    let params = $(this).val();
+    let url = $(this).attr('data-url');
+    let table = $(this).attr('data-table');
+    $(table).DataTable().ajax.url(`${url}?filter=${params}`).load();
+});

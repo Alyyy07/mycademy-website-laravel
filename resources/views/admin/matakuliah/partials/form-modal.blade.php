@@ -11,7 +11,7 @@
                 </div>
             </div>
             <div class="modal-body px-5 my-7">
-                <form id="user-form" class="form" action="{{ $route }}" modal-action="{{ $action }}"
+                <form id="matakuliah-form" class="form" action="{{ $route }}" modal-action="{{ $action }}"
                     enctype="multipart/form-data">
                     @if($action == 'edit')
                     @method('PUT')
@@ -30,6 +30,18 @@
                                 class="form-control form-control-solid mb-3 mb-lg-0"
                                 placeholder="Masukkan Nama Matakuliah"
                                 value="{{ $matakuliah->nama_matakuliah ?? old('nama_matakuliah') }}" />
+                        </div>
+                        <div class="fv-row mb-7">
+                            <label class="required fw-semibold fs-6 mb-2">Prodi</label>
+                            <select name="prodi_id" data-control="select2" data-placeholder="Pilih Prodi"
+                                class="form-select form-select-solid fw-bold">
+                                <option value="">Pilih Prodi</option>
+                                @foreach($prodi as $p)
+                                <option value="{{ $p->id }}" {{ $matakuliah->prodi_id == $p->id ? 'selected'
+                                    : '' }}>
+                                    {{ $p->nama_prodi }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="fv-row mb-7">
                             <label class="required fw-semibold fs-6 mb-2">Deskripsi</label>

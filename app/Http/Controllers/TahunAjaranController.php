@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DataTables\TahunAjaranDataTable;
 use App\Http\Requests\TahunAjaranRequest;
-use App\Models\TahunAjaran;
+use App\Models\Akademik\TahunAjaran;
 use Illuminate\Http\Request;
 
 class TahunAjaranController extends Controller

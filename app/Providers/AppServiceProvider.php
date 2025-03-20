@@ -2,13 +2,14 @@
 
 namespace App\Providers;
 
-use App\Models\Matakuliah;
-use App\Models\Roles;
-use App\Models\Setting\Menus;
-use App\Models\TahunAjaran;
+use App\Models\Akademik\Fakultas;
+use App\Models\Akademik\Matakuliah;
+use App\Models\Akademik\Prodi;
+use App\Models\Akademik\TahunAjaran;
+use App\Models\MappingMatakuliah;
+use App\Models\RpsMatakuliah;
 use App\Models\User;
 use Illuminate\Support\ServiceProvider;
-use Spatie\Permission\Models\Permission;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,5 +29,9 @@ class AppServiceProvider extends ServiceProvider
         User::observe(\App\Observers\UserObserver::class);
         TahunAjaran::observe(\App\Observers\TahunAjaranObserver::class);
         Matakuliah::observe(\App\Observers\MatakuliahObserver::class);
+        Fakultas::observe(\App\Observers\FakultasObserver::class);
+        Prodi::observe(\App\Observers\ProdiObserver::class);
+        MappingMatakuliah::observe(\App\Observers\MappingMatakuliahObserver::class);
+        RpsMatakuliah::observe(\App\Observers\RpsMatakuliahObserver::class);
     }
 }
