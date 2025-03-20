@@ -28,10 +28,24 @@ class ProdiDataTable extends DataTable
                 $deleteRoute = route('akademik.prodi.destroy', $prodi->id);
                 return view('admin.prodi.partials.action', compact('editRoute', 'prodi', 'deleteRoute'));
             })
+            ->editColumn('fakultas.nama_fakultas', function (Prodi $prodi) {
+                $photo_path = $prodi->fakultas->logo ?? 'image/profile-photo/blank.png';
+                return "<div class='d-flex align-items-center text-start'>
+                <div class='symbol symbol-circle symbol-50px overflow-hidden me-3'>
+                            <div class='symbol-label'>
+                                <img src='" . asset("storage/$photo_path") . "' alt='" . $prodi->fakultas->nama_fakultas . "' class='w-100' />
+                            </div>
+                        </div>
+                        <div class='d-flex flex-column'>
+                            <p class='text-gray-800 mb-1 fw-bold text-capitalize'>" . $prodi->fakultas->nama_fakultas . "</p>
+                            <span>" . $prodi->fakultas->email . "</span>
+                        </div>
+                        </div>";
+            })
             ->editColumn('kode_prodi', function (Prodi $prodi) {
                 return "<span class='badge badge-light-primary fs-7 py-3 px-4 text-capitalize'>$prodi->kode_prodi</span>";
             })
-            ->rawColumns(['action', 'kode_prodi']);
+            ->rawColumns(['action','fakultas.nama_fakultas', 'kode_prodi']);
     }
 
     /**

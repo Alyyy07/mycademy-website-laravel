@@ -17,8 +17,8 @@ class ProdiController extends Controller
      */
     public function index(ProdiDataTable $dataTable)
     {
-        if (request()->ajax() && request()->has('filter')) {
-            $search = request('filter') ?? '';
+        if (request()->ajax() && request()->has('filter') && request()->filter != '') {
+            $search = request()->filter;
             $data = Prodi::with('fakultas')->where('fakultas_id',$search)->get();
             return DataTables::of($data)
                 ->addColumn('action', function ($prodi) {
