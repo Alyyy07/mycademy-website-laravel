@@ -26,7 +26,9 @@ class TahunAjaranRequest extends FormRequest
         $tahunAjaranId = $this->route('tahun_ajaran');
         return [
             'kode_tahun_ajaran' => [
-                'required', 'string', 'max:5',
+                'required',
+                'string',
+                'max:5',
                 Rule::unique('tahun_ajarans', 'kode_tahun_ajaran')->ignore($tahunAjaranId)
             ],
             'tahun_ajaran_awal' => ['required', 'integer', 'digits:4', 'min:2000', 'max:2099'],
@@ -34,6 +36,7 @@ class TahunAjaranRequest extends FormRequest
             'tanggal_mulai' => [
                 'required',
                 'date',
+                'date_format:Y-m-d',
                 function ($attribute, $value, $fail) {
                     $tahunAjaranAwal = $this->input('tahun_ajaran_awal');
                     if ($tahunAjaranAwal && date('Y', strtotime($value)) != $tahunAjaranAwal) {
@@ -43,7 +46,7 @@ class TahunAjaranRequest extends FormRequest
             ],
             'tanggal_selesai' => [
                 'required',
-                'date',
+                'date','date_format:Y-m-d',
                 'after:tanggal_mulai',
                 function ($attribute, $value, $fail) {
                     $tahunAjaranAkhir = $this->input('tahun_ajaran_akhir');

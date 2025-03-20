@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('tahun_ajaran', 200);
             $table->string('kode_tahun_ajaran', 5)->unique();
-            $table->date('tanggal_mulai')->nullable();
-            $table->date('tanggal_selesai')->nullable();
+            $table->date('tanggal_mulai');
+            $table->date('tanggal_selesai');
             $table->boolean('is_active')->default(0);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
