@@ -64,6 +64,15 @@
         "childrens": []
     },
     {
+        "name": "RPS Matakuliah",
+        "module": "rps_matakuliah",
+        "slug": "rps-matakuliah",
+        "icon": "ki-outline ki-book-square",
+        "url": "/rps-matakuliah",
+        "order": 2,
+        "childrens": []
+    },
+    {
         "name": "User Management",
         "module": "user_management",
         "slug": "user_management",

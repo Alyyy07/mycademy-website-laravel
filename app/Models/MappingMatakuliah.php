@@ -21,6 +21,11 @@ class MappingMatakuliah extends Model
     {
         return $this->belongsTo(Matakuliah::class);
     }
+
+    public function rpsMatakuliahs()
+    {
+        return $this->belongsTo(RpsMatakuliah::class);
+    }
     public function dosen()
     {
         return $this->belongsTo(User::class, 'dosen_id');

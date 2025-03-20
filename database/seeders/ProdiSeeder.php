@@ -15,9 +15,9 @@ class ProdiSeeder extends Seeder
     {
         Prodi::create([
             'fakultas_id' => 1,
-            'kode_prodi' => 'DK',
-            'nama_prodi' => 'Dokter',
-            'deskripsi' => 'Program Studi Dokter',
+            'kode_prodi' => 'DU',
+            'nama_prodi' => 'Dokter Umum',
+            'deskripsi' => 'Program Studi Dokter Umum',
         ]);
         Prodi::create([
             'fakultas_id' => 2,

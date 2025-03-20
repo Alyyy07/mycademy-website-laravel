@@ -7,6 +7,7 @@ use App\Models\Akademik\Matakuliah;
 use App\Models\Akademik\Prodi;
 use App\Models\Akademik\TahunAjaran;
 use App\Models\MappingMatakuliah;
+use App\Models\RpsMatakuliah;
 use App\Models\User;
 use Illuminate\Support\ServiceProvider;
 
@@ -31,5 +32,6 @@ class AppServiceProvider extends ServiceProvider
         Fakultas::observe(\App\Observers\FakultasObserver::class);
         Prodi::observe(\App\Observers\ProdiObserver::class);
         MappingMatakuliah::observe(\App\Observers\MappingMatakuliahObserver::class);
+        RpsMatakuliah::observe(\App\Observers\RpsMatakuliahObserver::class);
     }
 }
