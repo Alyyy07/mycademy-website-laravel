@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MappingMatakuliahController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RpsDetailController;
 use App\Http\Controllers\RpsMatakuliahController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,8 +24,10 @@ Route::middleware(['auth','verified'])->group(function () {
     require __DIR__.'/admin/akademik.php';
 
     Route::resource('/mapping-matakuliah', MappingMatakuliahController::class)->names('mapping-matakuliah');
+
     Route::resource('/rps-matakuliah', RpsMatakuliahController::class)->names('rps-matakuliah');
-    
+
+    Route::resource('/rps-detail', RpsDetailController::class)->names('rps-detail');
 });
 
 require __DIR__.'/auth.php';

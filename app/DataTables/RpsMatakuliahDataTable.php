@@ -5,6 +5,7 @@ namespace App\DataTables;
 use App\Models\RpsMatakuliah;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Column;
@@ -23,14 +24,14 @@ class RpsMatakuliahDataTable extends DataTable
     {
         return (new EloquentDataTable($query))
             ->addColumn('action', function ($rps) {
-                $showRoute = route('rps-matakuliah.show', $rps->id);
+                $showRoute = route('rps-detail.index', ['id' => $rps->id]);
                 return view('admin.rps-matakuliah.partials.action', compact('rps', 'showRoute'));
             })
             ->editColumn('tanggal_mulai', function ($rps) {
-                return \Carbon\Carbon::parse($rps->tanggal_mulai)->format('d F Y');
+                return \Carbon\Carbon::parse($rps->tanggal_mulai)->locale('id')->translatedFormat('d F Y');
             })
             ->editColumn('tanggal_selesai', function ($rps) {
-                return \Carbon\Carbon::parse($rps->tanggal_selesai)->format('d F Y');
+                return \Carbon\Carbon::parse($rps->tanggal_selesai)->locale('id')->translatedFormat('d F Y');
             })
             ->rawColumns(['action']);
     }
@@ -40,10 +41,18 @@ class RpsMatakuliahDataTable extends DataTable
      */
     public function query(RpsMatakuliah $model): QueryBuilder
     {
-        $rpsMatakuliah = Cache::rememberForever('rps_matakuliah_with_mapping_matakuliah', function () use ($model) {
-            return $model->newQuery()->with(['mappingMatakuliah.matakuliah', 'mappingMatakuliah.tahunAjaran'])->get()->toArray();
-        });
-        
+        $user = Auth::user();
+
+        if ($user->roles->first()->name === 'admin-matakuliah') {
+            $rpsMatakuliah = $model->newQuery()->with(['mappingMatakuliah.matakuliah', 'mappingMatakuliah.tahunAjaran'])->whereHas('mappingMatakuliah', function ($query) use ($user) {
+                $query->where('admin_verifier_id', $user->id);
+            })->get()->toArray();
+        } else {
+            $rpsMatakuliah = Cache::rememberForever('rps_matakuliah_with_mapping_matakuliah', function () use ($model) {
+                return $model->newQuery()->with(['mappingMatakuliah.matakuliah', 'mappingMatakuliah.tahunAjaran'])->get()->toArray();
+            });
+        }
+
         return $model->newQuery()->whereIn('id', array_column($rpsMatakuliah, 'id'))->with(['mappingMatakuliah.matakuliah', 'mappingMatakuliah.tahunAjaran']);
     }
 
@@ -77,7 +86,6 @@ class RpsMatakuliahDataTable extends DataTable
             Column::make('mapping_matakuliah.semester')->title('Semester')->orderable(false)->addClass('text-center'),
             Column::make('tanggal_mulai')->title('Tanggal Mulai'),
             Column::make('tanggal_selesai')->title('Tanggal Selesai'),
-            Column::make('total_sessions')->title('Total Pertemuan')->addClass('text-center'),
             Column::computed('action')->addClass('text-center')
                 ->exportable(false)
                 ->printable(false)
