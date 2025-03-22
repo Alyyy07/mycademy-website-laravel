@@ -14,27 +14,6 @@
                 <input type="text" data-action="search" class="form-control form-control-solid w-250px ps-13"
                     placeholder="Cari" />
             </div>
-            <div class="d-flex align-items-center position-relative my-1">
-                <div class="input-group input-group-solid flex-nowrap">
-                    <span class="input-group-text">
-                        <i class="ki-duotone ki-notepad-bookmark fs-3"><span class="path1"></span><span
-                                class="path2"></span><span class="path3"></span><span class="path4"></span><span
-                                class="path5"></span><span class="path6"></span></i>
-                    </span>
-                    <div class="overflow-hidden flex-grow-1">
-                        <select name="matakuliah_id" data-table="#rpsmatakuliah-table" data-action="filter"
-                            data-allow-clear="true" data-url="{{ route('rps-matakuliah.index') }}"
-                            data-control="select2" data-placeholder="Pilih Matakuliah"
-                            class="form-select form-select-solid w-250px fw-bold">
-                            <option value="">Pilih Matakuliah</option>
-                            @foreach($matakuliah as $m)
-                            <option value="{{ $m->id }}">
-                                {{ $m->nama_matakuliah }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-            </div>
         </div>
         <div class="card-toolbar">
             <div class="d-flex justify-content-end" user-toolbar="base">

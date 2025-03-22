@@ -24,7 +24,7 @@ class MappingMatakuliah extends Model
 
     public function rpsMatakuliahs()
     {
-        return $this->belongsTo(RpsMatakuliah::class);
+        return $this->hasOne(RpsMatakuliah::class);
     }
     public function dosen()
     {

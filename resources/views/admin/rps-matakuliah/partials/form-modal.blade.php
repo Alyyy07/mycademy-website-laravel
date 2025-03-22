@@ -41,12 +41,6 @@
                                 class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Masukkan Tanggal Selesai"
                                 value="{{ $rps->tanggal_selesai ?? old('tanggal_selesai') }}" />
                         </div>
-                        <div class="fv-row mb-7">
-                            <label class="required fw-semibold fs-6 mb-2">Jumlah Pertemuan</label>
-                            <input type="number" name="jumlah_pertemuan" class="form-control form-control-solid mb-3 mb-lg-0"
-                                placeholder="Masukkan Jumlah Pertemuan" min="1" max="99"
-                                value="{{ $rps->jumlah_pertemuan ?? old('jumlah_pertemuan') }}" />
-                        </div>
                     </div>
                     <div class="text-center pt-10">
                         <button type="reset" class="btn btn-light me-3">Reset</button>
