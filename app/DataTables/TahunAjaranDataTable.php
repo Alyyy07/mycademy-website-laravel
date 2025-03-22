@@ -39,10 +39,10 @@ class TahunAjaranDataTable extends DataTable
                 return "<span class='badge badge-light-primary fs-7 py-3 px-4 text-capitalize'>$tahunAjaran->kode_tahun_ajaran</span>";
             })
             ->editColumn('tanggal_mulai', function (TahunAjaran $tahunAjaran) {
-                return \Carbon\Carbon::parse($tahunAjaran->tanggal_mulai)->format('d F Y');
+                return \Carbon\Carbon::parse($tahunAjaran->tanggal_mulai)->locale('id')->translatedFormat('d F Y');
             })
             ->editColumn('tanggal_selesai', function (TahunAjaran $tahunAjaran) {
-                return \Carbon\Carbon::parse($tahunAjaran->tanggal_selesai)->format('d F Y');
+                return \Carbon\Carbon::parse($tahunAjaran->tanggal_selesai)->locale('id')->translatedFormat('d F Y');
             })
             ->rawColumns(['action', 'is_active', 'kode_tahun_ajaran']);
     }
