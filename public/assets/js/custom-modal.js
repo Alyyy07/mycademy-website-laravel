@@ -58,10 +58,18 @@ $('[data-kt-image-input-action="remove"]').on("click", function () {
 
 $("form").on("submit", function (e) {
     e.preventDefault();
-    form = $(this);
-    url = $(this).attr("action");
-    isCreateAction = $(this).attr("modal-action") === "create";
-    formData = new FormData(this);
+    let form = $(this);
+    let url = form.attr("action");
+    let isCreateAction = form.attr("modal-action") === "create";
+
+    // Simpan data dari CKEditor ke input hidden sebelum submit
+    $(".ckeditor").each(function (index) {
+        let editorData = window["editor" + index].getData();
+        $(this).find("input[type='hidden']").val(editorData);
+    });
+
+    let formData = new FormData(this);
+
     Swal.fire({
         text:
             "Apakah anda yakin ingin " +
@@ -219,10 +227,20 @@ $(".permission-checkbox").on("change", function () {
     }
 });
 
-$('.modal').on('shown.bs.modal', function () {
-    $('[data-control="select2"]').select2({
+$(".modal").on("shown.bs.modal", function () {
+    $(' form [data-control="select2"]').select2({
         dropdownParent: $(this),
-        placeholder: $(this).attr('data-placeholder'),
-        allowClear: true
+        placeholder: $(this).attr("data-placeholder"),
+        allowClear: true,
+    });
+});
+
+$('input[type="date"]').each(function () {
+    let defaultDate = $(this).val();
+    $(this).flatpickr({
+        dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "d F Y",
+        defaultDate: defaultDate ? defaultDate : null,
     });
 });

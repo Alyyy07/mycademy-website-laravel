@@ -31,7 +31,9 @@ $('table [data-kt-menu-trigger="click"]').on("click", function (e) {
             .removeClass("show")
             .prop("style", "")
             .appendTo(button.parent());
-        $('table [data-kt-menu-trigger="click"]').removeClass("show menu-dropdown");
+        $('table [data-kt-menu-trigger="click"]').removeClass(
+            "show menu-dropdown"
+        );
 
         button.addClass("show menu-dropdown");
         activeDropdown = menu; // Simpan dropdown yang sedang aktif
@@ -106,18 +108,22 @@ $('table [data-kt-menu-trigger="click"]').on("click", function (e) {
 
 // Tutup dropdown jika klik di luar area
 $(document).on("click", function (e) {
-    if (!$(e.target).closest('table [data-kt-menu-trigger="click"], .menu').length) {
+    if (
+        !$(e.target).closest('table [data-kt-menu-trigger="click"], .menu')
+            .length
+    ) {
         $(".menu")
             .removeClass("show")
             .prop("style", "")
             .each(function () {
                 $(this).appendTo($(this).prev().parent());
             });
-        $('table [data-kt-menu-trigger="click"]').removeClass("show menu-dropdown");
+        $('table [data-kt-menu-trigger="click"]').removeClass(
+            "show menu-dropdown"
+        );
         activeDropdown = null; // Reset dropdown aktif
     }
 });
-
 
 // Hapus event scroll jika dropdown sudah tertutup agar tidak muncul kembali saat scroll
 $(window).on("scroll", function () {
@@ -186,10 +192,21 @@ $('[data-action="delete"]').on("click", function (e) {
                     Swal.fire({
                         text: response.message,
                         icon: "success",
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            if (
+                                $("table").length > 0 &&
+                                window.LaravelDataTables &&
+                                window.LaravelDataTables[$("table").attr("id")]
+                            ) {
+                                window.LaravelDataTables[
+                                    $("table").attr("id")
+                                ].ajax.reload();
+                            } else {
+                                window.location.reload();
+                            }
+                        }
                     });
-                    window.LaravelDataTables[
-                        $("table").attr("id")
-                    ].ajax.reload();
                 },
                 error: function (xhr, status, error) {
                     Swal.fire({
