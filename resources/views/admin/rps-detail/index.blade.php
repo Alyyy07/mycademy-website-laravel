@@ -18,9 +18,10 @@
         <div class="card-toolbar">
             <div class="d-flex justify-content-end" user-toolbar="base">
                 @can($globalModule['create'])
-                <button type="button" button-action="show" modal-id="#rps-matakuliah-modal"
-                    button-url="{{ route('rps-matakuliah.create') }}" class="btn btn-primary">
-                    <i class="ki-duotone ki-plus fs-2"></i>Tambah RPS</button>
+                <button type="button" button-action="show" modal-id="#rps-detail-modal"
+                button-url="{{ route('rps-detail.create',['id'=>$rpsMatakuliah->id]) }}"
+                class="btn btn-primary">
+                <i class="ki-duotone ki-plus fs-2"></i>Tambah Detail RPS</button>
                 @endcan
             </div>
         </div>

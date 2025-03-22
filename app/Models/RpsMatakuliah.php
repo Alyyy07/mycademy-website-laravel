@@ -15,4 +15,9 @@ class RpsMatakuliah extends Model
     {
         return $this->belongsTo(MappingMatakuliah::class);
     }
+
+    public function rpsDetails()
+    {
+        return $this->hasMany(RpsDetail::class);
+    }
 }

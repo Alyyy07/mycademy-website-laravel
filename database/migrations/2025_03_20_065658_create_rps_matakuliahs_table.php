@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('mapping_matakuliah_id')->constrained()->onDelete('cascade');
             $table->date('tanggal_mulai');
             $table->date('tanggal_selesai');
-            $table->integer('total_sessions')->default(16);
             $table->timestamps();
         });
     }

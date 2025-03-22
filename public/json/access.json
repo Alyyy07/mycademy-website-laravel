@@ -39,9 +39,6 @@
             "mapping_matakuliah-delete",
             "rps_matakuliah",
             "rps_matakuliah-read",
-            "rps_matakuliah-create",
-            "rps_matakuliah-update",
-            "rps_matakuliah-delete",
             "user_management",
             "user_management-create",
             "user_management-read",
@@ -66,7 +63,12 @@
             "dashboard-read",
             "dashboard-update",
             "dashboard-create",
-            "dashboard-delete"
+            "dashboard-delete",
+            "rps_matakuliah",
+            "rps_matakuliah-read",
+            "rps_matakuliah-create",
+            "rps_matakuliah-update",
+            "rps_matakuliah-delete"
         ]
     },
     {

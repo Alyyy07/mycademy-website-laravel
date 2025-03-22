@@ -41,9 +41,10 @@
                                 class="form-select form-select-solid fw-bold">
                                 <option value="">Pilih Matakuliah</option>
                                 @foreach($matakuliah as $m)
-                                <option value="{{ $m->id }}" {{ $mappingMatakuliah->matakuliah_id == $m->id ? 'selected'
+                                <option value="{{ $m['id'] }}" {{ $mappingMatakuliah->matakuliah_id == $m['id'] ?
+                                    'selected'
                                     : '' }}>
-                                    {{ $m->nama_matakuliah }}</option>
+                                    {{ $m['nama_matakuliah'] }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -89,8 +90,7 @@
             @else
             <div class="modal-body px-5">
                 <div class="d-flex flex-column scroll-y px-5 px-lg-10">
-                    <div
-                        class="notice d-flex bg-light-danger rounded border-danger border border-dashed rounded-3 p-6">
+                    <div class="notice d-flex bg-light-danger rounded border-danger border border-dashed rounded-3 p-6">
                         <!--begin::Wrapper-->
                         <div class="d-flex flex-stack flex-grow-1">
                             <!--begin::Content-->

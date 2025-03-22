@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\RpsDetailDataTable;
 use App\DataTables\RpsMatakuliahDataTable;
+use App\Http\Requests\RpsDetailRequest;
 use App\Http\Requests\RpsMatakuliahRequest;
 use App\Models\Akademik\Matakuliah;
 use App\Models\MappingMatakuliah;
+use App\Models\RpsDetail;
 use App\Models\RpsMatakuliah;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Yajra\DataTables\DataTables;
 
@@ -28,16 +33,13 @@ class RpsMatakuliahController extends Controller
                 ->get();
             return DataTables::of($data)
                 ->addColumn('action', function ($rps) {
-                    $showRoute = route('rps-matakuliah.show', $rps->id);
+                    $showRoute = route('rps-detail.index', ['id' => $rps->id]);
                     return view('admin.rps-matakuliah.partials.action', compact('rps', 'showRoute'));
                 })
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        $matakuliah = Cache::rememberForever('matakuliah', function () {
-            return Matakuliah::all();
-        });
-        return $dataTable->render('admin.rps-matakuliah.index', compact('matakuliah'));
+        return $dataTable->render('admin.rps-matakuliah.index');
     }
 
     /**
@@ -46,7 +48,8 @@ class RpsMatakuliahController extends Controller
     public function create()
     {
         $rps = new RpsMatakuliah();
-        $mappingMatakuliah = collect(MappingMatakuliah::with('matakuliah')->get());
+        $userId = Auth::user()->id;
+        $mappingMatakuliah = collect(MappingMatakuliah::with('matakuliah')->where('admin_verifier_id', $userId)->whereDoesntHave('rpsMatakuliahs')->get());
         $action = 'create';
         $route = route('rps-matakuliah.store');
         return view('admin.rps-matakuliah.partials.form-modal', compact('route', 'mappingMatakuliah', 'rps', 'action'));
@@ -68,7 +71,7 @@ class RpsMatakuliahController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(RpsMatakuliah $rpsMatakuliah)
+    public function show()
     {
         //
     }
@@ -84,11 +87,10 @@ class RpsMatakuliahController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, RpsMatakuliah $rpsMatakuliah)
+    public function update(RpsMatakuliahRequest $request, RpsMatakuliah $rpsMatakuliah)
     {
         //
     }
-
     /**
      * Remove the specified resource from storage.
      */
