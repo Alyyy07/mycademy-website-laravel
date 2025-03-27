@@ -7,6 +7,7 @@ use App\DataTables\RpsMatakuliahDataTable;
 use App\Http\Requests\RpsDetailRequest;
 use App\Http\Requests\RpsMatakuliahRequest;
 use App\Models\Akademik\Matakuliah;
+use App\Models\Akademik\TahunAjaran;
 use App\Models\MappingMatakuliah;
 use App\Models\RpsDetail;
 use App\Models\RpsMatakuliah;
@@ -28,7 +29,7 @@ class RpsMatakuliahController extends Controller
             $search = request('filter');
             $data = RpsMatakuliah::with(['mappingMatakuliah.matakuliah', 'mappingMatakuliah.tahunAjaran'])
                 ->whereHas('mappingMatakuliah', function ($query) use ($search) {
-                    $query->where('matakuliah_id', $search);
+                    $query->where('tahun_ajaran_id', $search);
                 })
                 ->get();
             return DataTables::of($data)
@@ -36,10 +37,19 @@ class RpsMatakuliahController extends Controller
                     $showRoute = route('rps-detail.index', ['id' => $rps->id]);
                     return view('admin.rps-matakuliah.partials.action', compact('rps', 'showRoute'));
                 })
-                ->rawColumns(['action'])
+                ->editColumn('tanggal_mulai', function ($rps) {
+                    return Carbon::parse($rps->tanggal_mulai)->locale('id')->translatedFormat('d F Y');
+                })
+                ->editColumn('tanggal_selesai', function ($rps) {
+                    return Carbon::parse($rps->tanggal_selesai)->locale('id')->translatedFormat('d F Y');
+                })
+                ->rawColumns(['action', 'tanggal_mulai', 'tanggal_selesai'])
                 ->make(true);
         }
-        return $dataTable->render('admin.rps-matakuliah.index');
+        $tahunAjaran = Cache::rememberForever('tahun_ajaran', function () {
+            return TahunAjaran::all();
+        });
+        return $dataTable->render('admin.rps-matakuliah.index', compact('tahunAjaran'));
     }
 
     /**
