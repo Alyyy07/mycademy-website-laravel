@@ -25,7 +25,9 @@ class RpsMatakuliahDataTable extends DataTable
         return (new EloquentDataTable($query))
             ->addColumn('action', function ($rps) {
                 $showRoute = route('rps-detail.index', ['id' => $rps->id]);
-                return view('admin.rps-matakuliah.partials.action', compact('rps', 'showRoute'));
+                $editRoute = route('rps-matakuliah.edit', $rps->id);
+                $deleteRoute = route('rps-matakuliah.destroy', $rps->id);
+                return view('admin.rps-matakuliah.partials.action', compact('rps', 'showRoute', 'editRoute', 'deleteRoute'));
             })
             ->editColumn('tanggal_mulai', function ($rps) {
                 return \Carbon\Carbon::parse($rps->tanggal_mulai)->locale('id')->translatedFormat('d F Y');

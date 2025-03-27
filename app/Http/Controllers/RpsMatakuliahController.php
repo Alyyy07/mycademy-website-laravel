@@ -47,12 +47,12 @@ class RpsMatakuliahController extends Controller
      */
     public function create()
     {
-        $rps = new RpsMatakuliah();
+        $rpsMatakuliah = new RpsMatakuliah();
         $userId = Auth::user()->id;
         $mappingMatakuliah = collect(MappingMatakuliah::with('matakuliah')->where('admin_verifier_id', $userId)->whereDoesntHave('rpsMatakuliahs')->get());
         $action = 'create';
         $route = route('rps-matakuliah.store');
-        return view('admin.rps-matakuliah.partials.form-modal', compact('route', 'mappingMatakuliah', 'rps', 'action'));
+        return view('admin.rps-matakuliah.partials.form-modal', compact('route', 'mappingMatakuliah', 'rpsMatakuliah', 'action'));
     }
 
     /**
@@ -81,7 +81,19 @@ class RpsMatakuliahController extends Controller
      */
     public function edit(RpsMatakuliah $rpsMatakuliah)
     {
-        //
+        $userId = Auth::user()->id;
+
+        $mappingMatakuliah = MappingMatakuliah::with('matakuliah')
+            ->where('admin_verifier_id', $userId)
+            ->where(function ($query) use ($rpsMatakuliah) {
+                $query->whereDoesntHave('rpsMatakuliahs')
+                    ->orWhere('id', $rpsMatakuliah->mapping_matakuliah_id);
+            })
+            ->get();
+
+        $action = 'edit';
+        $route = route('rps-matakuliah.update', $rpsMatakuliah->id);
+        return view('admin.rps-matakuliah.partials.form-modal', compact('route', 'mappingMatakuliah', 'rpsMatakuliah', 'action'));
     }
 
     /**
@@ -89,13 +101,25 @@ class RpsMatakuliahController extends Controller
      */
     public function update(RpsMatakuliahRequest $request, RpsMatakuliah $rpsMatakuliah)
     {
-        //
+        $request->validated();
+        if($rpsMatakuliah->rpsDetails()->exists()) {
+            return response()->json(['status' => 'error', 'message' => 'Data tidak dapat diubah karena sudah memiliki detail']);
+        }
+        $result = $rpsMatakuliah->update($request->all());
+        if ($result) {
+            return response()->json(['status' => 'success', 'message' => 'Data berhasil diubah']);
+        }
+        return response()->json(['status' => 'error', 'message' => 'Data gagal diubah']);
     }
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(RpsMatakuliah $rpsMatakuliah)
     {
-        //
+        $result = $rpsMatakuliah->delete();
+        if ($result) {
+            return response()->json(['status' => 'success', 'message' => 'Data berhasil dihapus']);
+        }
+        return response()->json(['status' => 'error', 'message' => 'Data gagal dihapus']);
     }
 }

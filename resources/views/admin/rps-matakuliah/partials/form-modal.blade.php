@@ -23,7 +23,7 @@
                                 data-placeholder="Pilih Matakuliah" class="form-select form-select-solid fw-bold">
                                 <option value="">Pilih Matakuliah</option>
                                 @foreach($mappingMatakuliah as $m)
-                                <option value="{{ $m->id }}" {{ $rps->mapping_matakuliah_id == $m->id ? 'selected'
+                                <option value="{{ $m->id }}" {{ $rpsMatakuliah->mapping_matakuliah_id == $m->id ? 'selected'
                                     : '' }}>
                                     {{ $m->matakuliah->nama_matakuliah }}</option>
                                 @endforeach
@@ -33,13 +33,13 @@
                             <label class="required fw-semibold fs-6 mb-2">Tanggal Mulai</label>
                             <input type="date" name="tanggal_mulai" class="form-control form-control-solid mb-3 mb-lg-0"
                                 placeholder="Masukkan Tanggal Mulai"
-                                value="{{ $rps->tanggal_mulai ?? old('tanggal_mulai') }}" />
+                                value="{{ $rpsMatakuliah->tanggal_mulai ?? old('tanggal_mulai') }}" />
                         </div>
                         <div class="fv-row mb-7">
                             <label class="required fw-semibold fs-6 mb-2">Tanggal Selesai</label>
                             <input type="date" name="tanggal_selesai"
                                 class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Masukkan Tanggal Selesai"
-                                value="{{ $rps->tanggal_selesai ?? old('tanggal_selesai') }}" />
+                                value="{{ $rpsMatakuliah->tanggal_selesai ?? old('tanggal_selesai') }}" />
                         </div>
                     </div>
                     <div class="text-center pt-10">
