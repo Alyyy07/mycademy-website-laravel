@@ -57,6 +57,16 @@ class RpsDetailRequest extends FormRequest
                         $endDate = Carbon::parse($rpsMatakuliah->tanggal_selesai)->locale('id')->translatedFormat('d F Y');
                         $fail('Tanggal pertemuan harus berada di antara ' . $startDate . ' dan ' . $endDate);
                     }
+
+                    $previousSession = \App\Models\RpsDetail::where('rps_matakuliah_id', $this->rps_matakuliah_id)
+                    ->where('sesi_pertemuan', '<', $this->sesi_pertemuan)
+                    ->orderBy('sesi_pertemuan', 'desc')
+                    ->first();
+        
+                if ($previousSession && $value <= $previousSession->tanggal_pertemuan) {
+                    $prevDateFormatted = Carbon::parse($previousSession->tanggal_pertemuan)->locale('id')->translatedFormat('d F Y');
+                    $fail("Tanggal pertemuan harus setelah sesi sebelumnya yang berakhir pada $prevDateFormatted.");
+                }
                 }
             ],
             'capaian_pembelajaran' => ['required', 'string'],

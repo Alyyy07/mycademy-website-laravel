@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('materis', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('mapping_matakuliah_id')->constrained('mapping_matakuliahs')->onDelete('cascade');
+            $table->foreignId('rps_detail_id')->constrained('rps_details')->onDelete('cascade');
             $table->string('title');
             $table->enum('type', ['file', 'video','teks']);
             $table->string('file_path')->nullable();

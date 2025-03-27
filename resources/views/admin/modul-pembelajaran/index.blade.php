@@ -22,8 +22,8 @@
                                 class="path5"></span><span class="path6"></span></i>
                     </span>
                     <div class="overflow-hidden flex-grow-1">
-                        <select name="tahun_ajaran_id" data-table="#rpsmatakuliah-table" data-action="filter"
-                            data-allow-clear="true" data-url="{{ route('rps-matakuliah.index') }}"
+                        <select name="tahun_ajaran_id" data-table="#modulpembelajaran-table" data-action="filter"
+                            data-allow-clear="true" data-url="{{ route('mapping-matakuliah.index') }}"
                             data-control="select2" data-placeholder="Pilih Tahun Ajaran"
                             class="form-select form-select-solid w-250px fw-bold">
                             <option value="">Pilih Tahun Ajaran</option>
@@ -34,15 +34,6 @@
                         </select>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="card-toolbar">
-            <div class="d-flex justify-content-end" user-toolbar="base">
-                @can($globalModule['create'])
-                <button type="button" button-action="show" modal-id="#rps-matakuliah-modal"
-                    button-url="{{ route('rps-matakuliah.create') }}" class="btn btn-primary">
-                    <i class="ki-duotone ki-plus fs-2"></i>Tambah RPS</button>
-                @endcan
             </div>
         </div>
     </div>

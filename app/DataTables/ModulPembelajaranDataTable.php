@@ -2,18 +2,20 @@
 
 namespace App\DataTables;
 
+use App\Models\ModulPembelajaran;
 use App\Models\RpsMatakuliah;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
+use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
+use Yajra\DataTables\Html\Editor\Editor;
+use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
-use function PHPSTORM_META\map;
-
-class RpsMatakuliahDataTable extends DataTable
+class ModulPembelajaranDataTable extends DataTable
 {
     /**
      * Build the DataTable class.
@@ -24,10 +26,8 @@ class RpsMatakuliahDataTable extends DataTable
     {
         return (new EloquentDataTable($query))
             ->addColumn('action', function ($rps) {
-                $showRoute = route('rps-detail.index', ['id' => $rps->id]);
-                $editRoute = route('rps-matakuliah.edit', $rps->id);
-                $deleteRoute = route('rps-matakuliah.destroy', $rps->id);
-                return view('admin.rps-matakuliah.partials.action', compact('rps', 'showRoute', 'editRoute', 'deleteRoute'));
+                $showRoute = route('modul-pembelajaran.detail', ['id' => $rps->id]);
+                return view('admin.modul-pembelajaran.partials.action', compact('rps', 'showRoute'));
             })
             ->editColumn('tanggal_mulai', function ($rps) {
                 return \Carbon\Carbon::parse($rps->tanggal_mulai)->locale('id')->translatedFormat('d F Y');
@@ -45,9 +45,9 @@ class RpsMatakuliahDataTable extends DataTable
     {
         $user = Auth::user();
 
-        if ($user->roles->first()->name === 'admin-matakuliah') {
+        if ($user->roles->first()->name === 'admin-matakuliah' || $user->roles->first()->name === 'dosen') {
             $rpsMatakuliah = $model->newQuery()->with(['mappingMatakuliah.matakuliah', 'mappingMatakuliah.tahunAjaran'])->whereHas('mappingMatakuliah', function ($query) use ($user) {
-                $query->where('admin_verifier_id', $user->id);
+                $query->where('admin_verifier_id', $user->id)->orWhere('dosen_id', $user->id);
             })->get()->toArray();
         } else {
             $rpsMatakuliah = Cache::rememberForever('rps_matakuliah_with_mapping_matakuliah', function () use ($model) {
@@ -59,12 +59,12 @@ class RpsMatakuliahDataTable extends DataTable
     }
 
     /**
-     * Optional method if you want to use the HTML builder.
+     * Optional method if you want to use the html builder.
      */
     public function html(): HtmlBuilder
     {
         return $this->builder()
-            ->setTableId('rpsmatakuliah-table')
+            ->setTableId('modulpembelajaran-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
             ->addTableClass('table align-middle table-row-dashed fs-6 gy-5')
@@ -100,6 +100,6 @@ class RpsMatakuliahDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'RpsMatakuliah_' . date('YmdHis');
+        return 'ModulPembelajaran_' . date('YmdHis');
     }
 }

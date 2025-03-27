@@ -15,4 +15,8 @@ class RpsDetail extends Model
     {
         return $this->belongsTo(RpsMatakuliah::class,'rps_id','id');
     }
+
+    public function materi(){
+        return $this->hasMany(Materi::class);
+    }
 }
