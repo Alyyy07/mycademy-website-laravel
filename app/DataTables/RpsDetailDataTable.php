@@ -70,12 +70,12 @@ class RpsDetailDataTable extends DataTable
             ->setTableId('rpsdetail-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
-            ->addTableClass('table align-middle table-row-dashed fs-6 gy-5')
+            ->addTableClass('table align-middle table-row-bordered fs-6 gy-5 gs-7')
             ->setTableHeadClass('text-start text-muted fw-bold fs-7 text-uppercase gs-0')
             ->drawCallbackWithLivewire(file_get_contents(public_path('assets/js/custom/custom-datatable.js')))
             ->orderBy(1)
             ->scrollX(true)
-            ->scrollY(300)
+            ->scrollY('50vh')
             ->parameters([
                 'order' => [],
             ]);
