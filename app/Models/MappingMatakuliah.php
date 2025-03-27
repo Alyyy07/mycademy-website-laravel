@@ -34,9 +34,4 @@ class MappingMatakuliah extends Model
     {
         return $this->belongsTo(User::class, 'admin_verifier_id');
     }
-
-    public function materis()
-    {
-        return $this->hasMany(Materi::class);
-    }
 }

@@ -11,9 +11,9 @@ class Materi extends Model
 
     protected $guarded = ['id'];
 
-    public function mappingMatakuliah()
+    public function rpsDetail()
     {
-        return $this->belongsTo(MappingMatakuliah::class);
+        return $this->belongsTo(RpsDetail::class);
     }
 
     public function uploader()
