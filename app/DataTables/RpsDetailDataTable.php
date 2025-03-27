@@ -87,8 +87,7 @@ class RpsDetailDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::make('id')->title('No')->addClass('w-20px pe-2')->orderable(false)->searchable(false)->titleAttr('No'),
-            Column::make('sesi_pertemuan')->title('Pertemuan ke')->addClass('text-center')->orderable(false),
+            Column::make('sesi_pertemuan')->title('Pertemuan ke')->addClass('text-center align-top')->orderable(false),
             Column::make('tanggal_pertemuan')->title('Tanggal Pertemuan'),
             Column::make('capaian_pembelajaran')->title('Capaian Pembelajaran')->addClass('text-center'),
             Column::make('indikator')->title('Indikator')->addClass('text-center'),
