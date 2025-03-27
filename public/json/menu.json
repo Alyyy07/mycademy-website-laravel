@@ -73,6 +73,15 @@
         "childrens": []
     },
     {
+        "name": "Modul Pembelajaran",
+        "module": "modul_pembelajaran",
+        "slug": "modul-pembelajaran",
+        "icon": "ki-outline ki-book",
+        "url": "/modul-pembelajaran",
+        "order": 2,
+        "childrens": []
+    },
+    {
         "name": "User Management",
         "module": "user_management",
         "slug": "user_management",

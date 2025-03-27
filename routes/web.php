@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MappingMatakuliahController;
+use App\Http\Controllers\ModulPembelajaranController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RpsDetailController;
 use App\Http\Controllers\RpsMatakuliahController;
@@ -28,6 +29,9 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::resource('/rps-matakuliah', RpsMatakuliahController::class)->names('rps-matakuliah');
 
     Route::resource('/rps-detail', RpsDetailController::class)->names('rps-detail');
+
+    Route::resource('/modul-pembelajaran', ModulPembelajaranController::class)->names('modul-pembelajaran');
+    Route::get('/modul-pembelajaran/detail/', [ModulPembelajaranController::class, 'detail'])->name('modul-pembelajaran.detail');
 });
 
 require __DIR__.'/auth.php';
