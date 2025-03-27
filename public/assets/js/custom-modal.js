@@ -110,7 +110,7 @@ $("form").on("submit", function (e) {
                 success: function (response) {
                     Swal.fire({
                         text: response.message,
-                        icon: "success",
+                        icon: response.status,
                         buttonsStyling: false,
                         confirmButtonText: "Ok, mengerti!",
                         customClass: {
