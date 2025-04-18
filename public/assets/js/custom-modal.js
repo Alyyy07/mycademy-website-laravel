@@ -61,11 +61,14 @@ $("form").on("submit", function (e) {
     let form = $(this);
     let url = form.attr("action");
     let isCreateAction = form.attr("modal-action") === "create";
-    
+
     // Simpan data dari CKEditor ke input hidden sebelum submit
     $(".ckeditor").each(function (index) {
-        let editorData = window["editor" + index].getData();
-        $(this).find("input[type='hidden']").val(editorData);
+        let editor = window["editor" + index];
+        if (editor) {
+            let editorData = editor.getData();
+            $(this).find("input[type='hidden']").val(editorData);
+        }
     });
 
     let formData = new FormData(this);
@@ -108,7 +111,6 @@ $("form").on("submit", function (e) {
                 processData: false,
                 contentType: false,
                 beforeSend: function () {
-                    // Optional: tampilkan loading indicator
                     Swal.fire({
                         title: isCreateAction
                             ? "Menyimpan Data..."
@@ -152,6 +154,7 @@ $("form").on("submit", function (e) {
                     });
                 },
                 error: function (xhr) {
+                    Swal.close();
                     if (xhr.status == 422) {
                         $.each(xhr.responseJSON.errors, function (key, value) {
                             if (key == "profile_photo") {
@@ -240,10 +243,14 @@ $(".permission-checkbox").on("change", function () {
 });
 
 $(".modal").on("shown.bs.modal", function () {
-    $(' form [data-control="select2"]').select2({
-        dropdownParent: $(this),
-        placeholder: $(this).attr("data-placeholder"),
-        allowClear: true,
+    const modal = $(this);
+    modal.find('[data-control="select2"]').each(function () {
+        $(this).select2({
+            dropdownParent: $(this).parent(),
+            placeholder: $(this).attr("data-placeholder"),
+            allowClear: true,
+            width: "100%",
+        });
     });
 });
 
