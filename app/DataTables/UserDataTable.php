@@ -30,7 +30,7 @@ class UserDataTable extends DataTable
                 $editRoute = route('user-management.users.edit', $user->id);
                 $deleteRoute = route('user-management.users.destroy', $user->id);
                 $impersonateRoute = route('user-management.impersonate', $user->id);
-                return view('admin.user-list.partials.action', compact('editRoute', 'user','deleteRoute', 'impersonateRoute'));
+                return view('admin.user-list.partials.action', compact('editRoute', 'user', 'deleteRoute', 'impersonateRoute'));
             })
             ->editColumn('roles.name', function ($user) {
                 $name = $user->roles?->pluck('name')->first() ?? 'No Role';
@@ -40,12 +40,12 @@ class UserDataTable extends DataTable
                     'dosen' => 'info',
                     default => 'dark'
                 };
-                return "<span class='badge badge-light-$badgeColor fs-7 py-3 px-4 text-capitalize'>".str_replace("-"," ",$name)."</span>";
+                return "<span class='badge badge-light-$badgeColor fs-7 py-3 px-4 text-capitalize'>" . str_replace("-", " ", $name) . "</span>";
             })
             ->editColumn('checkbox', function (User $user) {
-                if($user->id === Auth::id()) {
+                if ($user->id === Auth::id()) {
                     return '';
-                }   
+                }
                 return "<div class='form-check form-check-sm form-check-custom form-check-solid'>
                 <input class='form-check-input' check-target='user' type='checkbox' value='{$user->id}' />
             </div>";
@@ -89,7 +89,7 @@ class UserDataTable extends DataTable
     public function query(User $model): QueryBuilder
     {
         $users = Cache::rememberForever('users_with_roles', function () use ($model) {
-            return $model->newQuery()->with('roles')->get()->toArray();
+            return $model->newQuery()->with('roles')->orderBy('created_at')->get()->toArray();
         });
 
         return $model->newQuery()->whereIn('id', array_column($users, 'id'))->with('roles');
