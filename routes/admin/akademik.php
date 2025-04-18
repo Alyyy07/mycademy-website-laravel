@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FakultasController;
+use App\Http\Controllers\DataMahasiswaController;
 use App\Http\Controllers\MatakuliahController;
 use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\TahunAjaranController;
@@ -15,4 +16,6 @@ Route::group(['prefix' => 'akademik', 'as' => 'akademik.'], function () {
     Route::resource('/fakultas', FakultasController::class)->names('fakultas')->except('show')->whereNumber('fakultas');
 
     Route::resource('/prodi', ProdiController::class)->names('prodi')->except('show');
+
+    Route::resource('/data-mahasiswa',DataMahasiswaController::class)->names('data-mahasiswa')->except(['show', 'create', 'store']);
 });
