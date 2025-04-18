@@ -75,7 +75,7 @@
                                     tanggal_pertemuan)->translatedFormat('d F Y') }}).
                                     @if (auth()->
                                     user()->roles->first()->name == 'admin-matakuliah')
-                                    <form action="{{ route('rps-detail.force-upload') }}" method="POST"
+                                    <form action="{{ route('rps-detail.status-upload') }}" method="POST"
                                         class="d-inline">
                                         @csrf
                                         <input type="hidden" name="rps_detail_id" value="{{ $rpsDetail->id }}">
