@@ -5,14 +5,11 @@
 @section('content')
 <div class="card">
     <div class="card-header border-0 pt-6">
-        <div class="card-title gap-3">
-            <div class="d-flex align-items-center position-relative my-1">
-                <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-5">
-                    <span class="path1"></span>
-                    <span class="path2"></span>
-                </i>
-                <input type="text" data-action="search" class="form-control form-control-solid w-250px ps-13"
-                    placeholder="Cari" />
+        <div class="card-toolbar">
+            <div class="d-flex justify-content-end" data-kt-docs-table-toolbar="base">
+                <div class="d-flex justify-content-end" data-kt-docs-table-toolbar="base">
+                    <a href="{{ route('rps-matakuliah.index') }}" class="btn btn-light me-3">Kembali</a>
+                </div>
             </div>
         </div>
         <div class="card-toolbar">
