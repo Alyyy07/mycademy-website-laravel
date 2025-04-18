@@ -19,4 +19,8 @@ class RpsDetail extends Model
     public function materi(){
         return $this->hasMany(Materi::class);
     }
+    public function kuis()
+    {
+        return $this->hasMany(Kuis::class);
+    }
 }
