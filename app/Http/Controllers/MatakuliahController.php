@@ -17,8 +17,8 @@ class MatakuliahController extends Controller
      */
     public function index(MatakuliahDataTable $dataTable)
     {
-        if (request()->ajax() && request()->has('filter')) {
-            $search = request('filter') ?? '';
+        if (request()->ajax() && request()->has('filter') && request('filter') != '') {
+            $search = request('filter');
             $data = Matakuliah::with('prodi')->where('prodi_id',$search)->get();
             return DataTables::of($data)
                 ->addColumn('action', function ($matakuliah) {
@@ -59,9 +59,9 @@ class MatakuliahController extends Controller
         $request->validated();
         $matakuliah = Matakuliah::create($request->all());
         if ($matakuliah) {
-            return response()->json(['message' => 'Matakuliah berhasil dibuat!'], 200);
+            return response()->json(['status' => 'success','message' => 'Matakuliah berhasil dibuat!'], 200);
         }
-        return response()->json(['message' => 'Matakuliah gagal dibuat!'], 500);
+        return response()->json(['status' => 'success','message' => 'Matakuliah gagal dibuat!'], 500);
     }
 
     /**
@@ -93,9 +93,9 @@ class MatakuliahController extends Controller
         $request->validated();
         $result = $matakuliah->update($request->all());
         if (!$result) {
-            return response()->json(['message' => 'Matakuliah gagal diupdate!'], 500);
+            return response()->json(['status' => 'error','message' => 'Matakuliah gagal diupdate!'], 500);
         }
-        return response()->json(['message' => 'Matakuliah berhasil diupdate!'], 200);
+        return response()->json(['status' => 'success','message' => 'Matakuliah berhasil diupdate!'], 200);
     }
 
     /**
@@ -105,8 +105,8 @@ class MatakuliahController extends Controller
     {
         $result = $matakuliah->delete();
         if (!$result) {
-            return response()->json(['message' => 'Matakuliah gagal dihapus!'], 500);
+            return response()->json(['status' => 'error','message' => 'Matakuliah gagal dihapus!'], 500);
         }
-        return response()->json(['message' => 'Matakuliah berhasil dihapus!'], 200);
+        return response()->json(['status' => 'success','message' => 'Matakuliah berhasil dihapus!'], 200);
     }
 }
