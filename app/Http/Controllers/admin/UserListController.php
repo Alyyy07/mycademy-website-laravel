@@ -5,10 +5,12 @@ namespace App\Http\Controllers\admin;
 use App\DataTables\UserDataTable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserManagement\UserRequest;
+use App\Models\Akademik\DataMahasiswa;
 use App\Models\Roles;
 use App\Models\User;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserListController extends Controller
@@ -42,17 +44,32 @@ class UserListController extends Controller
      */
     public function store(UserRequest $request)
     {
-        $request->validated();
         $data = $request->all();
-        if ($request->hasFile('profile_photo')) {
-            $file = $request->file('profile_photo');
-            $filename = hash('sha256', time() . $file->getClientOriginalName()) . '.' . $file->getClientOriginalExtension();
-            $data['profile_photo'] = $file->storeAs('image/profile-photo', $filename, 'public');
-        }
-        $user = User::create($data);
-        $user->assignRole($request->role);
 
-        return response()->json(['message' => 'User berhasil dibuat!'], 200);
+        DB::beginTransaction();
+        try {
+            if ($request->hasFile('profile_photo')) {
+                $file = $request->file('profile_photo');
+                $filename = hash('sha256', time() . $file->getClientOriginalName()) . '.' . $file->getClientOriginalExtension();
+                $data['profile_photo'] = $file->storeAs('image/profile-photo', $filename, 'public');
+            }
+
+            $user = User::create($data);
+            $user->assignRole($request->role);
+
+            if ($request->role == 'mahasiswa') {
+                DataMahasiswa::create([
+                    'user_id' => $user->id,
+                    'nama' => $request->name,
+                ]);
+            }
+
+            DB::commit();
+            return response()->json(['status' => 'success','message' => 'User berhasil dibuat!'], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['status' => 'error','message' => 'Terjadi kesalahan saat membuat user!', 'error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -79,7 +96,10 @@ class UserListController extends Controller
     public function update(UserRequest $request, User $user)
     {
         $data = $request->all();
-        if ($request->hasFile('profile_photo')) {
+
+        DB::beginTransaction();
+        try {
+            if ($request->hasFile('profile_photo')) {
             $oldPhoto = $user->profile_photo;
             if ($oldPhoto) {
                 unlink(storage_path('app/public/' . $oldPhoto));
@@ -87,13 +107,21 @@ class UserListController extends Controller
             $file = $request->file('profile_photo');
             $filename = hash('sha256', time() . $file->getClientOriginalName()) . '.' . $file->getClientOriginalExtension();
             $data['profile_photo'] = $file->storeAs('image/profile-photo', $filename, 'public');
-        }
-        if (!$request->password) {
+            }
+
+            if (!$request->password) {
             unset($data['password']);
+            }
+
+            $user->update($data);
+            $user->syncRoles(request()->role);
+
+            DB::commit();
+            return response()->json(['status' => 'success','message' => 'User berhasil diupdate!'], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['status' => 'error', 'message' => 'Terjadi kesalahan saat mengupdate user!', 'error' => $e->getMessage()], 500);
         }
-        $user->update($data);
-        $user->syncRoles(request()->role);
-        return response()->json(['message' => 'User berhasil diupdate!'], 200);
     }
 
     /**
@@ -106,40 +134,67 @@ class UserListController extends Controller
         if ($photoPath) {
             unlink(storage_path("app/public/$photoPath"));
         }
-        $user->delete();
-        return response()->json(['message' => 'User berhasil dihapus!'], 200);
+        $result = $user->delete();
+        if (!$result) {
+            return response()->json(['status' => 'error','message' => 'User gagal dihapus!'], 500);
+        }
+        return response()->json(['status' => 'success','message' => 'User berhasil dihapus!'], 200);
     }
 
     public function setStatus(User $user)
     {
         $user->is_active = !$user->is_active;
-        $user->save();
-        return response()->json(['message' => 'Status user berhasil diupdate!'], 200);
+        $result = $user->save();
+        $message = $user->is_active ? 'User berhasil diaktifkan!' : 'User berhasil dinonaktifkan!';
+        if (!$result) {
+            return response()->json(['status' => 'error','message' => 'Status user gagal diupdate!'], 500);
+        }
+        return response()->json(['status' => 'success','message' => $message], 200);
     }
 
     public function bulkDelete()
     {
         $ids = request()->ids;
-        foreach ($ids as $id) {
-            $user = User::find($id);
-            $user->delete();
-            $user->syncRoles([]);
-            $photoPath = $user->profile_photo;
-            if ($photoPath) {
-                unlink(storage_path("app/public/$photoPath"));
+
+        DB::beginTransaction();
+        try {
+            foreach ($ids as $id) {
+                $user = User::find($id);
+                if ($user) {
+                    $user->syncRoles([]);
+                    $photoPath = $user->profile_photo;
+                    if ($photoPath) {
+                        unlink(storage_path("app/public/$photoPath"));
+                    }
+                    $user->delete();
+                }
             }
+            DB::commit();
+            return response()->json(['status' => 'success', 'message' => 'User yang dipilih berhasil dihapus!'], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['status' => 'error', 'message' => 'Terjadi kesalahan saat menghapus user!', 'error' => $e->getMessage()], 500);
         }
-        return response()->json(['message' => 'User yang dipilih berhasil dihapus!'], 200);
     }
 
     public function bulkSetStatus()
     {
         $ids = request()->ids;
-        foreach ($ids as $id) {
-            $user = User::find($id);
-            $user->is_active = !$user->is_active;
-            $user->save();
+
+        DB::beginTransaction();
+        try {
+            foreach ($ids as $id) {
+                $user = User::find($id);
+                if ($user) {
+                    $user->is_active = !$user->is_active;
+                    $user->save();
+                }
+            }
+            DB::commit();
+            return response()->json(['status' => 'success', 'message' => 'Status user yang dipilih berhasil diupdate!'], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['status' => 'error', 'message' => 'Terjadi kesalahan saat mengupdate status user!', 'error' => $e->getMessage()], 500);
         }
-        return response()->json(['message' => 'Status user yang dipilih berhasil diupdate!'], 200);
     }
 }
