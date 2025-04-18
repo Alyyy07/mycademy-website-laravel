@@ -33,6 +33,24 @@ class TahunAjaranSeeder extends Seeder
             'tahun_ajaran' => '2023/2024',
             'tanggal_mulai' => '2023-07-01',
             'tanggal_selesai' => '2024-06-30',
+            'is_active' => 0,
+            'created_at' => now()
+        ]);
+
+        TahunAjaran::create([
+            'kode_tahun_ajaran' => 'TH24',
+            'tahun_ajaran' => '2024/2025',
+            'tanggal_mulai' => '2024-07-01',
+            'tanggal_selesai' => '2025-06-30',
+            'is_active' => 0,
+            'created_at' => now()
+        ]);
+
+        TahunAjaran::create([
+            'kode_tahun_ajaran' => 'TH25',
+            'tahun_ajaran' => '2025/2026',
+            'tanggal_mulai' => '2025-04-12',
+            'tanggal_selesai' => '2026-06-30',
             'is_active' => 1,
             'created_at' => now()
         ]);
