@@ -16,7 +16,7 @@
             </div>
             <div class="d-flex align-items-center position-relative my-1">
                 <select name="matakuliah_id" data-table="#matakuliah-table" data-action="filter"
-                    data-url="{{ route('akademik.matakuliah.index') }}" data-control="select2"
+                    data-url="{{ route('akademik.matakuliah.index') }}" data-control="select2" data-allow-clear="true"
                     data-placeholder="Pilih Prodi" class="form-select form-select-solid w-250px fw-bold">
                     <option value="">Pilih Prodi</option>
                     @foreach($prodi as $p)
