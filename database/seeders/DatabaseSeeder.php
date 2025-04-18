@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             TahunAjaranSeeder::class,
             FakultasSeeder::class,
             ProdiSeeder::class,
+            MahasiswaSeeder::class,
             MatakuliahSeeder::class,
             MappingMatakuliahSeeder::class,
             RpsMatakuliahSeeder::class,

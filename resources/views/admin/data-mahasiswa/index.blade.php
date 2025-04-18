@@ -15,8 +15,8 @@
                     placeholder="Cari" />
             </div>
             <div class="d-flex align-items-center position-relative my-1">
-                <select name="matakuliah_id" data-table="#matakuliah-table" data-action="filter"
-                    data-url="{{ route('akademik.matakuliah.index') }}" data-control="select2" data-allow-clear="true"
+                <select name="data_mahasiswa_id" data-table="#datamahasiswa-table" data-action="filter" data-allow-clear="true"
+                    data-url="{{ route('akademik.data-mahasiswa.index') }}" data-control="select2"
                     data-placeholder="Pilih Prodi" class="form-select form-select-solid w-250px fw-bold">
                     <option value="">Pilih Prodi</option>
                     @foreach($prodi as $p)
@@ -24,15 +24,6 @@
                         {{ $p->nama_prodi }}</option>
                     @endforeach
                 </select>
-            </div>
-        </div>
-        <div class="card-toolbar">
-            <div class="d-flex justify-content-end" user-toolbar="base">
-                @can($globalModule['create'])
-                <button type="button" button-action="show" modal-id="#matakuliah-modal"
-                    button-url="{{ route('akademik.matakuliah.create') }}" class="btn btn-primary">
-                    <i class="ki-duotone ki-plus fs-2"></i>Tambah Matakuliah</button>
-                @endcan
             </div>
         </div>
     </div>

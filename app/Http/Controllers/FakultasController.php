@@ -42,9 +42,9 @@ class FakultasController extends Controller
         }
         $fakultas = Fakultas::create($data);
         if ($fakultas) {
-            return response()->json(['message' => 'Fakultas berhasil dibuat!'], 200);
+            return response()->json(['status' => 'success','message' => 'Fakultas berhasil dibuat!'], 200);
         }
-        return response()->json(['message' => 'Fakultas gagal dibuat!'], 500);
+        return response()->json(['status' => 'error','message' => 'Fakultas gagal dibuat!'], 500);
     }
 
     /**
@@ -83,9 +83,9 @@ class FakultasController extends Controller
         }
         $result = $fakulta->update($data);
         if (!$result) {
-            return response()->json(['message' => 'Fakultas gagal diupdate!'], 500);
+            return response()->json(['status' => 'error','message' => 'Fakultas gagal diupdate!'], 500);
         }
-        return response()->json(['message' => 'Fakultas berhasil diupdate!'], 200);
+        return response()->json(['status' => 'success','message' => 'Fakultas berhasil diupdate!'], 200);
     }
 
     /**
@@ -99,8 +99,8 @@ class FakultasController extends Controller
         }
         $result = $fakulta->delete();
         if($result){
-            return response()->json(['message' => 'Fakultas berhasil dihapus!'], 200);
+            return response()->json(['status' => 'success','message' => 'Fakultas berhasil dihapus!'], 200);
         }
-        return response()->json(['message' => 'Fakultas gagal dihapus!'], 500);
+        return response()->json(['status' => 'error','message' => 'Fakultas gagal dihapus!'], 500);
     }
 }

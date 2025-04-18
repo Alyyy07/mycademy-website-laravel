@@ -62,9 +62,9 @@ class ProdiController extends Controller
         $request->validated();
         $prodi = Prodi::create($request->all());
         if ($prodi) {
-            return response()->json(['message' => 'Prodi berhasil dibuat!'], 200);
+            return response()->json(['status' => 'success','message' => 'Prodi berhasil dibuat!'], 200);
         }
-        return response()->json(['message' => 'Prodi gagal dibuat!'], 500);
+        return response()->json(['status' => 'error','message' => 'Prodi gagal dibuat!'], 500);
     }
 
     /**
@@ -93,12 +93,11 @@ class ProdiController extends Controller
      */
     public function update(ProdiRequest $request, Prodi $prodi)
     {
-        $request->validated();
         $result = $prodi->update($request->all());
         if (!$result) {
-            return response()->json(['message' => 'Prodi gagal diupdate!'], 500);
+            return response()->json(['status' => 'error','message' => 'Prodi gagal diupdate!'], 500);
         }
-        return response()->json(['message' => 'Prodi berhasil diupdate!'], 200);
+        return response()->json(['status' => 'success','message' => 'Prodi berhasil diupdate!'], 200);
     }
 
     /**
@@ -108,8 +107,8 @@ class ProdiController extends Controller
     {
         $result = $prodi->delete();
         if (!$result) {
-            return response()->json(['message' => 'Prodi gagal dihapus!'], 500);
+            return response()->json(['status' => 'error','message' => 'Prodi gagal dihapus!'], 500);
         }
-        return response()->json(['message' => 'Prodi berhasil dihapus!'], 200);
+        return response()->json(['status' => 'success','message' => 'Prodi berhasil dihapus!'], 200);
     }
 }

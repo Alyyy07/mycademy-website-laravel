@@ -51,6 +51,15 @@
                 "url": "/akademik/matakuliah",
                 "order": 3,
                 "childrens": []
+            },
+            {
+                "name":"Data Mahasiswa",
+                "module":"akademik.data_mahasiswa",
+                "slug":"akademik-data-mahasiswa",
+                "icon":"ki-outline ki-user",
+                "url":"/akademik/data-mahasiswa",
+                "order":4,
+                "childrens":[]
             }
         ]
     },

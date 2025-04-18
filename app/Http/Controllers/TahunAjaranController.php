@@ -41,9 +41,9 @@ class TahunAjaranController extends Controller
        
         $tahunAjaran = TahunAjaran::create($data);
         if($tahunAjaran){
-            return response()->json(['message' => 'Tahun Ajaran berhasil dibuat!'], 200);
+            return response()->json(['status' => 'success','message' => 'Tahun Ajaran berhasil dibuat!'], 200);
         }
-        return response()->json(['message' => 'Tahun Ajaran gagal dibuat!'], 500);
+        return response()->json(['status' => 'error','message' => 'Tahun Ajaran gagal dibuat!'], 500);
     }
 
     /**
@@ -75,9 +75,9 @@ class TahunAjaranController extends Controller
         $result = $tahunAjaran->update($data);
         
         if($result){
-            return response()->json(['message' => 'Tahun Ajaran berhasil diupdate!'], 200);
+            return response()->json(['status' => 'success','message' => 'Tahun Ajaran berhasil diupdate!'], 200);
         }
-        return response()->json(['message' => 'Tahun Ajaran gagal dibuat!'], 500);
+        return response()->json(['status' => 'error','message' => 'Tahun Ajaran gagal dibuat!'], 500);
     }
 
     /**
@@ -86,19 +86,19 @@ class TahunAjaranController extends Controller
     public function destroy(TahunAjaran $tahunAjaran)
     {
         if($tahunAjaran->is_active){
-            return response()->json(['message' => 'Tahun Ajaran tidak bisa dihapus karena sedang aktif!'], 500);
+            return response()->json(['status' => 'error','message' => 'Tahun Ajaran tidak bisa dihapus karena sedang aktif!'], 500);
         }
         $result = $tahunAjaran->delete();
         if($result){
-            return response()->json(['message' => 'Tahun Ajaran berhasil dihapus!'], 200);
+            return response()->json(['status' => 'success','message' => 'Tahun Ajaran berhasil dihapus!'], 200);
         }
-        return response()->json(['message' => 'Tahun Ajaran gagal dihapus!'], 500);
+        return response()->json(['status' => 'error','message' => 'Tahun Ajaran gagal dihapus!'], 500);
     }
 
     public function setStatus(TahunAjaran $tahunAjaran)
     {
         $tahunAjaran->is_active = !$tahunAjaran->is_active;
         $tahunAjaran->save();
-        return response()->json(['message' => 'Status Tahun Ajaran berhasil diupdate!'], 200);
+        return response()->json(['status' => 'success','message' => 'Status Tahun Ajaran berhasil diupdate!'], 200);
     }
 }

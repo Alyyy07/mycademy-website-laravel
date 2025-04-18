@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Models\Akademik\DataMahasiswa;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -89,5 +90,9 @@ class User extends Authenticatable
     public function materisAsVerifier()
     {
         return $this->hasMany(Materi::class, 'verified_by');
+    }
+
+    public function mahasiswa(){
+        return $this->hasOne(DataMahasiswa::class, 'user_id', 'id');
     }
 }
