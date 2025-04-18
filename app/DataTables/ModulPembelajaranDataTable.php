@@ -7,6 +7,7 @@ use App\Models\RpsMatakuliah;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
@@ -50,11 +51,8 @@ class ModulPembelajaranDataTable extends DataTable
                 $query->where('admin_verifier_id', $user->id)->orWhere('dosen_id', $user->id);
             })->get()->toArray();
         } else {
-            $rpsMatakuliah = Cache::rememberForever('rps_matakuliah_with_mapping_matakuliah', function () use ($model) {
-                return $model->newQuery()->with(['mappingMatakuliah.matakuliah', 'mappingMatakuliah.tahunAjaran'])->get()->toArray();
-            });
+            $rpsMatakuliah = $model->newQuery()->with(['mappingMatakuliah.matakuliah', 'mappingMatakuliah.tahunAjaran'])->get()->toArray();
         }
-
         return $model->newQuery()->whereIn('id', array_column($rpsMatakuliah, 'id'))->with(['mappingMatakuliah.matakuliah', 'mappingMatakuliah.tahunAjaran']);
     }
 

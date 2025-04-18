@@ -72,10 +72,7 @@
             "rps_matakuliah-update",
             "rps_matakuliah-delete",
             "modul_pembelajaran",
-            "modul_pembelajaran-read",
-            "modul_pembelajaran-create",
-            "modul_pembelajaran-update",
-            "modul_pembelajaran-delete"
+            "modul_pembelajaran-read"
         ]
     },
     {

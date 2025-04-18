@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('materis', function (Blueprint $table) {
+        Schema::create('kuisses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('rps_detail_id')->constrained('rps_details')->onDelete('cascade');
             $table->string('title');
-            $table->enum('tipe_materi', ['pdf', 'video', 'teks']);
-            $table->string('file_path')->nullable();
-            $table->string('video_path')->nullable();
-            $table->text('text_content')->nullable();
+            $table->text('description')->nullable();
             $table->enum('status', ['draft', 'uploaded', 'verified', 'rejected'])->default('draft');
             $table->char('uploader_id', 36);
             $table->foreign('uploader_id')->references('id')->on('users')->onDelete('cascade');
@@ -34,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('materis');
+        Schema::dropIfExists('quiz');
     }
 };

@@ -88,13 +88,13 @@ class RpsDetailDataTable extends DataTable
     {
         return [
             Column::make('sesi_pertemuan')->title('Pertemuan ke')->addClass('text-center align-top')->orderable(false),
-            Column::make('tanggal_pertemuan')->title('Tanggal Pertemuan'),
-            Column::make('capaian_pembelajaran')->title('Capaian Pembelajaran')->addClass('text-center'),
-            Column::make('indikator')->title('Indikator')->addClass('text-center'),
-            Column::make('metode_pembelajaran')->title('Metode Pembelajaran')->addClass('text-center'),
-            Column::make('kriteria_penilaian')->title('Kriteria Penilaian')->addClass('text-center'),
-            Column::make('materi_pembelajaran')->title('Materi Pembelajaran')->addClass('text-center'),
-            Column::computed('action')->addClass('text-center')
+            Column::make('tanggal_pertemuan')->title('Tanggal Pertemuan')->addClass('align-top'),
+            Column::make('capaian_pembelajaran')->title('Capaian Pembelajaran')->addClass('align-top'),
+            Column::make('indikator')->title('Indikator')->addClass('align-top'),
+            Column::make('metode_pembelajaran')->title('Metode Pembelajaran')->addClass('align-top'),
+            Column::make('kriteria_penilaian')->title('Kriteria Penilaian')->addClass('align-top'),
+            Column::make('materi_pembelajaran')->title('Materi Pembelajaran')->addClass('align-top'),
+            Column::computed('action')
                 ->exportable(false)
                 ->printable(false)
                 ->width(60)

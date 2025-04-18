@@ -61,7 +61,7 @@ $("form").on("submit", function (e) {
     let form = $(this);
     let url = form.attr("action");
     let isCreateAction = form.attr("modal-action") === "create";
-
+    
     // Simpan data dari CKEditor ke input hidden sebelum submit
     $(".ckeditor").each(function (index) {
         let editorData = window["editor" + index].getData();
@@ -107,6 +107,18 @@ $("form").on("submit", function (e) {
                 data: formData,
                 processData: false,
                 contentType: false,
+                beforeSend: function () {
+                    // Optional: tampilkan loading indicator
+                    Swal.fire({
+                        title: isCreateAction
+                            ? "Menyimpan Data..."
+                            : "Mengedit Data...",
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        },
+                    });
+                },
                 success: function (response) {
                     Swal.fire({
                         text: response.message,

@@ -23,7 +23,7 @@
                     </span>
                     <div class="overflow-hidden flex-grow-1">
                         <select name="tahun_ajaran_id" data-table="#modulpembelajaran-table" data-action="filter"
-                            data-allow-clear="true" data-url="{{ route('mapping-matakuliah.index') }}"
+                            data-allow-clear="true" data-url="{{ route('modul-pembelajaran.index') }}"
                             data-control="select2" data-placeholder="Pilih Tahun Ajaran"
                             class="form-select form-select-solid w-250px fw-bold">
                             <option value="">Pilih Tahun Ajaran</option>

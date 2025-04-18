@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Setting\Menus;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 if (!function_exists('generateBreadCrumbs')) {
@@ -133,5 +134,17 @@ if (!function_exists('capitalize')) {
         // Menggunakan ucwords dan mengganti simbol yang diinginkan
         $string = str_replace(['_', '.'], [' ', ' - '], $string);
         return ucwords($string);
+    }
+}
+
+if (!function_exists('canManageModul')) {
+    function canManageModul($tanggalPertemuan,$forceUpload)
+    {
+        if ($forceUpload) {
+            return true;
+        }
+        $today = now()->startOfDay();
+        $tanggal = Carbon::parse($tanggalPertemuan)->startOfDay();
+        return $today->greaterThanOrEqualTo($tanggal->copy()->subDays(7)) && $today->lessThanOrEqualTo($tanggal);
     }
 }

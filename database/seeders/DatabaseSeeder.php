@@ -21,6 +21,10 @@ class DatabaseSeeder extends Seeder
             FakultasSeeder::class,
             ProdiSeeder::class,
             MatakuliahSeeder::class,
+            MappingMatakuliahSeeder::class,
+            RpsMatakuliahSeeder::class,
+            RpsDetailSeeder::class,
+            KuisSeeder::class,
         ]);
     }
 }

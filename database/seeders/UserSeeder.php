@@ -45,6 +45,7 @@ class UserSeeder extends Seeder
         $dosen->assignRole('dosen');
 
         $adminMatakuliah1 = User::create([
+            'id' => 'd7d74b70-bfb2-463d-b8aa-e3ee8ce95b71',
             'name' => 'Admin OOP',
             'email' => 'adminoop@gmail.com',
             'email_verified_at' => now(),
@@ -55,6 +56,7 @@ class UserSeeder extends Seeder
         $adminMatakuliah1->assignRole('admin-matakuliah');
 
         $dosen1 = User::create([
+            'id' => 'b4bbc461-be6c-4464-b529-aca0e8ab3719',
             'name' => 'Dosen OOP',
             'email' => 'dosenoop@gmail.com',
             'email_verified_at' => now(),
@@ -65,6 +67,7 @@ class UserSeeder extends Seeder
         $dosen1->assignRole('dosen');
 
         $mahasiswa = User::create([
+            'id'=>'fe98d07f-ab13-44cf-bf0f-a9a265adb69e',
             'name' => 'mahasiswa',
             'email' => 'mahasiswa@gmail.com',
             'email_verified_at' => now(),

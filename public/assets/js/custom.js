@@ -44,6 +44,16 @@ $('[button-action="delete"]').on("click", function (e) {
                 url: $(this).attr("button-url"),
                 type: "DELETE",
                 timeout: 2000,
+                beforeSend: function () {
+                    // Optional: tampilkan loading indicator
+                    Swal.fire({
+                        title: "Loading",
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        },
+                    });
+                },
                 success: function (response) {
                     Swal.fire({
                         text: response.message,
@@ -81,6 +91,7 @@ $('[button-action="delete"]').on("click", function (e) {
 });
 
 $('[data-action="filter"]').on('change', function () {
+    console.log('filter');
     let params = $(this).val();
     let url = $(this).attr('data-url');
     let table = $(this).attr('data-table');
