@@ -22,7 +22,7 @@ class MahasiswaImport implements ToCollection
                 ['email' => $email],
                 [
                     'id' => Str::uuid(),
-                    'name' => $name,
+                    'name' => ucwords(strtolower($name)),
                     'password' => '12345',
                     'is_active' => true,
                 ]
@@ -62,11 +62,11 @@ class MahasiswaImport implements ToCollection
             // Simpan data mahasiswa
             DataMahasiswa::create([
                 'npm' => $row[0], // kolom A
-                'nama' => $name,
+                'nama' => ucwords(strtolower($name)), // kolom B + C
                 'user_id' => $user->id,
                 'nik' => $row[3], // kolom D
                 'jenis_kelamin' => $row[4], // kolom E
-                'nama_ibu' => $row[5], // kolom F
+                'nama_ibu' => ucwords(strtolower($row[5])), // kolom F
                 'agama' => $row[6], // kolom G
                 'tempat_lahir' => $row[7], // kolom H
                 'tanggal_lahir' => $tanggalLahir, // kolom I
