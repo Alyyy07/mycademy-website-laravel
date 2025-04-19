@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserSeeder extends Seeder
 {
@@ -66,26 +67,7 @@ class UserSeeder extends Seeder
 
         $dosen1->assignRole('dosen');
 
-        $mahasiswa = User::create([
-            'id'=>'fe98d07f-ab13-44cf-bf0f-a9a265adb69e',
-            'name' => 'mahasiswa',
-            'email' => 'mahasiswa@gmail.com',
-            'email_verified_at' => now(),
-            'password' => '12345',
-            'remember_token' => Str::random(10),
-        ]);
 
-        $mahasiswa->assignRole('mahasiswa');
-
-        $mahasiswa2 = User::create([
-            'name' => 'mahasiswa2',
-            'email' => 'mahasiswa2@gmail.com',
-            'verification_code' => '123456',
-            'email_verified_at' => null,
-            'password' => '12345',
-            'remember_token' => Str::random(10),
-        ]);
-
-        $mahasiswa2->assignRole('mahasiswa');
+        Excel::import(new \App\Imports\DosenImport, storage_path('app/public/seeder/seederDosen.xlsx'));
     }
 }
