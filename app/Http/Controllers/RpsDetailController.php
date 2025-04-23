@@ -65,12 +65,4 @@ class RpsDetailController extends Controller
         }
         return response()->json(['status' => 'error', 'message' => 'Data gagal dihapus']);
     }
-
-    public function statusUpload(Request $request)
-    {
-        $rpsDetail = RpsDetail::findOrFail($request->rps_detail_id);
-        $rpsDetail->force_upload = !$rpsDetail->force_upload;
-        $rpsDetail->save();
-        return redirect()->back();
-    }
 }
