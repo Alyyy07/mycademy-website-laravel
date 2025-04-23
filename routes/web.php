@@ -28,13 +28,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     require __DIR__ . '/admin/user-management.php';
     require __DIR__ . '/admin/akademik.php';
     require __DIR__ . '/admin/modul-pembelajaran.php';
+    require __DIR__ . '/admin/forum-diskusi.php';
 
     Route::resource('/mapping-matakuliah', MappingMatakuliahController::class)->names('mapping-matakuliah')->except('show');
 
     Route::resource('/rps-matakuliah', RpsMatakuliahController::class)->names('rps-matakuliah')->except('show');
 
     Route::resource('/rps-detail', RpsDetailController::class)->names('rps-detail')->except('show');
-    Route::post('rps-detail/status-upload', [RpsDetailController::class, 'statusUpload'])->name('rps-detail.status-upload');
 });
 
 require __DIR__ . '/auth.php';
