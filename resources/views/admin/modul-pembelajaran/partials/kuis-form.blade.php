@@ -6,20 +6,23 @@
 <div class="card">
     <div class="card-body">
         <div class="d-flex justify-content-between mb-5">
-            <a href="{{ route('modul-pembelajaran.detail',['id' => $rpsDetailId]) }}"
+            <a href="{{ route('modul-pembelajaran.detail',['id' => $rpsDetail->rps_matakuliah_id]) }}"
                 class="btn btn-light me-3">Kembali</a>
+            @if ($rpsDetail->tanggal_realisasi === null)
             @if ($action == 'edit' && $kuis->status == 'draft' && auth()->user()->roles->first()->name == 'dosen')
-            @if (canManageModul($rpsDetail->tanggal_pertemuan,$rpsDetail->force_upload))
-                
             <button type="button" class="btn btn-light-primary me-3"
-            data-route="{{ route('modul-pembelajaran.kuis.status') }}" data-action="publish"
-            data-kuis-id="{{ $kuis->id }}" class="btn btn-light-success me-3">Upload</button>
+                data-route="{{ route('modul-pembelajaran.kuis.status') }}" data-action="publish"
+                data-kuis-id="{{ $kuis->id }}">Upload</button>
+            @elseif ($action == 'edit' && $kuis->status == 'uploaded' && auth()->user()->roles->first()->name ==
+            'dosen')
+            <button type="button" class="btn btn-light-danger me-3"
+                data-route="{{ route('modul-pembelajaran.kuis.status') }}" data-action="unpublish"
+                data-kuis-id="{{ $kuis->id }}">Batalkan Upload</button>
+            @endif
             @else
             <small class="text-danger text-center d-flex gap-1 align-items-center">
-                <strong>Perhatian!</strong> Anda tidak dapat mengupload kuis karena sudah melewati batas waktu upload.
-                Silahkan hubungi admin matakuliah untuk mengupload kuis.
+                <strong>Perhatian!</strong> Sesi pertemuan sudah berakhir
             </small>
-            @endif
             @endif
         </div>
         <form id="materi-form" class="form" action="{{ $route }}" modal-action="{{ $action }}"
@@ -156,6 +159,7 @@
             </div>
     </div>
     <div class="text-center pt-10">
+        @if ($rpsDetail->tanggal_realisasi === null)
         @if ($action === 'create' || $kuis->status == 'draft' && auth()->user()->roles->first()->name ==
         'dosen')
         <button type="reset" class="btn btn-light me-3">Reset</button>
@@ -164,15 +168,17 @@
         </button>
         @elseif($kuis->status == 'uploaded' && auth()->user()->roles->first()->name == 'admin-matakuliah')
         <button type="button" class="btn btn-light-primary me-3"
-            data-route="{{ route('modul-pembelajaran.kuis.status') }}" data-action="verify"
-            data-kuis-id="{{ $kuis->id }}">Verifikasi</button>
+        data-route="{{ route('modul-pembelajaran.kuis.status') }}" data-action="verify"
+        data-kuis-id="{{ $kuis->id }}">Verifikasi</button>
         <button type="button" class="btn btn-light-danger me-3"
-            data-route="{{ route('modul-pembelajaran.kuis.status') }}" data-action="reject"
-            data-kuis-id="{{ $kuis->id }}">Tolak</button>
-        @elseif(($kuis->status == 'verified' || $kuis->status == 'rejected') && auth()->user()->roles->first()->name == 'admin-matakuliah')
+        data-route="{{ route('modul-pembelajaran.kuis.status') }}" data-action="reject"
+        data-kuis-id="{{ $kuis->id }}">Tolak</button>
+        @elseif(($kuis->status == 'verified' || $kuis->status == 'rejected') && auth()->user()->roles->first()->name ==
+        'admin-matakuliah')
         <button type="button" class="btn btn-light-danger me-3"
-            data-route="{{ route('modul-pembelajaran.kuis.status.reset') }}" data-action="reject"
-            data-kuis-id="{{ $kuis->id }}">Batalkan Verifikasi</button>
+        data-route="{{ route('modul-pembelajaran.kuis.status.reset') }}" data-action="reset"
+        data-kuis-id="{{ $kuis->id }}">Batalkan Verifikasi</button>
+        @endif
         @endif
     </div>
     </form>
@@ -186,7 +192,7 @@
 <script>
     $(document).ready(function(){
         $(
-        'button[data-action="publish"], button[data-action="verify"], button[data-action="reject"]'
+        'button[data-action="publish"], button[data-action="verify"], button[data-action="reject"], button[data-action="unpublish"], button[data-action="reset"]'
     ).on("click", function () {
         const route = $(this).data("route");
         const action = $(this).data("action");
@@ -196,11 +202,13 @@
             publish: "upload",
             verify: "verifikasi",
             reject: "tolak",
+            unpublish: "batalkan upload",
+            reset: "batalkan verifikasi",
         }
 
         Swal.fire({
             title: "Konfirmasi",
-            text: `Apakah Anda yakin ingin ${option[action]} materi ini?`,
+            text: `Apakah Anda yakin ingin ${option[action]} kuis ini?`,
             icon: "question",
             showCancelButton: true,
             confirmButtonText: "Ya, lanjutkan",
@@ -222,7 +230,7 @@
                             text: response.message || "Status berhasil diubah",
                         }).then(() => {
                             window.location.href =
-                                "{{ route('modul-pembelajaran.detail', ['id' => $rpsDetailId]) }}";
+                                "{{ route('modul-pembelajaran.detail', ['id' => $rpsDetail->rps_matakuliah_id]) }}";
                         });
                     },
                     error: function (xhr) {

@@ -32,12 +32,18 @@ class ModulPembelajaranController extends Controller
     {
         if (request()->ajax() && request()->has('filter') && request('filter') != '') {
             $search = request('filter');
-
+            $user = Auth::user();
             $data = RpsMatakuliah::with(['mappingMatakuliah.matakuliah', 'mappingMatakuliah.tahunAjaran'])
                 ->whereHas('mappingMatakuliah', function ($query) use ($search) {
                     $query->where('tahun_ajaran_id', $search);
-                });
-
+                })->whereHas('mappingMatakuliah.matakuliah', function ($query) use ($user) {
+                    if ($user->roles->first()->name === 'admin-matakuliah') {
+                        $query->where('admin_verifier_id', $user->id);
+                    }
+                    if ($user->roles->first()->name === 'dosen') {
+                        $query->where('dosen_id', $user->id);
+                    }
+                })->get();
             return DataTables::of($data)
                 ->addColumn('action', function ($rps) {
                     $showRoute = route('rps-detail.index', ['id' => $rps->id]);
@@ -56,6 +62,19 @@ class ModulPembelajaranController extends Controller
             return TahunAjaran::all();
         });
         return $dataTable->render('admin.modul-pembelajaran.index', compact('tahunAjaran'));
+    }
+
+
+    public function detail()
+    {
+        $rpsMatakuliah = RpsMatakuliah::with('rpsDetails.materi')->findOrFail(request('id'));
+        if (!$rpsMatakuliah) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan');
+        }
+        if (($rpsMatakuliah->mappingMatakuliah->admin_verifier_id != Auth::user()->id && $rpsMatakuliah->mappingMatakuliah->dosen_id != Auth::user()->id) && Auth::user()->roles->first()->name != 'super-admin') {
+            return redirect()->back()->with('error', 'Anda tidak memiliki akses ke data ini');
+        }
+        return view('admin.modul-pembelajaran.detail', compact('rpsMatakuliah'));
     }
 
     /**
@@ -78,7 +97,7 @@ class ModulPembelajaranController extends Controller
         $route = route('modul-pembelajaran.materi.store');
 
         $rpsDetail = RpsDetail::where('id', $rpsDetailId)->first();
-        return view('admin.modul-pembelajaran.partials.materi-form', compact('materi', 'tipeMateri', 'route', 'action', 'rpsDetailId','rpsDetail'));
+        return view('admin.modul-pembelajaran.partials.materi-form', compact('materi', 'tipeMateri', 'route', 'action', 'rpsDetailId', 'rpsDetail'));
     }
 
     public function createKuis()
@@ -90,7 +109,7 @@ class ModulPembelajaranController extends Controller
         $route = route('modul-pembelajaran.kuis.store');
 
         $rpsDetail = RpsDetail::where('id', $rpsDetailId)->first();
-        return view('admin.modul-pembelajaran.partials.kuis-form', compact('action', 'route', 'kuis', 'rpsDetailId','rpsDetail'));
+        return view('admin.modul-pembelajaran.partials.kuis-form', compact('action', 'route', 'kuis', 'rpsDetailId', 'rpsDetail'));
     }
 
     /**
@@ -113,11 +132,11 @@ class ModulPembelajaranController extends Controller
             $materi->text_content = $request->text_content;
         }
         $materi->save();
-        $rpsMatakuliah = RpsMatakuliah::findOrFail($request->rps_detail_id);
+        $rpsDetail = RpsDetail::findOrFail($request->rps_detail_id);
         return response()->json([
             'status' => 'success',
             'message' => 'Materi berhasil ditambahkan',
-            'redirect_url' => route('modul-pembelajaran.detail', ['id' => $rpsMatakuliah->id]),
+            'redirect_url' => route('modul-pembelajaran.detail', ['id' => $rpsDetail->rps_matakuliah_id]),
         ]);
     }
 
@@ -147,11 +166,11 @@ class ModulPembelajaranController extends Controller
             }
 
             DB::commit();
-            $rpsMatakuliah = RpsMatakuliah::findOrFail($request->rps_detail_id);
+            $rpsDetail = RpsDetail::findOrFail($request->rps_detail_id);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Tugas berhasil ditambahkan',
-                'redirect_url' => route('modul-pembelajaran.detail', ['id' => $rpsMatakuliah->id]),
+                'redirect_url' => route('modul-pembelajaran.detail', ['id' => $rpsDetail->rps_matakuliah_id]),
             ]);
         } catch (\Exception $e) {
             DB::rollback();
@@ -172,7 +191,7 @@ class ModulPembelajaranController extends Controller
         $route = route('modul-pembelajaran.materi.update', ['id' => $materi->id]);
 
         $rpsDetail = RpsDetail::where('id', $rpsDetailId)->first();
-        return view('admin.modul-pembelajaran.partials.materi-form', compact('materi', 'action', 'route', 'tipeMateri', 'rpsDetailId', 'pdfPath','rpsDetail'));
+        return view('admin.modul-pembelajaran.partials.materi-form', compact('materi', 'action', 'route', 'tipeMateri', 'rpsDetailId', 'pdfPath', 'rpsDetail'));
     }
 
     public function editKuis(string $id)
@@ -183,7 +202,7 @@ class ModulPembelajaranController extends Controller
         $route = route('modul-pembelajaran.kuis.update', ['id' => $kuis->id]);
 
         $rpsDetail = RpsDetail::where('id', $rpsDetailId)->first();
-        return view('admin.modul-pembelajaran.partials.kuis-form', compact('kuis', 'action', 'route', 'rpsDetailId','rpsDetail'));
+        return view('admin.modul-pembelajaran.partials.kuis-form', compact('kuis', 'action', 'route', 'rpsDetailId', 'rpsDetail'));
     }
     public function updateKuis(KuisRequest $request, string $id)
     {
@@ -216,10 +235,11 @@ class ModulPembelajaranController extends Controller
             }
 
             DB::commit();
+            $rpsDetail = RpsDetail::findOrFail($kuis->rps_detail_id);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Tugas berhasil diperbarui',
-                'redirect_url' => route('modul-pembelajaran.detail', ['id' => $kuis->rps_detail_id]),
+                'redirect_url' => route('modul-pembelajaran.detail', ['id' => $rpsDetail->rps_matakuliah_id]),
             ]);
         } catch (\Exception $e) {
             DB::rollback();
@@ -250,30 +270,14 @@ class ModulPembelajaranController extends Controller
             $materi->text_content = $request->text_content;
         }
         $materi->save();
-        $rpsMatakuliah = RpsMatakuliah::findOrFail($request->rps_detail_id);
+        $rpsDetail = RpsDetail::findOrFail($request->rps_detail_id);
         return response()->json([
             'status' => 'success',
             'message' => 'Materi berhasil diperbarui',
-            'redirect_url' => route('modul-pembelajaran.detail', ['id' => $rpsMatakuliah->id]),
+            'redirect_url' => route('modul-pembelajaran.detail', ['id' => $rpsDetail->rps_matakuliah_id]),
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    public function detail()
-    {
-        $rpsMatakuliah = RpsMatakuliah::with('rpsDetails.materi')->findOrFail(request('id'));
-        if (!$rpsMatakuliah) {
-            return redirect()->back()->with('error', 'Data tidak ditemukan');
-        }
-        return view('admin.modul-pembelajaran.detail', compact('rpsMatakuliah'));
-    }
 
     public function destroyMateri(string $id)
     {
@@ -318,20 +322,13 @@ class ModulPembelajaranController extends Controller
         $materi = Materi::findOrFail($request->materi_id);
         $action = $request->action;
 
-        switch ($action) {
-            case 'publish':
-                $materi->status = 'uploaded';
-                break;
-            case 'verify':
-                $materi->status = 'verified';
-                break;
-            case 'reject':
-                $materi->status = 'rejected';
-                break;
-            default:
-                return response()->json(['message' => 'Aksi tidak dikenali.'], 400);
-        }
-
+        $materi->status = match ($action) {
+            'publish' => 'uploaded',
+            'verify' => 'verified',
+            'reject' => 'rejected',
+            default => 'draft',
+        };
+        $materi->verifier_id = Auth::user()->id;
         $materi->save();
 
         return response()->json(['message' => 'Status materi berhasil diperbarui.']);
@@ -340,11 +337,11 @@ class ModulPembelajaranController extends Controller
     public function resetStatusMateri(Request $request)
     {
         $materi = Materi::findOrFail($request->materi_id);
-        $materi->status = 'draft';
+        $materi->status = 'uploaded';
+        $materi->verifier_id = null;
         $materi->save();
 
         return response()->json(['message' => 'Status materi berhasil direset.']);
-
     }
 
     public function updateStatusKuis(Request $request)
@@ -365,7 +362,7 @@ class ModulPembelajaranController extends Controller
             default:
                 return response()->json(['message' => 'Aksi tidak dikenali.'], 400);
         }
-
+        $kuis->verifier_id = Auth::user()->id;
         $kuis->save();
 
         return response()->json(['message' => 'Status kuis berhasil diperbarui.']);
@@ -374,10 +371,29 @@ class ModulPembelajaranController extends Controller
     public function resetStatusKuis(Request $request)
     {
         $kuis = Kuis::findOrFail($request->kuis_id);
-        $kuis->status = 'draft';
+        $kuis->status = 'uploaded';
+        $kuis->verifier_id = null;
         $kuis->save();
 
         return response()->json(['message' => 'Status kuis berhasil direset.']);
+    }
+
+    public function endSession(Request $request)
+    {
+        $rpsDetail = RpsDetail::findOrFail($request->rps_detail_id);
+        $rpsDetail->tanggal_realisasi = now();
+        $rpsDetail->save();
+
+        return response()->json(['message' => 'Pertemuan berhasil diakhiri.']);
+    }
+
+    public function endForum(Request $request)
+    {
+        $rpsDetail = RpsDetail::findOrFail($request->rps_detail_id);
+        $rpsDetail->close_forum = true;
+        $rpsDetail->save();
+
+        return response()->json(['message' => 'Forum berhasil diakhiri.', 'redirect_url' => route('forum-diskusi.detail', ['id' => $rpsDetail->rps_matakuliah_id])]);
     }
 
     public function uploadFile(Request $request)

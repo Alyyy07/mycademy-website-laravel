@@ -33,4 +33,7 @@ Route::group(['prefix' => 'modul-pembelajaran', 'as' => 'modul-pembelajaran.'], 
 
     Route::post('/reset-status-kuis', [ModulPembelajaranController::class, 'resetStatusKuis'])->name('kuis.status.reset');
     Route::post('/reset-status-materi', [ModulPembelajaranController::class, 'resetStatusMateri'])->name('materi.status.reset');
+
+    Route::post('/end-session', [ModulPembelajaranController::class, 'endSession'])->name('end-session');
+    Route::post('/end-forum',[ModulPembelajaranController::class,'endForum'])->name('end-forum');
 });
