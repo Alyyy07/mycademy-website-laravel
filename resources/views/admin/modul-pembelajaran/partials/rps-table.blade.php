@@ -30,7 +30,9 @@
                             @forelse($rpsMatakuliah->rpsDetails as $detail)
                             <tr>
                                 <td>{{ $detail->sesi_pertemuan }}</td>
-                                <td>{{ \Carbon\Carbon::parse($detail->tanggal_pertemuan)->format('d M Y') }}</td>
+                                <td>{{
+                                    \Carbon\Carbon::parse($detail->tanggal_pertemuan)->locale('id')->translatedFormat('l,
+                                    d F Y') }}</td>
                                 <td>{{ $detail->capaian_pembelajaran }}</td>
                                 <td>{{ $detail->indikator }}</td>
                                 <td>{{ $detail->metode_pembelajaran }}</td>

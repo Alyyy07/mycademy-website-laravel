@@ -25,4 +25,9 @@ class Materi extends Model
     {
         return $this->belongsTo(User::class, 'verified_by');
     }
+
+    public function discussions()
+    {
+        return $this->hasMany(DiscussionMessage::class);
+    }
 }

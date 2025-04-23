@@ -27,15 +27,24 @@ class RpsMatakuliahController extends Controller
     {
         if (request()->ajax() && request()->has('filter') && request('filter') != '') {
             $search = request('filter');
+            $user = Auth::user();
             $data = RpsMatakuliah::with(['mappingMatakuliah.matakuliah', 'mappingMatakuliah.tahunAjaran'])
                 ->whereHas('mappingMatakuliah', function ($query) use ($search) {
                     $query->where('tahun_ajaran_id', $search);
-                })
-                ->get();
+                })->whereHas('mappingMatakuliah.matakuliah', function ($query) use ($user) {
+                    if($user->roles->first()->name === 'admin-matakuliah') {
+                        $query->where('admin_verifier_id', $user->id);
+                    }
+                    if($user->roles->first()->name === 'dosen') {
+                        $query->where('dosen_id',$user->id);
+                    }
+                })->get();
             return DataTables::of($data)
                 ->addColumn('action', function ($rps) {
                     $showRoute = route('rps-detail.index', ['id' => $rps->id]);
-                    return view('admin.rps-matakuliah.partials.action', compact('rps', 'showRoute'));
+                    $editRoute = route('rps-matakuliah.edit', $rps->id);
+                    $deleteRoute = route('rps-matakuliah.destroy', $rps->id);
+                    return view('admin.rps-matakuliah.partials.action', compact('rps', 'showRoute', 'editRoute', 'deleteRoute'));
                 })
                 ->editColumn('tanggal_mulai', function ($rps) {
                     return Carbon::parse($rps->tanggal_mulai)->locale('id')->translatedFormat('d F Y');
@@ -112,7 +121,7 @@ class RpsMatakuliahController extends Controller
     public function update(RpsMatakuliahRequest $request, RpsMatakuliah $rpsMatakuliah)
     {
         $request->validated();
-        if($rpsMatakuliah->rpsDetails()->exists()) {
+        if ($rpsMatakuliah->rpsDetails()->exists()) {
             return response()->json(['status' => 'error', 'message' => 'Data tidak dapat diubah karena sudah memiliki detail']);
         }
         $result = $rpsMatakuliah->update($request->all());

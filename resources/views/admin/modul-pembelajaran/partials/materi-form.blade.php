@@ -6,19 +6,23 @@
 <div class="card">
     <div class="card-body">
         <div class="d-flex justify-content-between mb-5">
-            <a href="{{ route('modul-pembelajaran.detail',['id' => $rpsDetailId]) }}"
+            <a href="{{ route('modul-pembelajaran.detail',['id' => $rpsDetail->rps_matakuliah_id]) }}"
                 class="btn btn-light me-3">Kembali</a>
+            @if ($rpsDetail->tanggal_realisasi === null)
             @if ($action == 'edit' && $materi->status == 'draft' && auth()->user()->roles->first()->name == 'dosen')
-            @if (canManageModul($rpsDetail->tanggal_pertemuan,$rpsDetail->force_upload))
             <button type="button" class="btn btn-light-primary me-3"
                 data-route="{{ route('modul-pembelajaran.materi.status') }}" data-action="publish"
                 data-materi-id="{{ $materi->id }}" class="btn btn-light-success me-3">Upload</button>
+            @elseif ($action == 'edit' && $materi->status == 'uploaded' && auth()->user()->roles->first()->name ==
+            'dosen')
+            <button type="button" class="btn btn-light-danger me-3"
+                data-route="{{ route('modul-pembelajaran.materi.status') }}" data-action="unpublish"
+                data-materi-id="{{ $materi->id }}">Batalkan Upload</button>
+            @endif
             @else
             <small class="text-danger text-center d-flex gap-1 align-items-center">
-                <strong>Perhatian!</strong> Anda tidak dapat mengupload materi karena sudah melewati batas waktu upload.
-                Silahkan hubungi admin matakuliah untuk mengupload materi.
+                <strong>Perhatian!</strong> Sesi pertemuan sudah berakhir
             </small>
-            @endif
             @endif
         </div>
         <form id="materi-form" class="form" action="{{ $route }}" modal-action="{{ $action }}"
@@ -85,6 +89,7 @@
                 @endswitch
             </div>
             <div class="text-center pt-10">
+                @if ($rpsDetail->tanggal_realisasi === null)
                 @if ($action === 'create' || $materi->status == 'draft' && auth()->user()->roles->first()->name ==
                 'dosen')
                 <button type="reset" class="btn btn-light me-3">Reset</button>
@@ -101,8 +106,9 @@
                 @elseif(($materi->status == 'verified' || $materi->status == 'rejected') &&
                 auth()->user()->roles->first()->name == 'admin-matakuliah')
                 <button type="button" class="btn btn-light-danger me-3"
-                    data-route="{{ route('modul-pembelajaran.materi.status.reset') }}" data-action="reject"
+                    data-route="{{ route('modul-pembelajaran.materi.status.reset') }}" data-action="reset"
                     data-materi-id="{{ $materi->id }}">Batalkan Verifikasi</button>
+                @endif
                 @endif
             </div>
         </form>
@@ -115,15 +121,22 @@
 <script>
     $(document).ready(function () {
     $(
-        'button[data-action="publish"], button[data-action="verify"], button[data-action="reject"]'
+        'button[data-action="publish"], button[data-action="verify"], button[data-action="reject"], button[data-action="unpublish"], button[data-action="reset"]'
     ).on("click", function () {
         const route = $(this).data("route");
         const action = $(this).data("action");
         const materiId = $(this).data("materi-id");
+        const option = {
+            publish: "upload",
+            verify: "verifikasi",
+            reject: "tolak",
+            unpublish: "batalkan upload",
+            reset: "batalkan verifikasi",
+        }
 
         Swal.fire({
             title: "Konfirmasi",
-            text: `Apakah Anda yakin ingin ${action} materi ini?`,
+            text: `Apakah Anda yakin ingin ${option[action]} materi ini?`,
             icon: "question",
             showCancelButton: true,
             confirmButtonText: "Ya, lanjutkan",
@@ -144,7 +157,7 @@
                             title: "Berhasil",
                             text: response.message || "Status berhasil diubah",
                         }).then(() => {
-                            window.location.href = "{{ route('modul-pembelajaran.detail', ['id' => $rpsDetailId]) }}";
+                            window.location.href = "{{ route('modul-pembelajaran.detail', ['id' => $rpsDetail->rps_matakuliah_id]) }}";
                         });
                     },
                     error: function (xhr) {

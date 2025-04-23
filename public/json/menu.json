@@ -78,7 +78,7 @@
         "slug": "rps-matakuliah",
         "icon": "ki-outline ki-book-square",
         "url": "/rps-matakuliah",
-        "order": 2,
+        "order": 3,
         "childrens": []
     },
     {
@@ -87,7 +87,7 @@
         "slug": "modul-pembelajaran",
         "icon": "ki-outline ki-book",
         "url": "/modul-pembelajaran",
-        "order": 2,
+        "order": 4,
         "childrens": []
     },
     {
@@ -96,7 +96,7 @@
         "slug": "user_management",
         "icon": "ki-outline ki-people",
         "url": "",
-        "order": 2,
+        "order": 5,
         "childrens": [
             {
                 "name": "User List",
@@ -116,5 +116,14 @@
                 "childrens": []
             }
         ]
+    },
+    {
+        "name": "Forum Diskusi",
+        "module": "forum_diskusi",
+        "slug": "forum-diskusi",
+        "icon": "ki-outline ki-messages",
+        "url": "/forum-diskusi",
+        "order": 6,
+        "childrens": []
     }
 ]

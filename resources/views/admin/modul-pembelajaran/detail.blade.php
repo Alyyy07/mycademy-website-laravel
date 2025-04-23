@@ -28,70 +28,57 @@
                     <div class="d-flex justify-content-between mb-6 ">
                         <div>
                             <h5 class="card-title fw-bold text-dark">Pertemuan Ke - {{ $rpsDetail->sesi_pertemuan }}
+                                @if($rpsDetail->tanggal_realisasi)
+                                <span class="badge badge-light-success">
+                                    <i class="bi bi-check-circle me-1"></i>Sesi sudah berakhir
+                                </span>
+                                @elseif ($rpsDetail->tanggal_pertemuan > now())
+                                <span class="badge badge-light">
+                                    <i class="bi bi-clock me-1"></i>Sesi belum dimulai
+                                </span>
+                                @else
+                                <span class="badge badge-light-primary">
+                                    <i class="bi bi-alarm me-1"></i>Sesi sedang berlangsung
+                                </span>
+                                @endif
                             </h5>
                             <div class="text-muted fw-semibold fs-6">{{
                                 \Carbon\Carbon::parse($rpsDetail->tanggal_pertemuan)->locale('id')->translatedFormat('l,
-                                d F
-                                Y')
+                                d F Y')
                                 }}
                             </div>
                         </div>
                         <div class="d-flex gap-5">
-                            @if (canManageModul($rpsDetail->tanggal_pertemuan,$rpsDetail->force_upload))
-                            @if(auth()->user()->roles->first()->name === 'dosen') <button type="button"
-                                button-action="show" modal-id="#materi-modal"
-                                button-url="{{ route('modul-pembelajaran.materi.create',['id' => $rpsDetail->id]) }}"
-                                class="btn btn-light-primary">
-                                <i class="ki-duotone ki-plus fs-2"></i>Tambah Materi</button>
-                            <a href="{{ route('modul-pembelajaran.kuis.create',['id'=>$rpsDetail->id]) }}"
-                                class="btn btn-light-warning">
-                                <i class="ki-duotone ki-plus fs-2"></i>Tambah Tugas</a>
-                            @endif
-                            @if (auth()->user()->roles->first()->name == 'admin-matakuliah')
-                            <div class="alert alert-success">
-                                Upload sudah dibuka
-                                <form action="{{ route('rps-detail.status-upload') }}" method="POST" class="d-inline">
-                                    @csrf
-                                    <input type="hidden" name="rps_detail_id" value="{{ $rpsDetail->id }}">
-                                    <button type="submit" class="btn btn-sm btn-light-primary ms-2">Tutup
-                                        Upload</button>
-                                </form>
-                            </div>
-                            @endif
-                            @else
-                            <div class="alert alert-warning">
-                                @if ($rpsDetail->tanggal_pertemuan < now()) Upload sudah ditutup @if (auth()->
-                                    user()->roles->first()->name == 'admin-matakuliah')
-                                    <form action="{{ route('rps-detail.status-upload') }}" method="POST"
-                                        class="d-inline">
-                                        @csrf
-                                        <input type="hidden" name="rps_detail_id" value="{{ $rpsDetail->id }}">
-                                        <button type="submit" class="btn btn-sm btn-light-primary ms-2">Buka
-                                            Upload</button>
-                                    </form>
-                                    @elseif(auth()->user()->roles->first()->name === 'dosen'), silahkan hubungi admin
-                                    untuk membuka upload modul.@endif @else Upload hanya dibuka mulai H-7 sampai hari
-                                    pertemuan ({{ \Carbon\Carbon::parse($rpsDetail->
-                                    tanggal_pertemuan)->translatedFormat('d F Y') }}).
-                                    @if (auth()->
-                                    user()->roles->first()->name == 'admin-matakuliah')
-                                    <form action="{{ route('rps-detail.status-upload') }}" method="POST"
-                                        class="d-inline">
-                                        @csrf
-                                        <input type="hidden" name="rps_detail_id" value="{{ $rpsDetail->id }}">
-                                        <button type="submit" class="btn btn-sm btn-light-primary ms-2">Buka
-                                            Upload</button>
-                                    </form>
-                                    @endif
-                                    @endif
-                            </div>
-                            @endif
+                            @if ($rpsDetail->tanggal_realisasi == null && Auth::user()->roles->first()->name == 'dosen')
+                            @if ($rpsDetail->tanggal_pertemuan < now() ) <button type="button"
+                                class="btn btn-light-danger akhiri-pertemuan-btn" data-id="{{ $rpsDetail->id }}">
+                                <i class="ki-outline ki-check fs-2"></i> Akhiri Pertemuan
+                                </button>
+                                @endif
+                                <button type="button" button-action="show" modal-id="#materi-modal"
+                                    button-url="{{ route('modul-pembelajaran.materi.create',['id' => $rpsDetail->id]) }}"
+                                    class="btn btn-light-primary">
+                                    <i class="ki-duotone ki-plus fs-2"></i>Tambah Materi</button>
+                                <a href="{{ route('modul-pembelajaran.kuis.create',['id'=>$rpsDetail->id]) }}"
+                                    class="btn btn-light-warning">
+                                    <i class="ki-duotone ki-plus fs-2"></i>Tambah Tugas</a>
+
+                                @else
+                                @if ($rpsDetail->tanggal_realisasi)
+
+                                <div class="text-success fw-semibold">
+                                    <i class="bi bi-check-circle me-2"></i>Pertemuan diakhiri pada {{
+                                    \Carbon\Carbon::parse($rpsDetail->tanggal_realisasi)->translatedFormat('d F Y H:i')
+                                    }}
+                                </div>
+                                @endif
+                                @endif
                         </div>
                     </div>
-                    @if(($rpsDetail->materi->isEmpty() || $rpsDetail->materi->first()?->status == 'draft' &&
-                    auth()->user()->roles->first()->name !== 'dosen')
-                    && ($rpsDetail->kuis->isEmpty() || $rpsDetail->kuis->first()?->status == 'draft' &&
-                    auth()->user()->roles->first()->name !== 'dosen'))
+                    @if (($rpsDetail->materi->isEmpty() || $rpsDetail->materi->filter(fn($m) => $m->status !==
+                    'draft')->isEmpty() && auth()->user()->roles->first()->name !== 'dosen') &&
+                    ($rpsDetail->kuis->isEmpty() || $rpsDetail->kuis->filter(fn($k) => $k->status !==
+                    'draft')->isEmpty() && auth()->user()->roles->first()->name !== 'dosen' ))
                     <div class="notice d-flex bg-light-warning rounded border-warning border border-dashed  p-6 mb-10">
                         <!--begin::Wrapper-->
                         <div class="d-flex justify-content-center flex-grow-1">
@@ -207,3 +194,45 @@
         </div>
     </div>
     @endsection
+    @push('scripts')
+    <script>
+        document.querySelectorAll('.akhiri-pertemuan-btn').forEach(button => {
+    button.addEventListener('click', function () {
+        const rpsDetailId = this.dataset.id;
+        Swal.fire({
+            title: 'Akhiri Pertemuan?',
+            text: "Setelah dikonfirmasi, pertemuan ini akan diakhiri dan tidak dapat diubah!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Akhiri!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch("{{ route('modul-pembelajaran.end-session') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    },
+                    body: JSON.stringify({ rps_detail_id: rpsDetailId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: data.message,
+                        timer: 1500,
+                        showConfirmButton: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
+                    });
+                });
+            }
+        });
+    });
+});
+    </script>
+    @endpush

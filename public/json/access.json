@@ -60,7 +60,12 @@
             "user_management.roles-create",
             "user_management.roles-read",
             "user_management.roles-delete",
-            "user_management.roles-update"
+            "user_management.roles-update",
+            "forum_diskusi",
+            "forum_diskusi-create",
+            "forum_diskusi-read",
+            "forum_diskusi-update",
+            "forum_diskusi-delete"
         ]
     },
     {
@@ -77,7 +82,12 @@
             "rps_matakuliah-update",
             "rps_matakuliah-delete",
             "modul_pembelajaran",
-            "modul_pembelajaran-read"
+            "modul_pembelajaran-read",
+            "forum_diskusi",
+            "forum_diskusi-create",
+            "forum_diskusi-read",
+            "forum_diskusi-update",
+            "forum_diskusi-delete"
         ]
     },
     {
@@ -92,7 +102,12 @@
             "modul_pembelajaran-read",
             "modul_pembelajaran-create",
             "modul_pembelajaran-update",
-            "modul_pembelajaran-delete"
+            "modul_pembelajaran-delete",
+            "forum_diskusi",
+            "forum_diskusi-create",
+            "forum_diskusi-read",
+            "forum_diskusi-update",
+            "forum_diskusi-delete"
         ]
     },
     {

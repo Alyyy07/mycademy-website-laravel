@@ -138,13 +138,13 @@ if (!function_exists('capitalize')) {
 }
 
 if (!function_exists('canManageModul')) {
-    function canManageModul($tanggalPertemuan,$forceUpload)
+    function canManageModul($tanggalPertemuan,$tanggalRealisasi)
     {
-        if ($forceUpload) {
+        if (!$tanggalRealisasi) {
             return true;
         }
         $today = now()->startOfDay();
         $tanggal = Carbon::parse($tanggalPertemuan)->startOfDay();
-        return $today->greaterThanOrEqualTo($tanggal->copy()->subDays(7)) && $today->lessThanOrEqualTo($tanggal);
+        return $today->lessThanOrEqualTo($tanggal);
     }
 }

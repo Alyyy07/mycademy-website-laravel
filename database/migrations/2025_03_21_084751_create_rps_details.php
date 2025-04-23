@@ -21,7 +21,8 @@ return new class extends Migration
             $table->text('metode_pembelajaran')->nullable();
             $table->text('kriteria_penilaian')->nullable();
             $table->text('materi_pembelajaran')->nullable();
-            $table->boolean('force_upload')->default(false);
+            $table->datetime('tanggal_realisasi')->nullable();
+            $table->boolean('close_forum')->default(false);
             $table->timestamps();
         });
     }

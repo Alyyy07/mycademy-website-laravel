@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             MappingMatakuliahSeeder::class,
             RpsMatakuliahSeeder::class,
             RpsDetailSeeder::class,
+            MateriSeeder::class,
             KuisSeeder::class,
         ]);
     }
