@@ -25,7 +25,7 @@
             </small>
             @endif
         </div>
-        <form id="materi-form" class="form" action="{{ $route }}" modal-action="{{ $action }}"
+        <form id="kuis-form" class="form" action="{{ $route }}" modal-action="{{ $action }}"
             enctype="multipart/form-data">
             @if ($action == 'edit')
             @method('PUT')
@@ -54,22 +54,30 @@
                                 <div class="form-group row">
                                     <div class="mb-3">
                                         <label class="form-label">Soal:</label>
-                                        <textarea name="question_text" class="form-control form-control-solid"
-                                            placeholder="Masukkan Soal"
-                                            @if($kuis->status !== 'draft') disabled @endif>{{ $question->question_text }}</textarea>
+                                        <div class="ckeditor">
+                                            <div class="document-toolbar"></div>
+                                            <div class="document-editor"></div>
+                                            <input type="hidden" name="question_text"
+                                                value="{{ $question->question_text }}" @if ($kuis->status !== 'draft')
+                                            disabled @endif />
+                                        </div>
                                     </div>
 
                                     <div class="inner-repeater">
+                                        <label class="form-label">Jawaban:</label>
                                         <div data-repeater-list="options">
                                             @foreach($question->options as $index => $option)
                                             <div data-repeater-item class="row mb-2">
                                                 <div class="col-md-9">
-                                                    <input type="text" name="option_text"
-                                                        class="form-control form-control-solid"
-                                                        placeholder="Jawaban {{ chr(65 + $index) }}"
-                                                        value="{{ $option->option_text }}" @if($kuis->status !==
-                                                    'draft')
-                                                    disabled @endif />
+                                                    <div class="ckeditor">
+                                                        <div class="document-toolbar"></div>
+                                                        <div class="document-editor"></div>
+                                                        <input type="hidden" name="option_text"
+                                                            value="{{ $option->option_text }}" @if ($kuis->status
+                                                        !==
+                                                        'draft')
+                                                        disabled @endif />
+                                                    </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-check form-check-custom form-check-solid mt-2">
@@ -101,32 +109,42 @@
                                 <div class="form-group row">
                                     <div class="mb-3">
                                         <label class="form-label">Soal:</label>
-                                        <textarea name="question_text" class="form-control form-control-solid"
-                                            placeholder="Masukkan Soal"
-                                            @if($kuis->status !== 'draft') disabled @endif></textarea>
+                                        <div class="ckeditor">
+                                            <div class="document-toolbar"></div>
+                                            <div class="document-editor"></div>
+                                            <input type="hidden" name="question_text" @if ($kuis->status !== 'draft')
+                                            disabled @endif />
+                                        </div>
                                     </div>
 
                                     <div class="inner-repeater">
-                                        <div data-repeater-list="options">
-                                            @for ($i = 0; $i < 4; $i++) <div data-repeater-item class="row mb-2">
-                                                <div class="col-md-9">
-                                                    <input type="text" name="option_text"
-                                                        class="form-control form-control-solid"
-                                                        placeholder="Jawaban {{ chr(65 + $i) }}" @if($kuis->status
-                                                    !==
-                                                    'draft') disabled @endif />
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-check form-check-custom form-check-solid mt-2">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            name="is_correct" value="1" @if($kuis->status !==
-                                                        'draft')
-                                                        disabled @endif />
-                                                        <label class="form-check-label">Jawaban Benar</label>
+                                        <div class="mb-3">
+                                            <label class="form-label">Jawaban:</label>
+                                            <div data-repeater-list="options">
+                                                @for ($i = 0; $i < 4; $i++) <div data-repeater-item class="row mb-2">
+                                                    <div class="col-md-9">
+                                                        <div class="ckeditor">
+                                                            <div class="document-toolbar"></div>
+                                                            <div class="document-editor"></div>
+                                                            <input type="hidden" name="option_text" @if ($kuis->status
+                                                            !==
+                                                            'draft')
+                                                            disabled @endif />
+                                                        </div>
+
                                                     </div>
-                                                </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-check form-check-custom form-check-solid mt-2">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="is_correct" value="1" @if($kuis->status !==
+                                                            'draft')
+                                                            disabled @endif />
+                                                            <label class="form-check-label">Jawaban Benar</label>
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                            @endfor
                                         </div>
-                                        @endfor
                                     </div>
                                 </div>
                             </div>
@@ -168,16 +186,16 @@
         </button>
         @elseif($kuis->status == 'uploaded' && auth()->user()->roles->first()->name == 'admin-matakuliah')
         <button type="button" class="btn btn-light-primary me-3"
-        data-route="{{ route('modul-pembelajaran.kuis.status') }}" data-action="verify"
-        data-kuis-id="{{ $kuis->id }}">Verifikasi</button>
+            data-route="{{ route('modul-pembelajaran.kuis.status') }}" data-action="verify"
+            data-kuis-id="{{ $kuis->id }}">Verifikasi</button>
         <button type="button" class="btn btn-light-danger me-3"
-        data-route="{{ route('modul-pembelajaran.kuis.status') }}" data-action="reject"
-        data-kuis-id="{{ $kuis->id }}">Tolak</button>
+            data-route="{{ route('modul-pembelajaran.kuis.status') }}" data-action="reject"
+            data-kuis-id="{{ $kuis->id }}">Tolak</button>
         @elseif(($kuis->status == 'verified' || $kuis->status == 'rejected') && auth()->user()->roles->first()->name ==
         'admin-matakuliah')
         <button type="button" class="btn btn-light-danger me-3"
-        data-route="{{ route('modul-pembelajaran.kuis.status.reset') }}" data-action="reset"
-        data-kuis-id="{{ $kuis->id }}">Batalkan Verifikasi</button>
+            data-route="{{ route('modul-pembelajaran.kuis.status.reset') }}" data-action="reset"
+            data-kuis-id="{{ $kuis->id }}">Batalkan Verifikasi</button>
         @endif
         @endif
     </div>

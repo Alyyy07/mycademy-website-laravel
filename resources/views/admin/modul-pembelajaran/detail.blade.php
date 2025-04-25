@@ -61,7 +61,7 @@
                                     <i class="ki-duotone ki-plus fs-2"></i>Tambah Materi</button>
                                 <a href="{{ route('modul-pembelajaran.kuis.create',['id'=>$rpsDetail->id]) }}"
                                     class="btn btn-light-warning">
-                                    <i class="ki-duotone ki-plus fs-2"></i>Tambah Tugas</a>
+                                    <i class="ki-duotone ki-plus fs-2"></i>Tambah Kuis</a>
 
                                 @else
                                 @if ($rpsDetail->tanggal_realisasi)
