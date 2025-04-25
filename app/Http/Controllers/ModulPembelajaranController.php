@@ -309,8 +309,39 @@ class ModulPembelajaranController extends Controller
     public function destroyKuis(string $id)
     {
         $kuis = Kuis::findOrFail($id);
+
+        foreach ($kuis->questions as $question) {
+            // Hapus gambar dari question_text
+            if ($question->question_text) {
+                preg_match_all('/<img[^>]+src="([^">]+)"/', $question->question_text, $matches);
+                $imageUrls = $matches[1];
+                foreach ($imageUrls as $url) {
+                    $path = str_replace(asset('storage') . '/', '', $url);
+                    if (Storage::disk('public')->exists($path)) {
+                        Storage::disk('public')->delete($path);
+                    }
+                }
+            }
+
+            // Hapus gambar dari setiap option
+            foreach ($question->options as $option) {
+                if ($option->option_text) {
+                    preg_match_all('/<img[^>]+src="([^">]+)"/', $option->option_text, $matches);
+                    $imageUrls = $matches[1];
+                    foreach ($imageUrls as $url) {
+                        $path = str_replace(asset('storage') . '/', '', $url);
+                        if (Storage::disk('public')->exists($path)) {
+                            Storage::disk('public')->delete($path);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Hapus soal dan kuis
         $kuis->questions()->delete();
         $kuis->delete();
+
         return response()->json([
             'status' => 'success',
             'message' => 'Kuis berhasil dihapus',
