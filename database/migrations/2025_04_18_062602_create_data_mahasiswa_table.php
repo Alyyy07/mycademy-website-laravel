@@ -27,7 +27,8 @@ return new class extends Migration
             $table->string('no_hp')->nullable();
             $table->string('nama_ibu')->nullable();
             $table->enum('semester', ['1', '2', '3', '4', '5', '6', '7', '8'])->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
     }
 

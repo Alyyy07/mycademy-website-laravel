@@ -29,4 +29,9 @@ class Kuis extends Model
     {
         return $this->hasMany(KuisQuestion::class, 'kuis_id');
     }
+
+    public function kuisMahasiswa()
+    {
+        return $this->hasMany(KuisMahasiswa::class, 'kuis_id');
+    }
 }
