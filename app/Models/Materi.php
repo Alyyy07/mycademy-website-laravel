@@ -30,4 +30,9 @@ class Materi extends Model
     {
         return $this->hasMany(DiscussionMessage::class);
     }
+
+    public function materiMahasiswa()
+    {
+        return $this->hasMany(MateriMahasiswa::class);
+    }
 }
