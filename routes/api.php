@@ -4,12 +4,15 @@ use App\Http\Controllers\Api\AuthApiController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::prefix('auth')->middleware('auth:sanctum')->group(function () {
-    Route::get('logout',[AuthApiController::class, 'logout']);
+Route::prefix('auth')->middleware(['auth:sanctum','checkClientId'])->group(function () {
+    Route::post('logout',[AuthApiController::class, 'logout']);
+
+    Route::get('matakuliah',[AuthApiController::class, 'getMataKuliah']);
 });
 
 Route::middleware(['checkClientId', 'throttle:60,1'])->group(function () {
     Route::post('login', [AuthApiController::class, 'login']);
+    // Route::post('/login-with-google', [AuthApiController::class, 'loginWithGoogle']);
 
     Route::post('register',[AuthApiController::class, 'register']);
 

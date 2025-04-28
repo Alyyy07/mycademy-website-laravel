@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Mail\VerificationMail;
+use App\Models\Akademik\TahunAjaran;
+use App\Models\MappingMatakuliah;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
@@ -30,7 +33,7 @@ class AuthApiController extends Controller
             ], 401);
         }
 
-        if ($user->hasRole('siswa')) {
+        if ($user->hasRole('mahasiswa')) {
             return new UserResource($user);
         }
 
@@ -39,6 +42,37 @@ class AuthApiController extends Controller
             'message' => 'Anda tidak memiliki akses'
         ], 403);
     }
+
+    // public function loginWithGoogle(Request $request)
+    // {
+    //     $user = User::where('email', $request->email)->with('roles')->first();
+
+    //     if (!$user) {
+    //         return response()->json([
+    //             'status' => 'error',
+    //             'message' => 'Email atau Password Salah'
+    //         ], 401);
+    //     }
+
+    //     if (!Hash::check($request->password, $user->password)) {
+    //         return response()->json([
+    //             'status' => 'error',
+    //             'message' => 'Email atau Password Salah'
+    //         ], 401);
+    //     }
+
+    //     if ($user->hasRole('mahasiswa')) {
+    //         $user->email_verified_at = now();
+    //         $user->verification_code = null;
+    //         $user->save();
+    //         return new UserResource($user);
+    //     }
+
+    //     return response()->json([
+    //         'status' => 'error',
+    //         'message' => 'Anda tidak memiliki akses'
+    //     ], 403);
+    // }
 
     public function register(Request $request)
     {
@@ -137,13 +171,98 @@ class AuthApiController extends Controller
         return response()->json(['status' => 'error', 'message' => 'User tidak ditemukan'], 404);
     }
 
-    public function logout(User $user)
+    public function getMataKuliah(Request $request)
     {
+        $user = User::where('email', $request->email)->first();
         if (!$user) {
             return response()->json(['status' => 'error', 'message' => 'User tidak ditemukan'], 404);
         }
-        $user->tokens()->delete();
 
+        if ($user->hasRole('mahasiswa')) {
+            $tahunAjaran = TahunAjaran::getActive();
+
+            $mappings = MappingMatakuliah::with([
+                'matakuliah:id,nama_matakuliah,prodi_id',
+                'dosen:id,name',
+                'rpsMatakuliahs:id,mapping_matakuliah_id',
+                'rpsMatakuliahs.rpsDetails:id,rps_matakuliah_id'
+            ])
+                ->whereHas('matakuliah', function ($q) use ($user) {
+                    $q->where('prodi_id', $user->mahasiswa->prodi_id);
+                })
+                ->where('semester', $user->mahasiswa->semester)
+                ->where('tahun_ajaran_id', $tahunAjaran['id'])
+                ->get();
+
+            $rpsDetailIds = $mappings->flatMap(function ($mapping) {
+                $rpsMatakuliah = $mapping->rpsMatakuliahs;
+
+                return $rpsMatakuliah ? optional($rpsMatakuliah->rpsDetails)->pluck('id') : [];
+            })->unique()->values();
+
+            $materis = DB::table('materis')
+                ->whereIn('rps_detail_id', $rpsDetailIds)
+                ->select('id', 'rps_detail_id')
+                ->get();
+
+            $kuis = DB::table('kuisses')
+                ->whereIn('rps_detail_id', $rpsDetailIds)
+                ->select('id', 'rps_detail_id')
+                ->get();
+
+            $materiSelesaiIds = DB::table('materi_mahasiswa')
+                ->whereIn('materi_id', $materis->pluck('id'))
+                ->where('user_id', $user->id)
+                ->pluck('materi_id')
+                ->toArray();
+
+            $kuisSelesaiIds = DB::table('kuis_mahasiswa')
+                ->whereIn('kuis_id', $kuis->pluck('id'))
+                ->where('user_id', $user->id)
+                ->pluck('kuis_id')
+                ->toArray();
+
+            $data = $mappings->map(function ($mapping) use ($materis, $kuis, $materiSelesaiIds, $kuisSelesaiIds) {
+                $rpsDetailIds = optional($mapping->rpsMatakuliahs)->rpsDetails->pluck('id') ?? collect();
+
+                $totalMateri = $materis->whereIn('rps_detail_id', $rpsDetailIds)->count();
+                $totalKuis = $kuis->whereIn('rps_detail_id', $rpsDetailIds)->count();
+
+                $materiSelesai = $materis->whereIn('rps_detail_id', $rpsDetailIds)
+                    ->whereIn('id', $materiSelesaiIds)
+                    ->count();
+
+                $kuisSelesai = $kuis->whereIn('rps_detail_id', $rpsDetailIds)
+                    ->whereIn('id', $kuisSelesaiIds)
+                    ->count();
+
+                return [
+                    'id' => $mapping->id,
+                    'nama_matakuliah' => $mapping->matakuliah->nama_matakuliah,
+                    'dosen' => $mapping->dosen->name,
+                    'total_materi' => $totalMateri,
+                    'materi_selesai' => $materiSelesai,
+                    'total_kuis' => $totalKuis,
+                    'kuis_selesai' => $kuisSelesai,
+                ];
+            });
+
+            return response()->json(['status' => 'success', 'data' => $data], 200);
+        }
+
+        return response()->json(['status' => 'error', 'message' => 'Role tidak sesuai'], 403);
+    }
+
+    public function logout(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json(['status' => 'error', 'message' => 'User tidak ditemukan'], 404);
+        }
+        $user->last_login_at = now();
+        $user->save();
+
+        $user->tokens()->delete();
         return response()->json(['status' => 'success', 'message' => 'Berhasil logout'], 200);
     }
 }
