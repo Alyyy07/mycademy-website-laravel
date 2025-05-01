@@ -4,10 +4,11 @@ use App\Http\Controllers\Api\AuthApiController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::prefix('auth')->middleware(['auth:sanctum','checkClientId'])->group(function () {
+Route::prefix('auth')->middleware(['checkClientId'])->group(function () {
     Route::post('logout',[AuthApiController::class, 'logout']);
 
     Route::get('matakuliah',[AuthApiController::class, 'getMataKuliah']);
+    Route::get('modul-pembelajaran',[AuthApiController::class, 'getMataKuliahById']);
 });
 
 Route::middleware(['checkClientId', 'throttle:60,1'])->group(function () {

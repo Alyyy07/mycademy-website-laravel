@@ -7,6 +7,7 @@ use App\Http\Resources\UserResource;
 use App\Mail\VerificationMail;
 use App\Models\Akademik\TahunAjaran;
 use App\Models\MappingMatakuliah;
+use App\Models\RpsMatakuliah;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -251,6 +252,43 @@ class AuthApiController extends Controller
         }
 
         return response()->json(['status' => 'error', 'message' => 'Role tidak sesuai'], 403);
+    }
+
+    public function getMataKuliahById(Request $request)
+    {
+
+        $id = $request->query('id');
+        if (!$id) {
+            return response()->json(['status' => 'error', 'message' => 'ID parameter is missing'], 400);
+        }
+        $mapping = MappingMatakuliah::with([
+            'matakuliah:id,nama_matakuliah,prodi_id,deskripsi',
+            'dosen:id,name',
+            'rpsMatakuliahs:id,mapping_matakuliah_id',
+            'rpsMatakuliahs.rpsDetails'
+        ])
+            ->where('id', $id)
+            ->first();
+        if (!$mapping) {
+            return response()->json(['status' => 'error', 'message' => 'Mapping Matakuliah tidak ditemukan'], 404);
+        }
+
+        return response()->json(['status' => 'success', 'data' => [
+            'id' => $mapping->rpsMatakuliahs()->pluck('id'),
+            'nama_matakuliah' => $mapping->matakuliah->nama_matakuliah,
+            'deskripsi' => $mapping->matakuliah->deskripsi,
+            'rps_details' => $mapping->rpsMatakuliahs->rpsDetails->map(function ($rpsDetail) {
+                return [
+                    'id' => $rpsDetail->id,
+                    'sesi_pertemuan' => $rpsDetail->sesi_pertemuan,
+                    'tanggal_pertemuan' => $rpsDetail->tanggal_pertemuan,
+                    'tanggal_realisasi' => $rpsDetail->tanggal_realisasi,
+                    'close_forum' => $rpsDetail->close_forum,
+                    'materi' => $rpsDetail->materi->filter(fn($materi)=> $materi->status === 'verified'),
+                    'kuis' => $rpsDetail->kuis->filter(fn($kuis)=> $kuis->status === 'verified'),
+                ];
+            }),
+        ]], 200);
     }
 
     public function logout(Request $request)
