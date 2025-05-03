@@ -16,7 +16,7 @@ return new class extends Migration
             $table->char('user_id', 36)->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('materi_id')->constrained('materis')->onDelete('cascade');
-            $table->enum('skala_pemahaman', ['1', '2', '3', '4', '5']);
+            $table->enum('skala_pemahaman', ['1', '2', '3', '4']);
             $table->text('komentar')->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
