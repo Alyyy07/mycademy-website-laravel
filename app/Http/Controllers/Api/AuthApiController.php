@@ -7,6 +7,9 @@ use App\Http\Resources\UserResource;
 use App\Mail\VerificationMail;
 use App\Models\Akademik\TahunAjaran;
 use App\Models\MappingMatakuliah;
+use App\Models\Materi;
+use App\Models\MateriMahasiswa;
+use App\Models\RpsMatakuliah;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -182,7 +185,7 @@ class AuthApiController extends Controller
             $tahunAjaran = TahunAjaran::getActive();
 
             $mappings = MappingMatakuliah::with([
-                'matakuliah:id,nama_matakuliah,prodi_id',
+                'matakuliah:id,nama_matakuliah,deskripsi,prodi_id',
                 'dosen:id,name',
                 'rpsMatakuliahs:id,mapping_matakuliah_id',
                 'rpsMatakuliahs.rpsDetails:id,rps_matakuliah_id'
@@ -239,6 +242,7 @@ class AuthApiController extends Controller
                 return [
                     'id' => $mapping->id,
                     'nama_matakuliah' => $mapping->matakuliah->nama_matakuliah,
+                    'deskripsi' => $mapping->matakuliah->deskripsi,
                     'dosen' => $mapping->dosen->name,
                     'total_materi' => $totalMateri,
                     'materi_selesai' => $materiSelesai,
@@ -251,6 +255,118 @@ class AuthApiController extends Controller
         }
 
         return response()->json(['status' => 'error', 'message' => 'Role tidak sesuai'], 403);
+    }
+
+    public function getMataKuliahById(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json(['status' => 'error', 'message' => 'User tidak ditemukan'], 404);
+        }
+        if (!$user->hasRole('mahasiswa')) {
+            return response()->json(['status' => 'error', 'message' => 'Role tidak sesuai'], 403);
+        }
+
+        $id = $request->query('id');
+        if (!$id) {
+            return response()->json(['status' => 'error', 'message' => 'ID parameter is missing'], 400);
+        }
+        $mapping = MappingMatakuliah::with([
+            'matakuliah:id,prodi_id',
+            'dosen:id,name',
+            'rpsMatakuliahs.rpsDetails:id,rps_matakuliah_id,sesi_pertemuan,tanggal_pertemuan,tanggal_realisasi',
+            'rpsMatakuliahs.rpsDetails.materi:id,rps_detail_id,title,tipe_materi,status',
+            'rpsMatakuliahs.rpsDetails.kuis:id,rps_detail_id,title,description,status',
+            'rpsMatakuliahs.rpsDetails.materi.materiMahasiswa:id,materi_id,user_id',
+            'rpsMatakuliahs.rpsDetails.kuis.kuisMahasiswa:id,kuis_id,user_id',
+        ])
+            ->where('id', $id)
+            ->first();
+        if (!$mapping) {
+            return response()->json(['status' => 'error', 'message' => 'Mapping Matakuliah tidak ditemukan'], 404);
+        }
+
+        return response()->json(['status' => 'success', 'data' => [
+            'id' => $mapping->rpsMatakuliahs()->pluck('id'),
+            'rps_details' => $mapping->rpsMatakuliahs->rpsDetails->map(function ($rpsDetail) use ($user) {
+                return [
+                    'id' => $rpsDetail->id,
+                    'sesi_pertemuan' => $rpsDetail->sesi_pertemuan,
+                    'tanggal_pertemuan' => $rpsDetail->tanggal_pertemuan,
+                    'tanggal_realisasi' => $rpsDetail->tanggal_realisasi,
+                    'materi' => $rpsDetail->materi
+                        ->filter(fn($materi) => $materi->status === 'verified')
+                        ->map(function ($materi) use ($user) {
+                            return [
+                                'id' => $materi->id,
+                                'title' => $materi->title,
+                                'tipe_materi' => $materi->tipe_materi,
+                                'materi_selesai' => $materi->materiMahasiswa->where('user_id', $user->id)->count() ? 1 : 0,
+                            ];
+                        }),
+                    'kuis' => $rpsDetail->kuis
+                        ->filter(fn($kuis) => $kuis->status === 'verified')
+                        ->map(function ($kuis) use ($user) {
+                            return [
+                                'id' => $kuis->id,
+                                'title' => $kuis->title,
+                                'description' => $kuis->description,
+                                'kuis_selesai' => $kuis->kuisMahasiswa->where('user_id', $user->id)->count() > 0 ? 1 : 0,
+                            ];
+                        }),
+                ];
+            }),
+        ]], 200);
+    }
+
+    public function getMateri(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json(['status' => 'error', 'message' => 'User tidak ditemukan'], 404);
+        }
+
+        $materi = Materi::find($request->query('id'));
+        if (!$materi) {
+            return response()->json(['status' => 'error', 'message' => 'Materi tidak ditemukan'], 404);
+        }
+
+        $materi_selesai = MateriMahasiswa::where('materi_id', $materi->id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => array_merge($materi->toArray(), [
+                'materi_selesai' => $materi_selesai ? 1 : 0,
+                'tanggal_selesai' => $materi_selesai->created_at ?? null,
+            ])
+        ], 200);
+    }
+
+    public function setMateriSelesai(Request $request)
+    {
+       $request->validate([
+            'materi_id' => 'required|exists:materis,id',
+            'email' => 'required|email|exists:users,email',
+            'skala_pemahaman' => 'required|min:1|max:4',
+            'komentar' => 'nullable',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json(['status' => 'error', 'message' => 'User tidak ditemukan'], 404);
+        }
+
+        $materiMahasiswa = MateriMahasiswa::updateOrCreate(
+            ['materi_id' => $request->materi_id, 'user_id' => $user->id,'komentar' => $request->komentar],
+            ['skala_pemahaman' => $request->skala_pemahaman, 'komentar' => $request->komentar]
+        );
+        if (!$materiMahasiswa) {
+            return response()->json(['status' => 'error', 'message' => 'Gagal menyimpan data'], 500);
+        }
+
+        return response()->json(['status' => 'success', 'message' => 'Materi ditandai selesai'], 200);
     }
 
     public function logout(Request $request)
