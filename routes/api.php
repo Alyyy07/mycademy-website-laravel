@@ -9,6 +9,10 @@ Route::prefix('auth')->middleware(['checkClientId'])->group(function () {
 
     Route::get('matakuliah',[AuthApiController::class, 'getMataKuliah']);
     Route::get('modul-pembelajaran',[AuthApiController::class, 'getMataKuliahById']);
+    Route::get('modul-pembelajaran/materi',[AuthApiController::class, 'getMateri']);
+    Route::post('modul-pembelajaran/materi-selesai',[AuthApiController::class, 'setMateriSelesai']);
+    Route::get('modul-pembelajaran/kuis',[AuthApiController::class, 'getKuis']);
+    Route::post('modul-pembelajaran/kuis-selesai',[AuthApiController::class, 'setKuisSelesai']);
 });
 
 Route::middleware(['checkClientId', 'throttle:60,1'])->group(function () {
