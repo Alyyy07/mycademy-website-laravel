@@ -22,4 +22,9 @@ class KuisMahasiswa extends Model
     {
         return $this->belongsTo(Kuis::class);
     }
+
+    public function answers()
+{
+    return $this->hasMany(KuisMahasiswaAnswer::class);
+}
 }

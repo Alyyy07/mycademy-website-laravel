@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Mail\VerificationMail;
 use App\Models\Akademik\TahunAjaran;
+use App\Models\Kuis;
+use App\Models\KuisMahasiswa;
+use App\Models\KuisMahasiswaAnswer;
 use App\Models\MappingMatakuliah;
 use App\Models\Materi;
 use App\Models\MateriMahasiswa;
@@ -205,12 +208,12 @@ class AuthApiController extends Controller
 
             $materis = DB::table('materis')
                 ->whereIn('rps_detail_id', $rpsDetailIds)
-                ->select('id', 'rps_detail_id')
+                ->select('id', 'rps_detail_id', 'status')
                 ->get();
 
             $kuis = DB::table('kuisses')
                 ->whereIn('rps_detail_id', $rpsDetailIds)
-                ->select('id', 'rps_detail_id')
+                ->select('id', 'rps_detail_id', 'status')
                 ->get();
 
             $materiSelesaiIds = DB::table('materi_mahasiswa')
@@ -228,9 +231,8 @@ class AuthApiController extends Controller
             $data = $mappings->map(function ($mapping) use ($materis, $kuis, $materiSelesaiIds, $kuisSelesaiIds) {
                 $rpsDetailIds = optional($mapping->rpsMatakuliahs)->rpsDetails->pluck('id') ?? collect();
 
-                $totalMateri = $materis->whereIn('rps_detail_id', $rpsDetailIds)->count();
-                $totalKuis = $kuis->whereIn('rps_detail_id', $rpsDetailIds)->count();
-
+                $totalMateri = $materis->whereIn('rps_detail_id', $rpsDetailIds)->where('status', 'verified')->count();
+                $totalKuis = $kuis->whereIn('rps_detail_id', $rpsDetailIds)->where('status', 'verified')->count();
                 $materiSelesai = $materis->whereIn('rps_detail_id', $rpsDetailIds)
                     ->whereIn('id', $materiSelesaiIds)
                     ->count();
@@ -344,9 +346,49 @@ class AuthApiController extends Controller
         ], 200);
     }
 
+    public function getKuis(Request $request)
+    {
+        // validasi minimal email dan id
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'id'    => 'required|integer|exists:kuisses,id',
+        ]);
+
+        // ambil user
+        $user = User::where('email', $request->email)->firstOrFail();
+
+        // ambil kuis beserta soal & opsi
+        $kuis = Kuis::with('questions.options')->findOrFail($request->query('id'));
+
+        // cek apakah mahasiswa sudah pernah menyelesaikan
+        $km = KuisMahasiswa::with('answers')
+            ->where('kuis_id', $kuis->id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        // bangun struktur data response
+        $data = array_merge($kuis->toArray(), [
+            'kuis_selesai'    => $km ? 1 : 0,
+            'tanggal_selesai' => $km?->updated_at?->toISOString() ?? null,
+            'nilai'           => $km?->nilai ?? null,
+            'answers'         => $km
+                ? $km->answers->map(fn($a) => [
+                    'question_id' => $a->question_id,
+                    'option_id'   => $a->option_id,
+                ])->toArray()
+                : [],
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'data'   => $data,
+        ], 200);
+    }
+
+
     public function setMateriSelesai(Request $request)
     {
-       $request->validate([
+        $request->validate([
             'materi_id' => 'required|exists:materis,id',
             'email' => 'required|email|exists:users,email',
             'skala_pemahaman' => 'required|min:1|max:4',
@@ -359,7 +401,7 @@ class AuthApiController extends Controller
         }
 
         $materiMahasiswa = MateriMahasiswa::updateOrCreate(
-            ['materi_id' => $request->materi_id, 'user_id' => $user->id,'komentar' => $request->komentar],
+            ['materi_id' => $request->materi_id, 'user_id' => $user->id],
             ['skala_pemahaman' => $request->skala_pemahaman, 'komentar' => $request->komentar]
         );
         if (!$materiMahasiswa) {
@@ -367,6 +409,47 @@ class AuthApiController extends Controller
         }
 
         return response()->json(['status' => 'success', 'message' => 'Materi ditandai selesai'], 200);
+    }
+
+    public function setKuisSelesai(Request $request)
+    {
+        $request->validate([
+            'kuis_id'    => 'required|exists:kuisses,id',
+            'email'      => 'required|email|exists:users,email',
+            'nilai'      => 'required|numeric|min:0|max:100',
+            'answers'    => 'required|array|min:1',
+            'answers.*.question_id' => 'required|exists:kuis_questions,id',
+            'answers.*.option_id'   => 'required|exists:kuis_options,id',
+        ]);
+
+        $user = User::where('email', $request->email)->firstOrFail();
+
+        $km = KuisMahasiswa::updateOrCreate(
+            ['kuis_id' => $request->kuis_id, 'user_id' => $user->id],
+            ['nilai' => $request->nilai]
+        );
+
+        $km->answers()->delete();
+
+        $insert = collect($request->answers)->map(function ($a) use ($km) {
+            return [
+                'kuis_mahasiswa_id' => $km->id,
+                'question_id'       => $a['question_id'],
+                'option_id'         => $a['option_id'],
+                'created_at'        => now(),
+                'updated_at'        => now(),
+            ];
+        })->toArray();
+        KuisMahasiswaAnswer::insert($insert);
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Kuis ditandai selesai',
+            'data'    => [
+                'kuis_mahasiswa_id' => $km->id,
+                'nilai'             => $km->nilai,
+            ]
+        ], 200);
     }
 
     public function logout(Request $request)
