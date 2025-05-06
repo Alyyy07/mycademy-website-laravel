@@ -391,7 +391,8 @@ class ModulPembelajaranController extends Controller
                 $kuis->status = 'rejected';
                 break;
             default:
-                return response()->json(['message' => 'Aksi tidak dikenali.'], 400);
+                $kuis->status = 'draft';
+                break;
         }
         $kuis->verifier_id = Auth::user()->id;
         $kuis->save();
