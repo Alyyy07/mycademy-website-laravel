@@ -17,8 +17,9 @@ class KuisSeeder extends Seeder
             'rps_detail_id' => 1, // Ganti dengan ID rps_detail yang valid
             'title' => 'Kuis Pengenalan IoT',
             'description' => 'Kuis ini bertujuan untuk mengukur pemahaman dasar tentang Internet of Things (IoT)',
-            'status' => 'draft',
-            'uploader_id' => 'b4bbc461-be6c-4464-b529-aca0e8ab3719', // Ganti dengan UUID user yang valid
+            'status' => 'verified',
+            'uploader_id' => 'b4bbc461-be6c-4464-b529-aca0e8ab3719',
+            'verifier_id' => 'd7d74b70-bfb2-463d-b8aa-e3ee8ce95b71',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -26,30 +27,30 @@ class KuisSeeder extends Seeder
         // Data soal dan opsi
         $questions = [
             [
-                'question' => 'Apa kepanjangan dari IoT?',
+                'question' => '<p>Apa kepanjangan dari IoT?</p>',
                 'options' => [
-                    ['text' => 'Internet of Things', 'correct' => true],
-                    ['text' => 'Interface of Technology', 'correct' => false],
-                    ['text' => 'Input over Transmission', 'correct' => false],
-                    ['text' => 'Integrated Optical Transmitter', 'correct' => false],
+                    ['text' => '<p>Internet of Things</p>', 'correct' => true],
+                    ['text' => '<p>Interface of Technology</p>', 'correct' => false],
+                    ['text' => '<p>Input over Transmission</p>', 'correct' => false],
+                    ['text' => '<p>Integrated Optical Transmitter</p>', 'correct' => false],
                 ],
             ],
             [
-                'question' => 'Perangkat manakah yang merupakan contoh IoT?',
+                'question' => '<p>Perangkat manakah yang merupakan contoh IoT?</p>',
                 'options' => [
-                    ['text' => 'Smart TV', 'correct' => true],
-                    ['text' => 'Mesin Ketik', 'correct' => false],
-                    ['text' => 'Kipas Angin Manual', 'correct' => false],
-                    ['text' => 'Kalkulator', 'correct' => false],
+                    ['text' => '<p>Smart TV</p>', 'correct' => true],
+                    ['text' => '<p>Mesin Ketik</p>', 'correct' => false],
+                    ['text' => '<p>Kipas Angin Manual</p>', 'correct' => false],
+                    ['text' => '<p>Kalkulator</p>', 'correct' => false],
                 ],
             ],
             [
-                'question' => 'Komponen utama dalam sistem IoT adalah...',
+                'question' => '<p>Komponen utama dalam sistem IoT adalah...</p>',
                 'options' => [
-                    ['text' => 'Sensor, jaringan, dan aktuator', 'correct' => true],
-                    ['text' => 'Harddisk, keyboard, dan monitor', 'correct' => false],
-                    ['text' => 'RAM, CPU, dan GPU', 'correct' => false],
-                    ['text' => 'CD-ROM, BIOS, dan casing', 'correct' => false],
+                    ['text' => '<p>Sensor, jaringan, dan aktuator</p>', 'correct' => true],
+                    ['text' => '<p>Harddisk, keyboard, dan monitor</p>', 'correct' => false],
+                    ['text' => '<p>RAM, CPU, dan GPU</p>', 'correct' => false],
+                    ['text' => '<p>CD-ROM, BIOS, dan casing</p>', 'correct' => false],
                 ],
             ],
         ];
