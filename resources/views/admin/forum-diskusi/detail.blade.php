@@ -44,6 +44,15 @@
                                 }}
                             </div>
                         </div>
+                        @if(!$rpsDetail->close_forum && $rpsDetail->tanggal_realisasi && Auth::user()->roles->first()->name === 'dosen')
+                        <button type="button" class="btn btn-light-danger tutup-forum-btn"
+                            data-id="{{ $rpsDetail->id }}">
+                            <i class="ki-outline ki-check fs-2"></i> Tutup Forum Diskusi
+                        </button>
+                        @elseif($rpsDetail->close_forum)
+                        <span class="badge badge-light-danger fs-6 px-3 fw-semibold"><i
+                                class="ki-outline ki-information text-danger fs-3 me-2"></i>Forum sudah ditutup</span>                        
+                        @endif
                     </div>
                     @if (
                     $rpsDetail->materi->filter(fn($m) => $m->status === 'verified')->isEmpty())
@@ -81,15 +90,13 @@
 
                         <!--begin::Action-->
                         <div class="ms-5">
-                            @if ($rpsDetail->tanggal_realisasi && !$rpsDetail->close_forum)
+                            @if (!$rpsDetail->tanggal_realisasi)
+                            <span class="badge badge-light-warning fs-5 fw-semibold"><i
+                                    class="ki-outline ki-information text-warning fs-3 me-2"></i>Sesi belum berakhir</span>
+                            @else
                             <a href="{{ route('forum-diskusi.forum',['id'=>$materi->id,'rps_id'=> $rpsMatakuliah->id]) }}"
                                 class="btn btn-light-info">
-                                <i class="bi bi-eye fs-5 p-0 me-3"></i> Buka Forum</a>
-                            @else
-                            <span class="badge badge-light-warning fs-5 fw-semibold"><i
-                                    class="ki-outline ki-information text-warning fs-3 me-2"></i>@if($rpsDetail->close_forum)
-                                Forum sudah ditutup
-                                @else Sesi belum berakhir @endif</span>
+                                <i class="bi bi-eye fs-5 p-0 me-3"></i> Lihat Forum</a>
                             @endif
                         </div>
                     </div>
@@ -102,3 +109,43 @@
         </div>
     </div>
     @endsection
+    @push('scripts')
+    <script>
+        document.querySelector('.tutup-forum-btn')?.addEventListener('click', function () {
+		const rpsDetailId = this.dataset.id;
+        Swal.fire({
+            title: 'Tutup Forum Diskusi?',
+            text: "Setelah dikonfirmasi, forum ini akan diakhiri dan tidak dapat diubah!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Akhiri!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch("{{ route('modul-pembelajaran.end-forum') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    },
+                    body: JSON.stringify({ rps_detail_id: rpsDetailId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: data.message,
+                        timer: 1500,
+                        showConfirmButton: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+							window.location.href = data.redirect_url
+                        }
+                    });
+                });
+            }
+        });
+	});
+    </script>
+    @endpush
