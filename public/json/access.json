@@ -60,12 +60,7 @@
             "user_management.roles-create",
             "user_management.roles-read",
             "user_management.roles-delete",
-            "user_management.roles-update",
-            "forum_diskusi",
-            "forum_diskusi-create",
-            "forum_diskusi-read",
-            "forum_diskusi-update",
-            "forum_diskusi-delete"
+            "user_management.roles-update"
         ]
     },
     {
@@ -82,12 +77,7 @@
             "rps_matakuliah-update",
             "rps_matakuliah-delete",
             "modul_pembelajaran",
-            "modul_pembelajaran-read",
-            "forum_diskusi",
-            "forum_diskusi-create",
-            "forum_diskusi-read",
-            "forum_diskusi-update",
-            "forum_diskusi-delete"
+            "modul_pembelajaran-read"
         ]
     },
     {

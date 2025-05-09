@@ -25,7 +25,7 @@
                     <div class="overflow-hidden flex-grow-1">
                         <select name="fakultas_id" data-table="#prodi-table" data-action="filter"
                             data-url="{{ route('akademik.prodi.index') }}" data-control="select2"
-                            data-allow-clear="true" data-placeholder="Pilih Fakultas"
+                            data-allow-clear="true" data-placeholder="Pilih Fakultas" data-allow-clear="true"
                             class="form-select form-select-solid w-250px fw-bold">
                             <option value="">Pilih Fakultas</option>
                             @foreach($fakultas as $f)
