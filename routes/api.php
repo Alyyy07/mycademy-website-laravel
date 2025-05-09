@@ -13,6 +13,9 @@ Route::prefix('auth')->middleware(['checkClientId'])->group(function () {
     Route::post('modul-pembelajaran/materi-selesai',[AuthApiController::class, 'setMateriSelesai']);
     Route::get('modul-pembelajaran/kuis',[AuthApiController::class, 'getKuis']);
     Route::post('modul-pembelajaran/kuis-selesai',[AuthApiController::class, 'setKuisSelesai']);
+
+    Route::get('modul-pembelajaran/forum-diskusi',[AuthApiController::class, 'getForumDiskusi']);
+    Route::post('modul-pembelajaran/forum-diskusi/send',[AuthApiController::class, 'sendForumDiskusi']);
 });
 
 Route::middleware(['checkClientId', 'throttle:60,1'])->group(function () {

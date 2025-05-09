@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Mail\VerificationMail;
 use App\Models\Akademik\TahunAjaran;
+use App\Models\DiscussionMessage;
 use App\Models\Kuis;
 use App\Models\KuisMahasiswa;
 use App\Models\KuisMahasiswaAnswer;
@@ -328,7 +329,9 @@ class AuthApiController extends Controller
             return response()->json(['status' => 'error', 'message' => 'User tidak ditemukan'], 404);
         }
 
-        $materi = Materi::find($request->query('id'));
+        $materi = Materi::with([
+            'rpsDetail:id,tanggal_realisasi'
+        ])->find($request->query('id'));
         if (!$materi) {
             return response()->json(['status' => 'error', 'message' => 'Materi tidak ditemukan'], 404);
         }
@@ -450,6 +453,60 @@ class AuthApiController extends Controller
                 'nilai'             => $km->nilai,
             ]
         ], 200);
+    }
+
+    public function getForumDiskusi(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json(['status' => 'error', 'message' => 'User tidak ditemukan'], 404);
+        }
+        $messages = DiscussionMessage::with(['sender.roles','materi:id,title'])
+            ->where('materi_id', $request->query('id'))
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        $formatted = $messages->map(function ($msg) {
+            return [
+                'id' => $msg->id,
+                'sender_id' => $msg->sender_id,
+                'name' => $msg->sender->name,
+                'photo' => $msg->sender->profile_photo ? url("storage/$msg->sender->profile_photo") : url("storage/image/profile-photo/blank.png"),
+                'role' => $msg->sender->roles->first()->name ?? '-',
+                'content' => $msg->message,
+                'created_at' => $msg->created_at->diffForHumans(),
+            ];
+        })->toArray();
+        $materi = Materi::with('rpsDetail:id,close_forum')->find($request->query('id'));
+        $formatted['materi_title'] = $materi->title ?? null;
+        $formatted['is_closed']= $materi->rpsDetail->close_forum;
+        return response()->json(['status' => 'success', 'data' => array_merge($formatted, ['author_id' => $user->id])], 200);
+    }
+
+    public function sendForumDiskusi(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'materi_id' => 'required|exists:materis,id',
+            'message' => 'required|string|max:1000',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json(['status' => 'error', 'message' => 'User tidak ditemukan'], 404);
+        }
+
+        $result = DiscussionMessage::create([
+            'sender_id' => $user->id,
+            'materi_id' => $request->materi_id,
+            'message' => $request->message,
+        ]);
+
+        if(!$result) {
+            return response()->json(['status' => 'error', 'message' => 'Gagal mengirim pesan'], 500);
+        }
+
+        return response()->json(['status' => 'success', 'message' => 'Pesan berhasil dikirim'], 200);
     }
 
     public function logout(Request $request)
