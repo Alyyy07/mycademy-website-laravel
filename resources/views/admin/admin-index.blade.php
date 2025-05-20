@@ -11,10 +11,10 @@
                 <div class="mb-0">
                     <div class="fs-lg-2hx fs-2x fw-bold d-flex flex-center">
                         <div class="min-w-70px text-center" data-kt-countup="true"
-                            data-kt-countup-value="{{ $matakuliah }}">0</div>
+                            data-kt-countup-value="{{ $fakultas }}">0</div>
                     </div>
                     <span class="text-gray-600 fw-semibold fs-5 lh-0">
-                        Matakuliah Diampu
+                        Fakultas Terdaftar
                     </span>
                 </div>
             </div>
@@ -27,11 +27,11 @@
                 </i> 
                 <div class="mb-0">
                     <div class="fs-lg-2hx fs-2x fw-bold d-flex flex-center">
-                        <div class="min-w-70px text-center" data-kt-countup="true" data-kt-countup-value="{{ $mahasiswa }}">
+                        <div class="min-w-70px text-center" data-kt-countup="true" data-kt-countup-value="{{ $prodi }}">
                             0</div>
                     </div>
                     <span class="text-gray-600 fw-semibold fs-5 lh-0">
-                        Mahasiswa Terdaftar
+                        Prodi Terdaftar
                     </span>
                 </div>
             </div>
@@ -43,10 +43,10 @@
                 <div class="mb-0">
                     <div class="fs-lg-2hx fs-2x fw-bold d-flex flex-center">
                         <div class="min-w-70px text-center" data-kt-countup="true"
-                            data-kt-countup-value="{{ $materi }}">0</div>
+                            data-kt-countup-value="{{ $mahasiswa }}">0</div>
                     </div>
                     <span class="text-gray-600 fw-semibold fs-5 lh-0">
-                        Total Materi
+                        Total Mahasiswa
                     </span>
                 </div>
             </div>
@@ -58,11 +58,11 @@
                 </i>
                 <div class="mb-0">
                     <div class="fs-lg-2hx fs-2x fw-bold d-flex flex-center">
-                        <div class="min-w-70px text-center" data-kt-countup="true" data-kt-countup-value="{{ $kuis }}">
+                        <div class="min-w-70px text-center" data-kt-countup="true" data-kt-countup-value="{{ $dosen }}">
                             0</div>
                     </div>
                     <span class="text-gray-600 fw-semibold fs-5 lh-0">
-                        Total Kuis
+                        Total Dosen
                     </span>
                 </div>
             </div>
