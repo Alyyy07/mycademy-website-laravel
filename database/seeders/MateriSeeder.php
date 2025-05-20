@@ -29,7 +29,7 @@ class MateriSeeder extends Seeder
 
         // Materi entries
         $materiIoT = [
-            [1, 'Pengenalan IoT', 'pdf', 'materi/pdf/pertemuan_1.pdf'],
+            [1, 'Pengenalan IoT', 'pdf', 'materi/pdf/iot_pertemuan_1.pdf'],
             [2, 'Jenis sensor dan aktuator pada IoT', 'teks', '<section>
                 <h1>Jenis sensor dan aktuator pada IoT</h1>
                 <p>Sensor dan aktuator adalah dua komponen penting dalam sistem IoT. Sensor digunakan untuk mengumpulkan data dari lingkungan, sedangkan aktuator digunakan untuk mengendalikan perangkat berdasarkan data yang diterima.</p>

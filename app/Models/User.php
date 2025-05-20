@@ -95,4 +95,17 @@ class User extends Authenticatable
     public function mahasiswa(){
         return $this->hasOne(DataMahasiswa::class, 'user_id', 'id');
     }
+
+    public function materiMahasiswa(){
+         return $this->hasMany(MateriMahasiswa::class, 'user_id');
+    }
+
+    public function kuisMahasiswa(){
+         return $this->hasMany(KuisMahasiswa::class, 'user_id');
+    }
+
+    public function discussionMessages()
+    {
+        return $this->hasMany(DiscussionMessage::class, 'sender_id');
+    }
 }
