@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use App\Models\LaporanMetode;
+use App\Models\MappingMatakuliah;
 use App\Models\RpsMatakuliah;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Illuminate\Support\Facades\Auth;
@@ -25,7 +26,8 @@ class LaporanMetodeDataTable extends DataTable
     {
         return (new EloquentDataTable($query))
             ->addColumn('action', function ($rps) {
-                $showRoute = route('laporan-metode.detail', ['id' => $rps->id]);
+                $mappingId = MappingMatakuliah::where('id', $rps->mapping_matakuliah_id)->pluck('id')->first();
+                $showRoute = route('laporan-metode.detail', ['id' => $mappingId]);
                 return view('admin.laporan-metode.partials.action', compact('rps', 'showRoute'));
             })
             ->editColumn('tanggal_mulai', function ($rps) {

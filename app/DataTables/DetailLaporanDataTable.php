@@ -5,7 +5,9 @@ namespace App\DataTables;
 use App\Models\User;
 use App\Models\Materi;
 use App\Models\Kuis;
+use App\Models\MappingMatakuliah;
 use App\Models\RpsDetail;
+use App\Models\RpsMatakuliah;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\HtmlString;
@@ -175,12 +177,32 @@ class DetailLaporanDataTable extends DataTable
 
     public function query(User $model)
     {
+        $mapping = MappingMatakuliah::with('matakuliah')->findOrFail(request('id'));
+
+        $semester = $mapping->semester;
+        $prodiId   = $mapping->matakuliah->prodi_id;
+
+        $rpsId = RpsMatakuliah::where('mapping_matakuliah_id', $mapping->id)
+            ->value('id');
+
         return $model->newQuery()
-            ->role('mahasiswa')
-            ->whereHas('mahasiswa', fn($q) => $q->where('semester', 8))
-            ->whereHas('materiMahasiswa.materi.rpsDetail', fn($q) => $q->where('rps_matakuliah_id', request('id')))
-            ->whereHas('kuisMahasiswa.kuis.rpsDetail', fn($q) => $q->where('rps_matakuliah_id', request('id')))
-            ->with(['materiMahasiswa.materi.rpsDetail', 'kuisMahasiswa.kuis.rpsDetail', 'discussionMessages','materiMahasiswa','kuisMahasiswa']);
+            ->role('mahasiswa')->whereHas('mahasiswa', function ($q) use ($semester, $prodiId) {
+                $q->where('semester', $semester)
+                    ->where('prodi_id', $prodiId);
+            })->whereHas(
+                'materiMahasiswa.materi.rpsDetail',
+                fn($q) =>
+                $q->where('rps_matakuliah_id', $rpsId)
+            )
+            ->whereHas(
+                'kuisMahasiswa.kuis.rpsDetail',
+                fn($q) =>
+                $q->where('rps_matakuliah_id', $rpsId)
+            )->with([
+                'discussionMessages',
+                'materiMahasiswa.materi.rpsDetail',
+                'kuisMahasiswa.kuis.rpsDetail',
+            ]);
     }
 
     public function html(): HtmlBuilder
