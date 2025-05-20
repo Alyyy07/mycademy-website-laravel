@@ -125,5 +125,14 @@
         "url": "/forum-diskusi",
         "order": 6,
         "childrens": []
+    },
+    {
+        "name": "Laporan Metode",
+        "module": "laporan_metode",
+        "slug": "laporan-metode",
+        "icon": "ki-outline ki-chart-pie-4",
+        "url": "/laporan-metode",
+        "order": 7,
+        "childrens": []
     }
 ]

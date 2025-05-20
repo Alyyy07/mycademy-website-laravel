@@ -60,7 +60,12 @@
             "user_management.roles-create",
             "user_management.roles-read",
             "user_management.roles-delete",
-            "user_management.roles-update"
+            "user_management.roles-update",
+            "laporan_metode",
+            "laporan_metode-create",
+            "laporan_metode-read",
+            "laporan_metode-update",
+            "laporan_metode-delete"
         ]
     },
     {
@@ -97,7 +102,12 @@
             "forum_diskusi-create",
             "forum_diskusi-read",
             "forum_diskusi-update",
-            "forum_diskusi-delete"
+            "forum_diskusi-delete",
+            "laporan_metode",
+            "laporan_metode-create",
+            "laporan_metode-read",
+            "laporan_metode-update",
+            "laporan_metode-delete"
         ]
     },
     {
