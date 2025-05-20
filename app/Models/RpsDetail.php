@@ -23,4 +23,12 @@ class RpsDetail extends Model
     {
         return $this->hasMany(Kuis::class);
     }
+
+    public function nextRpsDetail()
+    {
+        return self::where('rps_matakuliah_id', $this->rps_matakuliah_id)
+            ->where('sesi_pertemuan', '>', $this->sesi_pertemuan)
+            ->orderBy('sesi_pertemuan')
+            ->first();
+    }
 }

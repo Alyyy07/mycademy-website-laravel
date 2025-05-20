@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\RpsDetail;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Carbon\Carbon;
 
 class RpsDetailSeeder extends Seeder
 {
@@ -13,150 +13,275 @@ class RpsDetailSeeder extends Seeder
      */
     public function run(): void
     {
-        RpsDetail::create([
-            'rps_matakuliah_id' => 1,
-            'sesi_pertemuan' => 1,
-            'tanggal_pertemuan' => '2025-04-15',
-            'capaian_pembelajaran' => 'Mampu menjelaskan pengertian dan tujuan dari pemrograman web',
-            'indikator' => 'Mahasiswa dapat menjelaskan pengertian dan tujuan dari pemrograman web',
-            'metode_pembelajaran' => 'Diskusi',
-            'kriteria_penilaian' => 'Tugas',
-            'materi_pembelajaran' => 'Pengertian dan tujuan pemrograman web'
-        ])->create([
-            'rps_matakuliah_id' => 1,
-            'sesi_pertemuan' => 2,
-            'tanggal_pertemuan' => '2025-04-22',
-            'capaian_pembelajaran' => 'Mampu menjelaskan konsep dasar HTML',
-            'indikator' => 'Mahasiswa dapat menjelaskan konsep dasar HTML',
-            'metode_pembelajaran' => 'Diskusi',
-            'kriteria_penilaian' => 'Tugas',
-            'materi_pembelajaran' => 'Konsep dasar HTML'
-        ])->create([
-            'rps_matakuliah_id' => 1,
-            'sesi_pertemuan' => 3,
-            'tanggal_pertemuan' => '2025-04-29',
-            'capaian_pembelajaran' => 'Mampu membuat halaman web sederhana menggunakan HTML',
-            'indikator' => 'Mahasiswa dapat membuat halaman web sederhana menggunakan HTML',
-            'metode_pembelajaran' => 'Praktikum',
-            'kriteria_penilaian' => 'Tugas',
-            'materi_pembelajaran' => 'Membuat halaman web sederhana menggunakan HTML'
-        ])->create([
-            'rps_matakuliah_id' => 1,
-            'sesi_pertemuan' => 4,
-            'tanggal_pertemuan' => '2025-05-06',
-            'capaian_pembelajaran' => 'Mampu menjelaskan konsep dasar CSS',
-            'indikator' => 'Mahasiswa dapat menjelaskan konsep dasar CSS',
-            'metode_pembelajaran' => 'Diskusi',
-            'kriteria_penilaian' => 'Tugas',
-            'materi_pembelajaran' => 'Konsep dasar CSS'
-        ])->create([
-            'rps_matakuliah_id' => 1,
-            'sesi_pertemuan' => 5,
-            'tanggal_pertemuan' => '2025-05-13',
-            'capaian_pembelajaran' => 'Mampu membuat halaman web sederhana menggunakan CSS',
-            'indikator' => 'Mahasiswa dapat membuat halaman web sederhana menggunakan CSS',
-            'metode_pembelajaran' => 'Praktikum',
-            'kriteria_penilaian' => 'Tugas',
-            'materi_pembelajaran' => 'Membuat halaman web sederhana menggunakan CSS'
-        ])->create([
-            'rps_matakuliah_id' => 1,
-            'sesi_pertemuan' => 6,
-            'tanggal_pertemuan' => '2025-05-20',
-            'capaian_pembelajaran' => 'Mampu menjelaskan konsep dasar JavaScript',
-            'indikator' => 'Mahasiswa dapat menjelaskan konsep dasar JavaScript',
-            'metode_pembelajaran' => 'Diskusi',
-            'kriteria_penilaian' => 'Tugas',
-            'materi_pembelajaran' => 'Konsep dasar JavaScript'
-        ])->create([
-            'rps_matakuliah_id' => 1,
-            'sesi_pertemuan' => 7,
-            'tanggal_pertemuan' => '2025-05-27',
-            'capaian_pembelajaran' => 'Mampu membuat halaman web sederhana menggunakan JavaScript',
-            'indikator' => 'Mahasiswa dapat membuat halaman web sederhana menggunakan JavaScript',
-            'metode_pembelajaran' => 'Praktikum',
-            'kriteria_penilaian' => 'Tugas',
-            'materi_pembelajaran' => 'Membuat halaman web sederhana menggunakan JavaScript'
-        ])->create([
-            'rps_matakuliah_id' => 1,
-            'sesi_pertemuan' => 8,
-            'tanggal_pertemuan' => '2025-06-03',
-            'capaian_pembelajaran' => 'Mampu menjelaskan konsep dasar PHP',
-            'indikator' => 'Mahasiswa dapat menjelaskan konsep dasar PHP',
-            'metode_pembelajaran' => 'Diskusi',
-            'kriteria_penilaian' => 'Tugas',
-            'materi_pembelajaran' => 'Konsep dasar PHP'
-        ])->create([
-            'rps_matakuliah_id' => 1,
-            'sesi_pertemuan' => 9,
-            'tanggal_pertemuan' => '2025-06-10',
-            'capaian_pembelajaran' => 'Mampu membuat halaman web sederhana menggunakan PHP',
-            'indikator' => 'Mahasiswa dapat membuat halaman web sederhana menggunakan PHP',
-            'metode_pembelajaran' => 'Praktikum',
-            'kriteria_penilaian' => 'Tugas',
-            'materi_pembelajaran' => 'Membuat halaman web sederhana menggunakan PHP'
-        ])->create([
-            'rps_matakuliah_id' => 1,
-            'sesi_pertemuan' => 10,
-            'tanggal_pertemuan' => '2025-06-17',
-            'capaian_pembelajaran' => 'Mampu menjelaskan konsep dasar MySQL',
-            'indikator' => 'Mahasiswa dapat menjelaskan konsep dasar MySQL',
-            'metode_pembelajaran' => 'Diskusi',
-            'kriteria_penilaian' => 'Tugas',
-            'materi_pembelajaran' => 'Konsep dasar MySQL'
-        ])->create([
-            'rps_matakuliah_id' => 1,
-            'sesi_pertemuan' => 11,
-            'tanggal_pertemuan' => '2025-06-24',
-            'capaian_pembelajaran' => 'Mampu membuat halaman web sederhana menggunakan MySQL',
-            'indikator' => 'Mahasiswa dapat membuat halaman web sederhana menggunakan MySQL',
-            'metode_pembelajaran' => 'Praktikum',
-            'kriteria_penilaian' => 'Tugas',
-            'materi_pembelajaran' => 'Membuat halaman web sederhana menggunakan MySQL'
-        ])->create([
-            'rps_matakuliah_id' => 1,
-            'sesi_pertemuan' => 12,
-            'tanggal_pertemuan' => '2025-07-01',
-            'capaian_pembelajaran' => 'Mampu menjelaskan konsep dasar framework PHP',
-            'indikator' => 'Mahasiswa dapat menjelaskan konsep dasar framework PHP',
-            'metode_pembelajaran' => 'Diskusi',
-            'kriteria_penilaian' => 'Tugas',
-            'materi_pembelajaran' => 'Konsep dasar framework PHP'
-        ])->create([
-            'rps_matakuliah_id' => 1,
-            'sesi_pertemuan' => 13,
-            'tanggal_pertemuan' => '2025-07-08',
-            'capaian_pembelajaran' => 'Mampu membuat aplikasi web sederhana menggunakan framework PHP',
-            'indikator' => 'Mahasiswa dapat membuat aplikasi web sederhana menggunakan framework PHP',
-            'metode_pembelajaran' => 'Praktikum',
-            'kriteria_penilaian' => 'Tugas',
-            'materi_pembelajaran' => 'Membuat aplikasi web sederhana menggunakan framework PHP'
-        ])->create([
-            'rps_matakuliah_id' => 1,
-            'sesi_pertemuan' => 14,
-            'tanggal_pertemuan' => '2025-07-15',
-            'capaian_pembelajaran' => 'Mampu menjelaskan konsep dasar REST API',
-            'indikator' => 'Mahasiswa dapat menjelaskan konsep dasar REST API',
-            'metode_pembelajaran' => 'Diskusi',
-            'kriteria_penilaian' => 'Tugas',
-            'materi_pembelajaran' => 'Konsep dasar REST API'
-        ])->create([
-            'rps_matakuliah_id' => 1,
-            'sesi_pertemuan' => 15,
-            'tanggal_pertemuan' => '2025-07-22',
-            'capaian_pembelajaran' => 'Mampu membuat aplikasi web sederhana menggunakan REST API',
-            'indikator' => 'Mahasiswa dapat membuat aplikasi web sederhana menggunakan REST API',
-            'metode_pembelajaran' => 'Praktikum',
-            'kriteria_penilaian' => 'Tugas',
-            'materi_pembelajaran' => 'Membuat aplikasi web sederhana menggunakan REST API'
-        ])->create([
-            'rps_matakuliah_id' => 1,
-            'sesi_pertemuan' => 16,
-            'tanggal_pertemuan' => '2025-07-29',
-            'capaian_pembelajaran' => 'Mampu menjelaskan konsep dasar deployment aplikasi web',
-            'indikator' => 'Mahasiswa dapat menjelaskan konsep dasar deployment aplikasi web',
-            'metode_pembelajaran' => 'Diskusi',
-            'kriteria_penilaian' => 'Tugas',
-            'materi_pembelajaran' => 'Konsep dasar deployment aplikasi web'
-        ]);
+        // Definisi detail per sesi untuk masing-masing matakuliah
+        $courseSessions = [
+            // RPS Matakuliah ID 1: Teknologi IoT
+            1 => [
+                1  => [
+                    'capaian' => 'Memahami konsep dasar IoT dan arsitekturnya',
+                    'indikator' => 'Mahasiswa dapat menjelaskan lapisan-lapisan arsitektur IoT',
+                    'metode' => 'Ceramah dan diskusi',
+                    'kriteria' => 'Quiz singkat',
+                    'materi' => 'Pengantar IoT: definisi, komponen, arsitektur'
+                ],
+                2  => [
+                    'capaian' => 'Mengetahui jenis sensor dan aktuator pada IoT',
+                    'indikator' => 'Mahasiswa dapat mengidentifikasi sensor dan aktuator umum',
+                    'metode' => 'Presentasi dan demonstrasi',
+                    'kriteria' => 'Tugas identifikasi',
+                    'materi' => 'Sensor, aktuator, dan kegunaannya'
+                ],
+                3  => [
+                    'capaian' => 'Memahami protokol komunikasi pada IoT',
+                    'indikator' => 'Mahasiswa dapat membandingkan MQTT, HTTP, CoAP',
+                    'metode' => 'Diskusi kelompok',
+                    'kriteria' => 'Laporan diskusi',
+                    'materi' => 'Protokol MQTT, HTTP, CoAP'
+                ],
+                4  => [
+                    'capaian' => 'Mampu merancang topologi jaringan IoT sederhana',
+                    'indikator' => 'Mahasiswa dapat menggambar skema jaringan IoT',
+                    'metode' => 'Praktik lab',
+                    'kriteria' => 'Penilaian skema jaringan',
+                    'materi' => 'Perancangan jaringan IoT'
+                ],
+                5  => [
+                    'capaian' => 'Menguasai konfigurasi mikrokontroler untuk IoT',
+                    'indikator' => 'Mahasiswa dapat mengupload firmware ke ESP32',
+                    'metode' => 'Praktik lab',
+                    'kriteria' => 'Demo praktikum',
+                    'materi' => 'ESP32: setup dan pemrograman awal'
+                ],
+                6  => [
+                    'capaian' => 'Memahami pengiriman data sensor ke server',
+                    'indikator' => 'Mahasiswa dapat mengirim data suhu ke MQTT broker',
+                    'metode' => 'Praktik lab',
+                    'kriteria' => 'Tugas praktik',
+                    'materi' => 'Publish/Subscribe MQTT'
+                ],
+                7  => [
+                    'capaian' => 'Mampu membuat dashboard monitoring IoT',
+                    'indikator' => 'Mahasiswa dapat menampilkan data sensor secara real-time',
+                    'metode' => 'Praktik lab',
+                    'kriteria' => 'Penilaian dashboard',
+                    'materi' => 'Dashboard menggunakan Node-RED'
+                ],
+                8  => [
+                    'capaian' => 'Memahami keamanan dasar pada sistem IoT',
+                    'indikator' => 'Mahasiswa dapat menjelaskan enkripsi data MQTT',
+                    'metode' => 'Ceramah dan studi kasus',
+                    'kriteria' => 'Quiz terbuka',
+                    'materi' => 'Keamanan: TLS/SSL pada MQTT'
+                ],
+                9  => [
+                    'capaian' => 'Mampu mengintegrasi IoT dengan cloud platform',
+                    'indikator' => 'Mahasiswa dapat mengirim data ke AWS IoT Core',
+                    'metode' => 'Praktik lab',
+                    'kriteria' => 'Tugas integrasi',
+                    'materi' => 'AWS IoT Core atau Azure IoT Hub'
+                ],
+                10 => [
+                    'capaian' => 'Memahami analisis data IoT dasar',
+                    'indikator' => 'Mahasiswa dapat menerapkan filter pada data waktu-nyata',
+                    'metode' => 'Praktik lab',
+                    'kriteria' => 'Laporan praktikum',
+                    'materi' => 'Data processing dasar'
+                ],
+                11 => [
+                    'capaian' => 'Mampu membuat notifikasi berbasis kejadian IoT',
+                    'indikator' => 'Mahasiswa dapat mengirim alert email/WhatsApp',
+                    'metode' => 'Praktik lab',
+                    'kriteria' => 'Demo sistem alert',
+                    'materi' => 'Event-driven notification'
+                ],
+                12 => [
+                    'capaian' => 'Memahami arsitektur edge computing pada IoT',
+                    'indikator' => 'Mahasiswa dapat menjelaskan konsep edge vs cloud',
+                    'metode' => 'Diskusi dan ceramah',
+                    'kriteria' => 'Quiz konseptual',
+                    'materi' => 'Edge computing untuk IoT'
+                ],
+                13 => [
+                    'capaian' => 'Mampu menerapkan konsep edge pada project IoT',
+                    'indikator' => 'Mahasiswa dapat memproses data di perangkat edge',
+                    'metode' => 'Praktik lab',
+                    'kriteria' => 'Penilaian kode',
+                    'materi' => 'Implementasi edge computing'
+                ],
+                14 => [
+                    'capaian' => 'Memahami integrasi IoT dengan mobile apps',
+                    'indikator' => 'Mahasiswa dapat membuat request API dari Android',
+                    'metode' => 'Praktik lab',
+                    'kriteria' => 'Tugas integrasi',
+                    'materi' => 'REST API untuk IoT'
+                ],
+                15 => [
+                    'capaian' => 'Mampu merancang studi kasus IoT end-to-end',
+                    'indikator' => 'Mahasiswa dapat mempresentasikan arsitektur solusi',
+                    'metode' => 'Presentasi kelompok',
+                    'kriteria' => 'Penilaian presentasi',
+                    'materi' => 'Studi kasus IoT'
+                ],
+                16 => [
+                    'capaian' => 'Mampu mengevaluasi performa sistem IoT',
+                    'indikator' => 'Mahasiswa dapat mengukur latency dan throughput',
+                    'metode' => 'Praktik dan diskusi',
+                    'kriteria' => 'Laporan evaluasi',
+                    'materi' => 'Pengukuran performa IoT'
+                ],
+            ],
+            // RPS Matakuliah ID 2: Pengembangan Aplikasi Android
+            2 => [
+                1  => [
+                    'capaian' => 'Memahami ekosistem pengembangan Android',
+                    'indikator' => 'Mahasiswa dapat menjelaskan arsitektur Android',
+                    'metode' => 'Ceramah',
+                    'kriteria' => 'Quiz dasar',
+                    'materi' => 'Pengantar Android dan arsitektur'
+                ],
+                2  => [
+                    'capaian' => 'Mampu menyiapkan environment Android Studio',
+                    'indikator' => 'Mahasiswa dapat membuat project baru',
+                    'metode' => 'Demo dan praktik',
+                    'kriteria' => 'Tugas setup',
+                    'materi' => 'Android Studio & SDK'
+                ],
+                3  => [
+                    'capaian' => 'Memahami komponen UI dasar Android',
+                    'indikator' => 'Mahasiswa dapat menggunakan TextView dan Button',
+                    'metode' => 'Praktik lab',
+                    'kriteria' => 'Tugas UI sederhana',
+                    'materi' => 'View, Layout, dan Resource'
+                ],
+                4  => [
+                    'capaian' => 'Mampu membuat layout kompleks dengan XML',
+                    'indikator' => 'Mahasiswa dapat mengimplementasi ConstraintLayout',
+                    'metode' => 'Praktik lab',
+                    'kriteria' => 'Penilaian layout',
+                    'materi' => 'Layout XML dan ConstraintLayout'
+                ],
+                5  => [
+                    'capaian' => 'Memahami activity lifecycle',
+                    'indikator' => 'Mahasiswa dapat menjelaskan callback lifecycle',
+                    'metode' => 'Ceramah dan diskusi',
+                    'kriteria' => 'Quiz lifecycle',
+                    'materi' => 'Activity & Fragment lifecycle'
+                ],
+                6  => [
+                    'capaian' => 'Mampu berkomunikasi antar activity',
+                    'indikator' => 'Mahasiswa dapat menggunakan Intent',
+                    'metode' => 'Praktik lab',
+                    'kriteria' => 'Tugas Intent',
+                    'materi' => 'Intent dan data passing'
+                ],
+                7  => [
+                    'capaian' => 'Memahami penyimpanan lokal di Android',
+                    'indikator' => 'Mahasiswa dapat menggunakan SharedPreferences',
+                    'metode' => 'Praktik lab',
+                    'kriteria' => 'Tugas penyimpanan',
+                    'materi' => 'SharedPreferences & SQLite'
+                ],
+                8  => [
+                    'capaian' => 'Mampu membuat dan mengelola database SQLite',
+                    'indikator' => 'Mahasiswa dapat CRUD data',
+                    'metode' => 'Praktik lab',
+                    'kriteria' => 'Tugas CRUD',
+                    'materi' => 'Room Persistence Library'
+                ],
+                9  => [
+                    'capaian' => 'Memahami arsitektur MVVM pada Android',
+                    'indikator' => 'Mahasiswa dapat menjelaskan komponen ViewModel',
+                    'metode' => 'Ceramah',
+                    'kriteria' => 'Quiz MVVM',
+                    'materi' => 'MVVM & LiveData'
+                ],
+                10 => [
+                    'capaian' => 'Mampu menggunakan Retrofit untuk API',
+                    'indikator' => 'Mahasiswa dapat melakukan request HTTP',
+                    'metode' => 'Praktik lab',
+                    'kriteria' => 'Tugas API',
+                    'materi' => 'Retrofit & JSON parsing'
+                ],
+                11 => [
+                    'capaian' => 'Memahami coroutine dan threading',
+                    'indikator' => 'Mahasiswa dapat menjalankan operasi background',
+                    'metode' => 'Praktik lab',
+                    'kriteria' => 'Tugas threading',
+                    'materi' => 'Kotlin Coroutines'
+                ],
+                12 => [
+                    'capaian' => 'Mampu membuat UI responsif dengan RecyclerView',
+                    'indikator' => 'Mahasiswa dapat menampilkan list dinamis',
+                    'metode' => 'Praktik lab',
+                    'kriteria' => 'Tugas RecyclerView',
+                    'materi' => 'RecyclerView & Adapter'
+                ],
+                13 => [
+                    'capaian' => 'Memahami navigasi antar fragment',
+                    'indikator' => 'Mahasiswa dapat mengimplementasikan Navigation Component',
+                    'metode' => 'Praktik lab',
+                    'kriteria' => 'Tugas navigasi',
+                    'materi' => 'Navigation Component'
+                ],
+                14 => [
+                    'capaian' => 'Mampu menambahkan fitur autentikasi',
+                    'indikator' => 'Mahasiswa dapat integrasi Firebase Auth',
+                    'metode' => 'Praktik lab',
+                    'kriteria' => 'Tugas Auth',
+                    'materi' => 'Firebase Authentication'
+                ],
+                15 => [
+                    'capaian' => 'Memahami deploy aplikasi ke Play Store',
+                    'indikator' => 'Mahasiswa dapat menyiapkan release build',
+                    'metode' => 'Ceramah dan demo',
+                    'kriteria' => 'Quiz proses deploy',
+                    'materi' => 'Publishing Android App'
+                ],
+                16 => [
+                    'capaian' => 'Mampu melakukan pengujian dan debugging',
+                    'indikator' => 'Mahasiswa dapat menulis unit test',
+                    'metode' => 'Praktik lab',
+                    'kriteria' => 'Tugas testing',
+                    'materi' => 'Unit Test & Debugging'
+                ]
+            ],
+        ];
+
+        foreach ($courseSessions as $rpsId => $sessions) {
+            foreach ($sessions as $sesi => $detail) {
+                // tanggal pertemuan sesuai sesi
+                $tanggalPertemuan = Carbon::parse('2025-04-15')
+                    ->addWeeks($sesi - 1)
+                    ->toDateString();
+
+                // simulasi tanggal realisasi: pertemuan + 0–1 hari, jam acak
+                $tentative = Carbon::parse($tanggalPertemuan)
+                    ->addDays(rand(0, 1))
+                    ->setTime(rand(8, 17), rand(0, 59), rand(0, 59));
+
+                // jika simulasi di masa depan, abaikan (null)
+                if ($tentative->isFuture()) {
+                    $tanggalRealisasi = null;
+                    $closeForum = false;
+                } else {
+                    $tanggalRealisasi = $tentative->toDateTimeString();
+                    // tutup forum setelah 7 hari realisasi
+                    $closeForum = $tentative->copy()->addDays(7)->isPast();
+                }
+
+                RpsDetail::create([
+                    'rps_matakuliah_id'   => $rpsId,
+                    'sesi_pertemuan'       => $sesi,
+                    'tanggal_pertemuan'    => $tanggalPertemuan,
+                    'capaian_pembelajaran' => $detail['capaian'],
+                    'indikator'            => $detail['indikator'],
+                    'metode_pembelajaran'  => $detail['metode'],
+                    'kriteria_penilaian'   => $detail['kriteria'],
+                    'materi_pembelajaran'  => $detail['materi'],
+                    'tanggal_realisasi'    => $tanggalRealisasi,
+                    'close_forum'          => $closeForum,
+                ]);
+            }
+        }
     }
 }

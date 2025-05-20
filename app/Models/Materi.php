@@ -16,6 +16,14 @@ class Materi extends Model
         return $this->belongsTo(RpsDetail::class);
     }
 
+    public function nextRpsDetail()
+{
+    return RpsDetail::where('rps_matakuliah_id', $this->rpsDetail->id)
+        ->where('sesi_pertemuan', '>', $this->rpsDetail->sesi_pertemuan)
+        ->orderBy('sesi_pertemuan')
+        ->first();
+}
+
     public function uploader()
     {
         return $this->belongsTo(User::class, 'uploaded_by');

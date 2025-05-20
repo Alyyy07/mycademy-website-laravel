@@ -86,7 +86,7 @@ class ProdiDataTable extends DataTable
         return [
             Column::make('id')->title('No')->addClass('w-10px pe-2')->orderable(false)->searchable(false)->titleAttr('No'),
             Column::make('kode_prodi')->title('Kode Prodi')->addClass('text-center')->orderable(false),
-            Column::make('fakultas.nama_fakultas')->title('Fakultas'),
+            Column::make('fakultas.nama_fakultas')->title('Fakultas')->orderable(false),
             Column::make('nama_prodi')->title('Prodi'),
             Column::make('deskripsi')->title('Deskripsi'),
             Column::computed('action')

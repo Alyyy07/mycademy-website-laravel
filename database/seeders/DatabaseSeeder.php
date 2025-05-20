@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Kuis;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -27,6 +28,9 @@ class DatabaseSeeder extends Seeder
             RpsDetailSeeder::class,
             MateriSeeder::class,
             KuisSeeder::class,
+            MateriSelesaiSeeder::class,
+            KuisSelesaiSeeder::class,
+            ForumSeeder::class,
         ]);
     }
 }

@@ -53,7 +53,7 @@
                             <div data-repeater-item class="mb-4">
                                 <div class="form-group row">
                                     <div class="mb-3">
-                                        <label class="form-label">Soal:</label>
+                                        <label class="form-label fs-5">Soal ke - {{ $loop->index +1 }}</label>
                                         <div class="ckeditor">
                                             <div class="document-toolbar"></div>
                                             <div class="document-editor"></div>

@@ -19,5 +19,10 @@ class RpsMatakuliahSeeder extends Seeder
             'tanggal_selesai' => '2026-06-29',
             
         ]);
+        RpsMatakuliah::create([
+            'mapping_matakuliah_id' => 2,
+            'tanggal_mulai' => '2025-04-13',
+            'tanggal_selesai' => '2026-06-29',
+        ]);
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MappingMatakuliahController;
 use App\Http\Controllers\ModulPembelajaranController;
@@ -9,9 +10,7 @@ use App\Http\Controllers\RpsMatakuliahController;
 use App\Http\Controllers\UploadController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('index');
-});
+
 
 
 
@@ -29,6 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     require __DIR__ . '/admin/akademik.php';
     require __DIR__ . '/admin/modul-pembelajaran.php';
     require __DIR__ . '/admin/forum-diskusi.php';
+    require __DIR__ . '/admin/laporan-metode.php';
 
     Route::resource('/mapping-matakuliah', MappingMatakuliahController::class)->names('mapping-matakuliah')->except('show');
 

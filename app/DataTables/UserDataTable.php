@@ -30,7 +30,8 @@ class UserDataTable extends DataTable
                 $editRoute = route('user-management.users.edit', $user->id);
                 $deleteRoute = route('user-management.users.destroy', $user->id);
                 $impersonateRoute = route('user-management.impersonate', $user->id);
-                return view('admin.user-list.partials.action', compact('editRoute', 'user', 'deleteRoute', 'impersonateRoute'));
+                $isMahasiswa = $user->roles?->pluck('name')->first() === 'mahasiswa';
+                return view('admin.user-list.partials.action', compact('editRoute', 'user', 'deleteRoute', 'impersonateRoute','isMahasiswa'));
             })
             ->editColumn('roles.name', function ($user) {
                 $name = $user->roles?->pluck('name')->first() ?? 'No Role';

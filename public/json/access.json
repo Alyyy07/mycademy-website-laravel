@@ -61,11 +61,11 @@
             "user_management.roles-read",
             "user_management.roles-delete",
             "user_management.roles-update",
-            "forum_diskusi",
-            "forum_diskusi-create",
-            "forum_diskusi-read",
-            "forum_diskusi-update",
-            "forum_diskusi-delete"
+            "laporan_metode",
+            "laporan_metode-create",
+            "laporan_metode-read",
+            "laporan_metode-update",
+            "laporan_metode-delete"
         ]
     },
     {
@@ -82,12 +82,7 @@
             "rps_matakuliah-update",
             "rps_matakuliah-delete",
             "modul_pembelajaran",
-            "modul_pembelajaran-read",
-            "forum_diskusi",
-            "forum_diskusi-create",
-            "forum_diskusi-read",
-            "forum_diskusi-update",
-            "forum_diskusi-delete"
+            "modul_pembelajaran-read"
         ]
     },
     {
@@ -107,7 +102,12 @@
             "forum_diskusi-create",
             "forum_diskusi-read",
             "forum_diskusi-update",
-            "forum_diskusi-delete"
+            "forum_diskusi-delete",
+            "laporan_metode",
+            "laporan_metode-create",
+            "laporan_metode-read",
+            "laporan_metode-update",
+            "laporan_metode-delete"
         ]
     },
     {

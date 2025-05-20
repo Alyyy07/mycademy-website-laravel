@@ -34,7 +34,7 @@
                 </a>
             </div>
 
-            @if($user->id != auth()->id())
+            @if($user->id != auth()->id() && !$isMahasiswa)
             @canImpersonate()
             <div class="menu-item px-3">
                 <a class="menu-link px-3 btn btn-light btn-light-info" href={{ $impersonateRoute}}><i class="bi bi-send me-2"></i> Impersonate</a>
