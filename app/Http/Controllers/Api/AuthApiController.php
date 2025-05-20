@@ -395,7 +395,6 @@ class AuthApiController extends Controller
             'materi_id' => 'required|exists:materis,id',
             'email' => 'required|email|exists:users,email',
             'skala_pemahaman' => 'required|min:1|max:4',
-            'komentar' => 'nullable',
         ]);
 
         $user = User::where('email', $request->email)->first();
@@ -405,7 +404,7 @@ class AuthApiController extends Controller
 
         $materiMahasiswa = MateriMahasiswa::updateOrCreate(
             ['materi_id' => $request->materi_id, 'user_id' => $user->id],
-            ['skala_pemahaman' => $request->skala_pemahaman, 'komentar' => $request->komentar]
+            ['skala_pemahaman' => $request->skala_pemahaman]
         );
         if (!$materiMahasiswa) {
             return response()->json(['status' => 'error', 'message' => 'Gagal menyimpan data'], 500);
