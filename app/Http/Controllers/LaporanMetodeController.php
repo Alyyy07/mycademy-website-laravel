@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DataTables\DetailLaporanDataTable;
 use App\DataTables\LaporanMetodeDataTable;
+use App\Exports\DetailLaporanExport;
 use App\Models\Akademik\TahunAjaran;
 use App\Models\DiscussionMessage;
 use App\Models\Kuis;
@@ -18,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\DataTables;
 
 class LaporanMetodeController extends Controller
@@ -249,6 +251,16 @@ class LaporanMetodeController extends Controller
             : 0;
 
 
+        $mappingId = RpsMatakuliah::find($matkulId)->mappingMatakuliah->id;
+        Log::info('Laporan Metode', [
+            'mapping_id' => $mappingId,
+            'avg_materi' => $avgScaleMateriPercent,
+            'avg_kuis'   => $avgNilaiKuis,
+            'on_time'    => $combinedOnTimePct,
+            'forum'      => $avgForumByMateri,
+            'skala_likert' => $skalaLikert,
+            'avg_cp'     => $avgCP,
+        ]);
         // Kirim ke view
         return $datatable->render('admin.laporan-metode.detail', [
             'avgMateri' => $avgScaleMateriPercent,
@@ -257,6 +269,15 @@ class LaporanMetodeController extends Controller
             'forumParticipation' => $avgForumByMateri,
             'skalaLikert' => number_format($skalaLikert, 2),
             'avgCP' => $avgCP,
+            'mappingId' => $mappingId,
         ]);
+    }
+
+    public function exportExcel($mappingId)
+    {
+        return Excel::download(
+            new DetailLaporanExport($mappingId),
+            'DetailLaporan_' . now()->format('Ymd_His') . '.xlsx'
+        );
     }
 }

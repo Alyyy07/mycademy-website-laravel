@@ -131,33 +131,43 @@ class DetailLaporanDataTable extends DataTable
             return number_format($avg, 2);
         });
 
+        $allMateriIds = $this->allMateri->pluck('id');
+        $allKuisIds   = $this->allKuis->pluck('id');
+
         // % tepat waktu materi
-        $dt->addColumn('pct_on_time_materi', function (User $user) {
-            $total = $user->materiMahasiswa->count();
+        $dt->addColumn('pct_on_time_materi', function (User $user) use ($allMateriIds) {
+            $total = $allMateriIds->count();
             if ($total === 0) return '0%';
-            $onTime = $user->materiMahasiswa->filter(function ($mm) {
-                $m = $mm->materi;
-                $next = $m->rpsDetail->nextRpsDetail();
-                $deadline = $next
-                    ? Carbon::parse($next->tanggal_pertemuan)
-                    : Carbon::parse($m->rpsDetail->tanggal_pertemuan)->addDays(7);
-                return $mm->created_at->lte($deadline);
-            })->count();
+            $onTime = $user->materiMahasiswa
+                // hanya yang termasuk materi matkul ini
+                ->whereIn('materi_id', $allMateriIds)
+                ->filter(function ($mm) {
+                    $m = $mm->materi;
+                    $next = $m->rpsDetail->nextRpsDetail();
+                    $deadline = $next
+                        ? Carbon::parse($next->tanggal_pertemuan)
+                        : Carbon::parse($m->rpsDetail->tanggal_pertemuan)->addDays(7);
+                    return $mm->created_at->lte($deadline);
+                })->count();
+
             return round($onTime / $total * 100) . '%';
         });
 
         // % tepat waktu kuis
-        $dt->addColumn('pct_on_time_kuis', function (User $user) {
-            $total = $user->kuisMahasiswa->count();
+        $dt->addColumn('pct_on_time_kuis', function (User $user) use ($allKuisIds) {
+            $total = $allKuisIds->count();
             if ($total === 0) return '0%';
-            $onTime = $user->kuisMahasiswa->filter(function ($km) {
-                $k = $km->kuis;
-                $next = $k->rpsDetail->nextRpsDetail();
-                $deadline = $next
-                    ? Carbon::parse($next->tanggal_pertemuan)
-                    : Carbon::parse($k->rpsDetail->tanggal_pertemuan)->addDays(7);
-                return $km->created_at->lte($deadline);
-            })->count();
+            $onTime = $user->kuisMahasiswa
+                ->whereIn('kuis_id', $allKuisIds)
+                ->filter(function ($km) {
+                    $k = $km->kuis;
+                    $next = $k->rpsDetail->nextRpsDetail();
+                    $deadline = $next
+                        ? Carbon::parse($next->tanggal_pertemuan)
+                        : Carbon::parse($k->rpsDetail->tanggal_pertemuan)->addDays(7);
+                    return $km->created_at->lte($deadline);
+                })->count();
+
             return round($onTime / $total * 100) . '%';
         });
 

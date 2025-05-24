@@ -49,8 +49,8 @@ class TahunAjaranSeeder extends Seeder
         TahunAjaran::create([
             'kode_tahun_ajaran' => 'TH25',
             'tahun_ajaran' => '2025/2026',
-            'tanggal_mulai' => '2025-04-12',
-            'tanggal_selesai' => '2026-06-30',
+            'tanggal_mulai' => '2025-01-13',
+            'tanggal_selesai' => '2026-06-28',
             'is_active' => 1,
             'created_at' => now()
         ]);

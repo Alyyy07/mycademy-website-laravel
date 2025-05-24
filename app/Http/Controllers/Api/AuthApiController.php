@@ -15,6 +15,7 @@ use App\Models\Materi;
 use App\Models\MateriMahasiswa;
 use App\Models\RpsMatakuliah;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -297,6 +298,9 @@ class AuthApiController extends Controller
                     'sesi_pertemuan' => $rpsDetail->sesi_pertemuan,
                     'tanggal_pertemuan' => $rpsDetail->tanggal_pertemuan,
                     'tanggal_realisasi' => $rpsDetail->tanggal_realisasi,
+                    'materi_selesai_all' => $rpsDetail->materi
+                        ->filter(fn($materi) => $materi->status === 'verified')
+                        ->every(fn($materi) => $materi->materiMahasiswa->where('user_id', $user->id)->count() > 0),
                     'materi' => $rpsDetail->materi
                         ->filter(fn($materi) => $materi->status === 'verified')
                         ->map(function ($materi) use ($user) {
@@ -362,6 +366,7 @@ class AuthApiController extends Controller
 
         // ambil kuis beserta soal & opsi
         $kuis = Kuis::with('questions.options')->findOrFail($request->query('id'));
+        $nextRpsDetail = $kuis->rpsDetail->nextRpsDetail();
 
         // cek apakah mahasiswa sudah pernah menyelesaikan
         $km = KuisMahasiswa::with('answers')
@@ -380,6 +385,7 @@ class AuthApiController extends Controller
                     'option_id'   => $a->option_id,
                 ])->toArray()
                 : [],
+            'can_view_history' => Carbon::now()->greaterThanOrEqualTo($nextRpsDetail->tanggal_pertemuan) ?? false,
         ]);
 
         return response()->json([
@@ -454,13 +460,39 @@ class AuthApiController extends Controller
         ], 200);
     }
 
+    public function setMateriSelesaiAll(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'rps_detail_id' => 'required|exists:rps_details,id',
+            "skala_pemahaman" => 'required|integer|min:1|max:4',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json(['status' => 'error', 'message' => 'User tidak ditemukan'], 404);
+        }
+        $materiIds = Materi::where('rps_detail_id', $request->rps_detail_id)
+            ->where('status', 'verified')
+            ->pluck('id');
+
+        foreach ($materiIds as $materiId) {
+            MateriMahasiswa::updateOrCreate(
+                ['materi_id' => $materiId, 'user_id' => $user->id],
+                ['skala_pemahaman' => 4]
+            );
+        }
+
+        return response()->json(['status' => 'success', 'message' => 'Semua materi ditandai selesai'], 200);
+    }
+
     public function getForumDiskusi(Request $request)
     {
         $user = User::where('email', $request->email)->first();
         if (!$user) {
             return response()->json(['status' => 'error', 'message' => 'User tidak ditemukan'], 404);
         }
-        $messages = DiscussionMessage::with(['sender.roles','materi:id,title'])
+        $messages = DiscussionMessage::with(['sender.roles', 'materi:id,title'])
             ->where('materi_id', $request->query('id'))
             ->orderBy('created_at', 'asc')
             ->get();
@@ -478,7 +510,7 @@ class AuthApiController extends Controller
         })->toArray();
         $materi = Materi::with('rpsDetail:id,close_forum')->find($request->query('id'));
         $formatted['materi_title'] = $materi->title ?? null;
-        $formatted['is_closed']= $materi->rpsDetail->close_forum;
+        $formatted['is_closed'] = $materi->rpsDetail->close_forum;
         return response()->json(['status' => 'success', 'data' => array_merge($formatted, ['author_id' => $user->id])], 200);
     }
 
@@ -501,7 +533,7 @@ class AuthApiController extends Controller
             'message' => $request->message,
         ]);
 
-        if(!$result) {
+        if (!$result) {
             return response()->json(['status' => 'error', 'message' => 'Gagal mengirim pesan'], 500);
         }
 

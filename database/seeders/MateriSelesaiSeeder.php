@@ -44,18 +44,18 @@ class MateriSelesaiSeeder extends Seeder
                     } else {
                         $endOnTime = $startOnTime->copy()->addDays(7);
                     }
-                    if ($endOnTime->greaterThan($now)) {
-                        $endOnTime = $now;
-                    }
+                    // if ($endOnTime->greaterThan($now)) {
+                    //     $endOnTime = $now;
+                    // }
 
                     $startLate = $endOnTime->copy()->addSecond();
                     $endLate   = $startLate->copy()->addDays(5);
-                    if ($startLate->greaterThan($now)) {
-                        continue;
-                    }
-                    if ($endLate->greaterThan($now)) {
-                        $endLate = $now;
-                    }
+                    // if ($startLate->greaterThan($now)) {
+                    //     continue;
+                    // }
+                    // if ($endLate->greaterThan($now)) {
+                    //     $endLate = $now;
+                    // }
 
                     Materi::where('rps_detail_id', $current->id)
                         ->get()
