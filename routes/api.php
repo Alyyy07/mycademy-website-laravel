@@ -11,6 +11,7 @@ Route::prefix('auth')->middleware(['checkClientId'])->group(function () {
     Route::get('modul-pembelajaran',[AuthApiController::class, 'getMataKuliahById']);
     Route::get('modul-pembelajaran/materi',[AuthApiController::class, 'getMateri']);
     Route::post('modul-pembelajaran/materi-selesai',[AuthApiController::class, 'setMateriSelesai']);
+    Route::post('modul-pembelajaran/materi-selesai-all',[AuthApiController::class, 'setMateriSelesaiAll']);
     Route::get('modul-pembelajaran/kuis',[AuthApiController::class, 'getKuis']);
     Route::post('modul-pembelajaran/kuis-selesai',[AuthApiController::class, 'setKuisSelesai']);
 
