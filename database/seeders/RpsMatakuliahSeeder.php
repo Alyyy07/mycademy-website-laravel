@@ -15,14 +15,14 @@ class RpsMatakuliahSeeder extends Seeder
     {
         RpsMatakuliah::create([
             'mapping_matakuliah_id' => 1,
-            'tanggal_mulai' => '2025-04-13',
-            'tanggal_selesai' => '2026-06-29',
+            'tanggal_mulai' => '2025-01-17',
+            'tanggal_selesai' => '2026-04-30',
             
         ]);
         RpsMatakuliah::create([
             'mapping_matakuliah_id' => 2,
-            'tanggal_mulai' => '2025-04-13',
-            'tanggal_selesai' => '2026-06-29',
+            'tanggal_mulai' => '2025-01-17',
+            'tanggal_selesai' => '2026-04-30',
         ]);
     }
 }

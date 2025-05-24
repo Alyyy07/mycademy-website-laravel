@@ -250,7 +250,7 @@ class RpsDetailSeeder extends Seeder
         foreach ($courseSessions as $rpsId => $sessions) {
             foreach ($sessions as $sesi => $detail) {
                 // tanggal pertemuan sesuai sesi
-                $tanggalPertemuan = Carbon::parse('2025-04-15')
+                $tanggalPertemuan = Carbon::parse('2025-01-17')
                     ->addWeeks($sesi - 1)
                     ->toDateString();
 

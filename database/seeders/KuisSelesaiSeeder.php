@@ -44,20 +44,20 @@ class KuisSelesaiSeeder extends Seeder
                         $endOnTime = $startOnTime->copy()->addDays(7);
                     }
                     // Batasi endOnTime maksimal ke sekarang
-                    if ($endOnTime->greaterThan($now)) {
-                        $endOnTime = $now;
-                    }
+                    // if ($endOnTime->greaterThan($now)) {
+                    //     $endOnTime = $now;
+                    // }
 
                     // Jendela late: mulai setelah endOnTime hingga +5 hari, batas ke sekarang
                     $startLate = $endOnTime->copy()->addSecond();
-                    if ($startLate->greaterThan($now)) {
-                        // jika belum masuk jendela late, skip sesi ini
-                        continue;
-                    }
+                    // if ($startLate->greaterThan($now)) {
+                    //     // jika belum masuk jendela late, skip sesi ini
+                    //     continue;
+                    // }
                     $endLate = $startLate->copy()->addDays(5);
-                    if ($endLate->greaterThan($now)) {
-                        $endLate = $now;
-                    }
+                    // if ($endLate->greaterThan($now)) {
+                    //     $endLate = $now;
+                    // }
 
                     // Ambil semua kuis untuk sesi RpsDetail ini
                     $kuisList = DB::table('kuisses')
