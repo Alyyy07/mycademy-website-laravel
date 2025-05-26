@@ -8,18 +8,7 @@
         <div class="d-flex justify-content-between mb-5">
             <a href="{{ route('modul-pembelajaran.detail',['id' => $rpsDetail->rps_matakuliah_id]) }}"
                 class="btn btn-light me-3">Kembali</a>
-            @if ($rpsDetail->tanggal_realisasi === null)
-            @if ($action == 'edit' && $kuis->status == 'draft' && auth()->user()->roles->first()->name == 'dosen')
-            <button type="button" class="btn btn-light-primary me-3"
-                data-route="{{ route('modul-pembelajaran.kuis.status') }}" data-action="publish"
-                data-kuis-id="{{ $kuis->id }}">Upload</button>
-            @elseif ($action == 'edit' && $kuis->status == 'uploaded' && auth()->user()->roles->first()->name ==
-            'dosen')
-            <button type="button" class="btn btn-light-danger me-3"
-                data-route="{{ route('modul-pembelajaran.kuis.status') }}" data-action="unpublish"
-                data-kuis-id="{{ $kuis->id }}">Batalkan Upload</button>
-            @endif
-            @else
+            @if ($rpsDetail->tanggal_realisasi !== null)
             <small class="text-danger text-center d-flex gap-1 align-items-center">
                 <strong>Perhatian!</strong> Sesi pertemuan sudah berakhir
             </small>
@@ -44,6 +33,7 @@
                     <label class="required fw-semibold fs-6 mb-2">Deskripsi</label>
                     <textarea name="description"
                         @if($kuis->status !== 'draft') disabled @endif class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Masukkan Deskripsi Kuis" data-kt-autosize="true">{{ $kuis->description ?? old('description') }}</textarea>
+                    <input type="hidden" name="status" id="status_input" value="draft">
                 </div>
                 <div class="fv-row mb-7">
                     <div id="kuis_repeater">
@@ -180,22 +170,39 @@
         @if ($rpsDetail->tanggal_realisasi === null)
         @if ($action === 'create' || $kuis->status == 'draft' && auth()->user()->roles->first()->name ==
         'dosen')
-        <button type="reset" class="btn btn-light me-3">Reset</button>
-        <button type="submit" class="btn btn-{{ $action == 'edit' ? 'light-warning' : 'light-primary' }}">
-            <span class="indicator-label">{{ $action == 'edit' ? 'Update' : 'Submit' }}</span>
-        </button>
-        @elseif($kuis->status == 'uploaded' && auth()->user()->roles->first()->name == 'admin-matakuliah')
-        <button type="button" class="btn btn-light-primary me-3"
-            data-route="{{ route('modul-pembelajaran.kuis.status') }}" data-action="verify"
-            data-kuis-id="{{ $kuis->id }}">Verifikasi</button>
+        <div class="position-relative w-100">
+            <div class="d-flex justify-content-center gap-3">
+                <button type="reset" class="btn btn-light me-3">Reset</button>
+                <button type="submit" class="btn btn-{{ $action == 'edit' ? 'light-warning' : 'light-primary' }}"
+                    onclick="setStatus('draft')">
+                    <span class="indicator-label">{{ $action == 'edit' ? 'Update' : 'Simpan sebagai Draft' }}</span>
+                </button>
+                @elseif($kuis->status == 'uploaded' && auth()->user()->roles->first()->name == 'admin-matakuliah')
+                <button type="button" class="btn btn-light-primary me-3"
+                    data-route="{{ route('modul-pembelajaran.kuis.status') }}" data-action="verify"
+                    data-kuis-id="{{ $kuis->id }}">Verifikasi</button>
+                <button type="button" class="btn btn-light-danger me-3"
+                    data-route="{{ route('modul-pembelajaran.kuis.status') }}" data-action="reject"
+                    data-kuis-id="{{ $kuis->id }}">Tolak</button>
+                @elseif(($kuis->status == 'verified' || $kuis->status == 'rejected') &&
+                auth()->user()->roles->first()->name ==
+                'admin-matakuliah')
+                <button type="button" class="btn btn-light-danger me-3"
+                    data-route="{{ route('modul-pembelajaran.kuis.status.reset') }}" data-action="reset"
+                    data-kuis-id="{{ $kuis->id }}">Batalkan Verifikasi</button>
+                @endif
+                @if ($kuis->status == 'draft' && auth()->user()->roles->first()->name == 'dosen')
+                <button type="submit" class="position-absolute end-0 top-50 translate-middle-y btn btn-light-primary"
+                    onclick="setStatus('uploaded')">
+                    Simpan & Upload
+                </button>
+            </div>
+        </div>
+        @elseif ($kuis->status == 'uploaded' && auth()->user()->roles->first()->name ==
+        'dosen')
         <button type="button" class="btn btn-light-danger me-3"
-            data-route="{{ route('modul-pembelajaran.kuis.status') }}" data-action="reject"
-            data-kuis-id="{{ $kuis->id }}">Tolak</button>
-        @elseif(($kuis->status == 'verified' || $kuis->status == 'rejected') && auth()->user()->roles->first()->name ==
-        'admin-matakuliah')
-        <button type="button" class="btn btn-light-danger me-3"
-            data-route="{{ route('modul-pembelajaran.kuis.status.reset') }}" data-action="reset"
-            data-kuis-id="{{ $kuis->id }}">Batalkan Verifikasi</button>
+            data-route="{{ route('modul-pembelajaran.kuis.status') }}" data-action="unpublish"
+            data-kuis-id="{{ $kuis->id }}">Batalkan Upload</button>
         @endif
         @endif
     </div>
@@ -208,6 +215,9 @@
 <script src="{{ asset('assets/plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
 <script src="{{ asset('assets/js/kuis-form.js') }}"></script>
 <script>
+    function setStatus(status) {
+    document.getElementById('status_input').value = status;
+}
     $(document).ready(function(){
         $(
         'button[data-action="publish"], button[data-action="verify"], button[data-action="reject"], button[data-action="unpublish"], button[data-action="reset"]'

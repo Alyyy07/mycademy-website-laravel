@@ -446,8 +446,36 @@ document.addEventListener("DOMContentLoaded", function () {
         );
         const isReadOnly = hiddenInput.hasAttribute("disabled");
         DecoupledEditor.create(document.querySelector(".document-editor"), {
-            extraPlugins: isReadOnly ? [] : [MyCustomUploadAdapterPlugin],
-        })
+                removePlugins: ["MediaEmbed", "MediaEmbedToolbar"],
+                toolbar: {
+                    items: [
+                        "heading",
+                        "|",
+                        "bold",
+                        "italic",
+                        "underline",
+                        "link",
+                        "bulletedList",
+                        "numberedList",
+                        "|",
+                        "outdent",
+                        "indent",
+                        "|",
+                        "blockQuote",
+                        "insertTable",
+                        "undo",
+                        "redo",
+                        "imageUpload",
+                        "fontSize",
+                        "fontFamily",
+                        "fontColor",
+                        "fontBackgroundColor",
+                        "alignment",
+                        
+                    ],
+                },
+                extraPlugins: isReadOnly ? [] : [MyCustomUploadAdapterPlugin],
+            })
             .then((editor) => {
                 document
                     .querySelector(".document-toolbar")

@@ -79,6 +79,34 @@ function initAllCKEditors(context = document) {
             const isReadOnly = hiddenInput?.hasAttribute("disabled");
 
             DecoupledEditor.create(editorElement, {
+                removePlugins: ["MediaEmbed", "MediaEmbedToolbar"],
+                toolbar: {
+                    items: [
+                        "heading",
+                        "|",
+                        "bold",
+                        "italic",
+                        "underline",
+                        "link",
+                        "bulletedList",
+                        "numberedList",
+                        "|",
+                        "outdent",
+                        "indent",
+                        "|",
+                        "blockQuote",
+                        "insertTable",
+                        "undo",
+                        "redo",
+                        "imageUpload",
+                        "fontSize",
+                        "fontFamily",
+                        "fontColor",
+                        "fontBackgroundColor",
+                        "alignment",
+                        
+                    ],
+                },
                 extraPlugins: isReadOnly ? [] : [MyCustomUploadAdapterPlugin],
             })
                 .then((editor) => {
