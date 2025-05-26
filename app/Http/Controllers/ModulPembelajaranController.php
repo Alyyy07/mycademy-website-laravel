@@ -122,7 +122,7 @@ class ModulPembelajaranController extends Controller
         $materi->title = $request->title;
         $materi->tipe_materi = $request->tipe_materi;
         $materi->uploader_id = Auth::user()->id;
-        $materi->status = 'draft';
+        $materi->status = $request->status ?? 'draft';
         if ($request->tipe_materi == 'video') {
             $materi->video_path = $request->video_path;
         } elseif ($request->tipe_materi == 'pdf') {
@@ -148,7 +148,7 @@ class ModulPembelajaranController extends Controller
                 'title' => $request->title,
                 'description' => $request->description,
                 'rps_detail_id' => $request->rps_detail_id,
-                'status' => 'draft',
+                'status' => $request->status ?? 'draft',
                 'uploader_id' => Auth::user()->id,
             ]);
 
@@ -209,9 +209,11 @@ class ModulPembelajaranController extends Controller
         DB::beginTransaction();
         try {
             $kuis = Kuis::findOrFail($id);
+            Log::info('status_input: ' . $request->status);
             $kuis->update([
                 'title' => $request->title,
                 'description' => $request->description,
+                'status' => $request->status ?? 'draft',
             ]);
 
             $kuis->questions()->delete();
@@ -257,6 +259,7 @@ class ModulPembelajaranController extends Controller
         $materi = Materi::findOrFail($request->id);
         $materi->title = $request->title;
         $materi->tipe_materi = $request->tipe_materi;
+        $materi->status = $request->status ?? 'draft';
         $materi->uploader_id = Auth::user()->id;
         if ($request->tipe_materi == 'video') {
             $materi->video_path = $request->video_path;
