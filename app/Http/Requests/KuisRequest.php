@@ -51,4 +51,26 @@ class KuisRequest extends FormRequest
             'questions.*.options.*.is_correct.boolean' => 'Status jawaban benar harus berupa true atau false.',
         ];
     }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $questions = $this->input('questions', []);
+
+            foreach ($questions as $index => $question) {
+                $hasCorrect = false;
+
+                foreach ($question['options'] as $option) {
+                    if (isset($option['is_correct']) && $option['is_correct']) {
+                        $hasCorrect = true;
+                        break;
+                    }
+                }
+
+                if (! $hasCorrect) {
+                    $validator->errors()->add("questions.$index.options", "Minimal satu jawaban harus ditandai sebagai benar pada soal ke-" . ($index + 1));
+                }
+            }
+        });
+    }
 }
