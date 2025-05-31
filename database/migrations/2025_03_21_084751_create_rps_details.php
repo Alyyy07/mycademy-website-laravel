@@ -23,6 +23,9 @@ return new class extends Migration
             $table->text('materi_pembelajaran')->nullable();
             $table->datetime('tanggal_realisasi')->nullable();
             $table->boolean('close_forum')->default(false);
+            $table->date('tanggal_pengganti')->nullable();
+            $table->enum('status_pengganti', ['pending', 'approved', 'rejected'])
+                ->default('pending');
             $table->timestamps();
         });
     }

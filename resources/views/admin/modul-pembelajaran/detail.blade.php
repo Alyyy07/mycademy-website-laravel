@@ -23,34 +23,85 @@
 
             @endif
             @foreach ($rpsMatakuliah->rpsDetails as $rpsDetail)
+            @php
+            if ($rpsDetail->status_pengganti === 'approved' && $rpsDetail->tanggal_pengganti) {
+            $tglEfektif = $rpsDetail->tanggal_pengganti;
+            } else {
+            $tglEfektif = $rpsDetail->tanggal_pertemuan;
+            }
+
+            $tglDisplayEfektif = $tglEfektif
+            ? $tglEfektif->locale('id')->translatedFormat('l, d F Y')
+            : null;
+
+            $tglUtama = $rpsDetail->tanggal_pertemuan
+            ? $rpsDetail->tanggal_pertemuan->locale('id')->translatedFormat('l, d F Y')
+            : null;
+            $tglPengganti = $rpsDetail->tanggal_pengganti
+            ? $rpsDetail->tanggal_pengganti->locale('id')->translatedFormat('l, d F Y')
+            : null;
+            @endphp
             <div class="card mb-3">
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-6 ">
                         <div>
                             <h5 class="card-title fw-bold text-dark">Pertemuan Ke - {{ $rpsDetail->sesi_pertemuan }}
-                                @if($rpsDetail->tanggal_realisasi)
+                                @if ($rpsDetail->tanggal_realisasi)
                                 <span class="badge badge-light-success">
                                     <i class="bi bi-check-circle me-1"></i>Sesi sudah berakhir
                                 </span>
-                                @elseif ($rpsDetail->tanggal_pertemuan > now())
+
+                                @elseif ($tglEfektif > now())
                                 <span class="badge badge-light">
                                     <i class="bi bi-clock me-1"></i>Sesi belum dimulai
                                 </span>
+
                                 @else
                                 <span class="badge badge-light-primary">
                                     <i class="bi bi-alarm me-1"></i>Sesi sedang berlangsung
                                 </span>
                                 @endif
                             </h5>
-                            <div class="text-muted fw-semibold fs-6">{{
-                                \Carbon\Carbon::parse($rpsDetail->tanggal_pertemuan)->locale('id')->translatedFormat('l,
-                                d F Y')
-                                }}
+                            <div class="text-muted fw-semibold fs-6">
+                                @if($rpsDetail->status_pengganti === 'approved' && $tglPengganti)
+                                <small class="text-muted text-decoration-line-through">Tanggal Pertemuan: {{ $tglUtama
+                                    }}</small>
+                                <br>
+                                <span class="text-primary">
+                                    <i class="bi bi-arrow-repeat me-1"></i>Tanggal Pengganti: {{ $tglPengganti }}
+                                </span>
+
+                                @elseif($rpsDetail->status_pengganti === 'pending' && $tglPengganti)
+                                <small class="text-muted">Tanggal Pertemuan: {{ $tglUtama }}</small>
+                                <br>
+                                <span class="text-warning">
+                                    <i class="bi bi-clock me-1"></i>Pengajuan tanggal pengganti: {{ $tglPengganti }}
+                                    (Menunggu
+                                    persetujuan)
+                                </span>
+                                @elseif($rpsDetail->status_pengganti === 'rejected' && $tglPengganti)
+                                <small class="text-muted">Tanggal Pertemuan: {{ $tglUtama }}</small>
+                                <br>
+                                <span class="text-danger">
+                                    <i class="bi bi-x-circle me-1"></i>Pengajuan tanggal pengganti: {{ $tglPengganti }}
+                                    (Ditolak)
+                                </span>
+                                @else
+                                {{ $tglUtama }}
+                                @endif
                             </div>
                         </div>
-                        <div class="d-flex gap-5">
+                        <div class="d-flex justify-content-center align-items-center gap-5">
                             @if ($rpsDetail->tanggal_realisasi == null && Auth::user()->roles->first()->name == 'dosen')
-                            @if ($rpsDetail->tanggal_pertemuan < now() ) <button type="button"
+                            {{-- Hanya tampil jika sesi sudah “mulai” menurut $tglEfektif (≤ now()) --}}
+                            @if($rpsDetail->status_pengganti !== 'pending' ||$rpsDetail->tanggal_pengganti == null)
+                            <button type="button" class="btn btn-light-info ajukan-pengganti-btn"
+                                data-id="{{ $rpsDetail->id }}" data-bs-toggle="modal"
+                                data-bs-target="#modalAjukanPengganti">
+                                <i class="bi bi-calendar-date fs-2 me-1"></i>Ajukan Tanggal Pengganti
+                            </button>
+                            @endif
+                            @if ($tglEfektif <= now()) <button type="button"
                                 class="btn btn-light-danger akhiri-pertemuan-btn" data-id="{{ $rpsDetail->id }}">
                                 <i class="ki-outline ki-check fs-2"></i> Akhiri Pertemuan
                                 </button>
@@ -58,12 +109,13 @@
                                 <button type="button" button-action="show" modal-id="#materi-modal"
                                     button-url="{{ route('modul-pembelajaran.materi.create',['id' => $rpsDetail->id]) }}"
                                     class="btn btn-light-primary">
-                                    <i class="ki-duotone ki-plus fs-2"></i>Tambah Materi</button>
+                                    <i class="ki-duotone ki-plus fs-2"></i>Tambah Materi
+                                </button>
                                 <a href="{{ route('modul-pembelajaran.kuis.create',['id'=>$rpsDetail->id]) }}"
                                     class="btn btn-light-warning">
-                                    <i class="ki-duotone ki-plus fs-2"></i>Tambah Kuis</a>
-
-                                @else
+                                    <i class="ki-duotone ki-plus fs-2"></i>Tambah Kuis
+                                </a>
+                                @endif
                                 @if ($rpsDetail->tanggal_realisasi)
 
                                 <div class="text-success fw-semibold">
@@ -71,7 +123,6 @@
                                     \Carbon\Carbon::parse($rpsDetail->tanggal_realisasi)->translatedFormat('d F Y H:i')
                                     }}
                                 </div>
-                                @endif
                                 @endif
                         </div>
                     </div>
@@ -193,6 +244,31 @@
             @endforeach
         </div>
     </div>
+    <div class="modal fade" id="modalAjukanPengganti" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="formAjukanPengganti" method="POST">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title">Ajukan Tanggal Pengganti</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="rps_detail_id" id="rps_detail_id">
+                        <div class="mb-3">
+                            <label for="tanggal_pengganti_input" class="form-label">Tanggal Pengganti</label>
+                            <input type="date" class="form-control" name="tanggal_pengganti"
+                                id="tanggal_pengganti_input" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Ajukan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     @endsection
     @push('scripts')
     <script>
@@ -234,5 +310,69 @@
         });
     });
 });
+document.querySelectorAll('.ajukan-pengganti-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const rpsDetailId = this.dataset.id;
+            // Set nilai hidden input di modal:
+            document.getElementById('rps_detail_id').value = rpsDetailId;
+            // Reset field tanggal
+            document.getElementById('tanggal_pengganti_input').value = '';
+        });
+    });
+
+    // Handle submit form Ajukan Tanggal Pengganti:
+    $('#formAjukanPengganti').on('submit', function(e) {
+        e.preventDefault();
+
+        let rpsDetailId      = $('#rps_detail_id').val();
+        let tanggalPengganti = $('#tanggal_pengganti_input').val();
+
+        Swal.fire({
+            title: 'Ajukan Tanggal Pengganti?',
+            text: `Anda akan mengajukan tanggal pengganti: ${tanggalPengganti}`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Ajukan',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{{ route('modul-pembelajaran.ajukan-tanggal-pengganti', ['rpsDetail' => 'RPS_DETAIL_ID']) }}"
+                              .replace('RPS_DETAIL_ID', rpsDetailId),
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        tanggal_pengganti: tanggalPengganti
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: response.message || 'Pengajuan berhasil.',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            location.reload();
+                        });
+                    },
+                    error: function(xhr) {
+                        let errMsg = 'Terjadi kesalahan.';
+                        if (xhr.responseJSON && xhr.responseJSON.error) {
+                            errMsg = xhr.responseJSON.error;
+                        } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                            // kemungkinan dari validation error
+                            errMsg = Object.values(xhr.responseJSON.errors || { message: xhr.responseJSON.message })[0];
+                        }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: errMsg
+                        });
+                    }
+                });
+            }
+        });
+    });
     </script>
     @endpush

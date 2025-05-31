@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RpsDetailController;
 use App\Http\Controllers\RpsMatakuliahController;
 use App\Http\Controllers\UploadController;
+use App\Models\RpsDetail;
 use Illuminate\Support\Facades\Route;
 
 
@@ -36,5 +37,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('/rps-detail', RpsDetailController::class)->names('rps-detail')->except('show');
 });
+
+Route::get('/test', function () {
+    RpsDetail::with('rpsMatakuliah.mappingMatakuliah.dosen,matakuliah')
+        ->where('status_pengganti', 'pending')
+        ->orderBy('tanggal_pengganti', 'asc')
+        ->get();
+})->name('home');
 
 require __DIR__ . '/auth.php';
