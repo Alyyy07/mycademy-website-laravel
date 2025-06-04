@@ -11,6 +11,7 @@ use App\Models\Akademik\TahunAjaran;
 use App\Models\MappingMatakuliah;
 use App\Models\RpsDetail;
 use App\Models\RpsMatakuliah;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,11 +33,11 @@ class RpsMatakuliahController extends Controller
                 ->whereHas('mappingMatakuliah', function ($query) use ($search) {
                     $query->where('tahun_ajaran_id', $search);
                 })->whereHas('mappingMatakuliah.matakuliah', function ($query) use ($user) {
-                    if($user->roles->first()->name === 'admin-matakuliah') {
+                    if ($user->roles->first()->name === 'admin-matakuliah') {
                         $query->where('admin_verifier_id', $user->id);
                     }
-                    if($user->roles->first()->name === 'dosen') {
-                        $query->where('dosen_id',$user->id);
+                    if ($user->roles->first()->name === 'dosen') {
+                        $query->where('dosen_id', $user->id);
                     }
                 })->get();
             return DataTables::of($data)
@@ -140,5 +141,37 @@ class RpsMatakuliahController extends Controller
             return response()->json(['status' => 'success', 'message' => 'Data berhasil dihapus']);
         }
         return response()->json(['status' => 'error', 'message' => 'Data gagal dihapus']);
+    }
+
+    public function printPdf(RpsMatakuliah $rpsMatakuliah)
+    {
+        // Eager‐load relasi yang diperlukan (mappingMatakuliah, rpsDetails, dosen, adminVerifier)
+        $rpsMatakuliah->load([
+            'mappingMatakuliah.matakuliah',
+            'mappingMatakuliah.tahunAjaran',
+            'mappingMatakuliah.dosen',
+            'mappingMatakuliah.adminVerifier',
+            'rpsDetails'  => function ($q) {
+                $q->orderBy('sesi_pertemuan');
+            },
+        ]);
+
+        // Data untuk view PDF
+        $data = [
+            'rps' => $rpsMatakuliah,
+        ];
+
+        // Muat view khusus PDF (lihat langkah berikutnya)
+        $pdf = Pdf::loadView('admin.rps-matakuliah.print', $data)
+            ->setPaper('a4', 'portrait');
+
+        // Download dengan nama file “RPS_<kode_mk>_<timestamp>.pdf”
+        $fileName = 'RPS_'
+            . $rpsMatakuliah->mappingMatakuliah->matakuliah->kode_matakuliah
+            . '_'
+            . now()->format('Ymd_His')
+            . '.pdf';
+
+        return $pdf->download($fileName);
     }
 }

@@ -6,11 +6,21 @@
 
 @section('content')
 <div class="card mb-5">
-    <div class="card-header border-0 pt-6">
-        <div class="card-toolbar">
-            <div class="d-flex justify-content-end" data-kt-docs-table-toolbar="base">
-                <a href="{{ route('rps-matakuliah.index') }}" class="btn btn-light me-3">Kembali</a>
-            </div>
+    <div class="card-header d-flex justify-content-between border-0 pt-6">
+        <div>
+            <a href="{{ route('rps-matakuliah.index') }}" class="btn btn-light me-3">Kembali</a>
+        </div>
+        <div>
+            <a href="{{ route('rps-matakuliah.print', $rpsMatakuliah->id) }}" class="btn btn-success me-3"
+                target="_blank">
+                <i class="ki-duotone ki-printer fs-2 me-1">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                    <span class="path4"></span>
+                    <span class="path5"></span>
+                </i> Cetak PDF
+            </a>
         </div>
     </div>
     <div class="card-body">
