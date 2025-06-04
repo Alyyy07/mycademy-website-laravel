@@ -36,4 +36,8 @@ Route::group(['prefix' => 'modul-pembelajaran', 'as' => 'modul-pembelajaran.'], 
 
     Route::post('/end-session', [ModulPembelajaranController::class, 'endSession'])->name('end-session');
     Route::post('/end-forum',[ModulPembelajaranController::class,'endForum'])->name('end-forum');
+
+    Route::post('/{rpsDetail}/tanggal-pengganti', [ModulPembelajaranController::class, 'ajukanTanggalPengganti'])->name('ajukan-tanggal-pengganti');
+
+    Route::post('/{rpsDetail}/proses-tanggal-pengganti', [ModulPembelajaranController::class, 'prosesTanggalPengganti'])->name('proses-tanggal-pengganti');
 });

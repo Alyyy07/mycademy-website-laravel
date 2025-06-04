@@ -365,7 +365,7 @@ class ModulPembelajaranController extends Controller
         $materi->verifier_id = Auth::user()->id;
         $materi->save();
 
-        return response()->json(['message' => 'Status materi berhasil diperbarui.']);
+        return response()->json(['message' => 'Status materi berhasil diperbarui.'], 200);
     }
 
     public function resetStatusMateri(Request $request)
@@ -375,7 +375,7 @@ class ModulPembelajaranController extends Controller
         $materi->verifier_id = null;
         $materi->save();
 
-        return response()->json(['message' => 'Status materi berhasil direset.']);
+        return response()->json(['message' => 'Status materi berhasil direset.'], 200);
     }
 
     public function updateStatusKuis(Request $request)
@@ -400,7 +400,7 @@ class ModulPembelajaranController extends Controller
         $kuis->verifier_id = Auth::user()->id;
         $kuis->save();
 
-        return response()->json(['message' => 'Status kuis berhasil diperbarui.']);
+        return response()->json(['message' => 'Status kuis berhasil diperbarui.'], 200);
     }
 
     public function resetStatusKuis(Request $request)
@@ -410,7 +410,7 @@ class ModulPembelajaranController extends Controller
         $kuis->verifier_id = null;
         $kuis->save();
 
-        return response()->json(['message' => 'Status kuis berhasil direset.']);
+        return response()->json(['message' => 'Status kuis berhasil direset.'], 200);
     }
 
     public function endSession(Request $request)
@@ -419,7 +419,7 @@ class ModulPembelajaranController extends Controller
         $rpsDetail->tanggal_realisasi = now();
         $rpsDetail->save();
 
-        return response()->json(['message' => 'Pertemuan berhasil diakhiri.']);
+        return response()->json(['message' => 'Pertemuan berhasil diakhiri.'], 200);
     }
 
     public function endForum(Request $request)
@@ -429,6 +429,116 @@ class ModulPembelajaranController extends Controller
         $rpsDetail->save();
 
         return response()->json(['message' => 'Forum berhasil diakhiri.', 'redirect_url' => route('forum-diskusi.detail', ['id' => $rpsDetail->rps_matakuliah_id])]);
+    }
+
+    public function ajukanTanggalPengganti(Request $request, RpsDetail $rpsDetail)
+    {
+        // Pastikan user berperan sebagai dosen
+        if (Auth::user()->roles->first()->name !== 'dosen') {
+            abort(403);
+        }
+
+        // 1. Ambil tanggal pertemuan utama dalam format Y-m-d
+        $tglPertemuanRaw = $rpsDetail->tanggal_pertemuan->format('Y-m-d');
+
+        // 2. Buat rule dasar: tanggal_pengganti wajib >= tanggal pertemuan utama
+        $rulesTanggal = [
+            'required',
+            'date',
+            "after:{$tglPertemuanRaw}"
+        ];
+
+        // 3. Jika ada RpsDetail berikutnya, ambil juga raw-nya untuk batas before_or_equal
+        if ($rpsDetail->nextRpsDetail()->exists()) {
+            $nextTglRaw = $rpsDetail->nextRpsDetail()->tanggal_pertemuan->format('Y-m-d');
+            $rulesTanggal[] = "before_or_equal:{$nextTglRaw}";
+        }
+
+        // 4. Definisikan pesan kustom (masih bisa tampilkan tanggal "berformat lokal" di sini)
+        $tglPertemuanDisplay = $rpsDetail->tanggal_pertemuan
+            ->locale('id')->translatedFormat('l, d F Y');
+
+        $messages = [
+            'tanggal_pengganti.required'        => 'Kolom tanggal pengganti wajib diisi.',
+            'tanggal_pengganti.date'            => 'Format tanggal tidak valid.',
+            'tanggal_pengganti.after'  => "Tanggal pengganti harus setelah {$tglPertemuanDisplay}.",
+        ];
+
+        // Jika ada batas before_or_equal, tambahkan juga pesan kustom untuk itu
+        if (isset($nextTglRaw)) {
+            $nextTglDisplay = $rpsDetail->nextRpsDetail()
+                ->tanggal_pertemuan
+                ->locale('id')
+                ->translatedFormat('l, d F Y');
+
+            $messages['tanggal_pengganti.before_or_equal'] =
+                "Tanggal pengganti tidak boleh melewati {$nextTglDisplay}.";
+        }
+
+        // 5. Lakukan validasi dengan rule+pesan kustom
+        $request->validate([
+            'tanggal_pengganti' => $rulesTanggal,
+        ], $messages);
+
+
+        // 6. Cek apakah sudah pernah mengajukan sebelumnya (status_pengganti sudah ada dan bukan 'pending')
+        if (
+            $rpsDetail->status_pengganti === 'pending' && $rpsDetail->tanggal_pengganti
+        ) {
+            return response()->json([
+                'error' => 'Anda sudah pernah mengajukan tanggal pengganti sebelumnya.'
+            ], 400);
+        }
+
+        // 7. Simpan ke DB
+        $rpsDetail->tanggal_pengganti = $request->input('tanggal_pengganti');
+        $rpsDetail->status_pengganti  = 'pending';
+        $rpsDetail->save();
+
+        return response()->json([
+            'message' => 'Pengajuan tanggal pengganti berhasil diajukan.'
+        ], 200);
+    }
+
+    public function prosesTanggalPengganti(Request $request, RpsDetail $rpsDetail)
+    {
+        if (Auth::user()->roles->first()->name !== 'admin-matakuliah') {
+            abort(403);
+        }
+
+        $bolehProses = $rpsDetail->rpsMatakuliah
+            ->mappingMatakuliah
+            ->admin_verifier_id === Auth::id();
+
+        if (!$bolehProses) {
+            abort(403, 'Anda tidak berwenang memproses pengajuan ini.');
+        }
+
+        $request->validate([
+            'action' => ['required', 'in:approve,reject'],
+        ]);
+
+        if ($rpsDetail->status_pengganti !== 'pending') {
+            return response()->json([
+                'message' => 'Tidak ada pengajuan yang dapat diproses.'
+            ], 422);
+        }
+
+        if ($request->input('action') === 'approve') {
+            $rpsDetail->status_pengganti = 'approved';
+            $rpsDetail->save();
+            return response()->json([
+                'message' => 'Pengajuan tanggal pengganti berhasil disetujui.'
+            ], 200);
+        } else {
+            // Reject
+            $rpsDetail->status_pengganti = 'rejected';
+            $rpsDetail->save();
+
+            return response()->json([
+                'message' => 'Pengajuan tanggal pengganti ditolak.'
+            ], 200);
+        }
     }
 
     public function uploadFile(Request $request)

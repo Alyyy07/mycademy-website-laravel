@@ -22,21 +22,45 @@ class RpsMatakuliahDataTable extends DataTable
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
-        return (new EloquentDataTable($query))
-            ->addColumn('action', function ($rps) {
-                $showRoute = route('rps-detail.index', ['id' => $rps->id]);
-                $editRoute = route('rps-matakuliah.edit', $rps->id);
-                $deleteRoute = route('rps-matakuliah.destroy', $rps->id);
-                return view('admin.rps-matakuliah.partials.action', compact('rps', 'showRoute', 'editRoute', 'deleteRoute'));
-            })
-            ->editColumn('tanggal_mulai', function ($rps) {
-                return \Carbon\Carbon::parse($rps->tanggal_mulai)->locale('id')->translatedFormat('d F Y');
-            })
-            ->editColumn('tanggal_selesai', function ($rps) {
-                return \Carbon\Carbon::parse($rps->tanggal_selesai)->locale('id')->translatedFormat('d F Y');
-            })
-            ->rawColumns(['action']);
+        $dataTable = new EloquentDataTable($query);
+
+        $dataTable->addColumn('action', function ($rps) {
+            $showRoute = route('rps-detail.index', ['id' => $rps->id]);
+            $editRoute = route('rps-matakuliah.edit', $rps->id);
+            $deleteRoute = route('rps-matakuliah.destroy', $rps->id);
+            return view('admin.rps-matakuliah.partials.action', compact('rps', 'showRoute', 'editRoute', 'deleteRoute'));
+        });
+
+        $dataTable->editColumn('tanggal_mulai', function ($rps) {
+            return \Carbon\Carbon::parse($rps->tanggal_mulai)->locale('id')->translatedFormat('d F Y');
+        });
+
+        $dataTable->editColumn('tanggal_selesai', function ($rps) {
+            return \Carbon\Carbon::parse($rps->tanggal_selesai)->locale('id')->translatedFormat('d F Y');
+        });
+
+        $userRole = Auth::user()->roles->first()->name;
+
+        if ($userRole === 'super-admin') {
+            $dataTable->addColumn('admin_verifier', function ($rps) {
+                return optional($rps->mappingMatakuliah->adminVerifier)->name ?? '-';
+            });
+            $dataTable->addColumn('dosen_pengampu', function ($rps) {
+                return optional($rps->mappingMatakuliah->dosen)->name ?? '-';
+            });
+        } elseif ($userRole === 'admin-matakuliah') {
+            $dataTable->addColumn('dosen_pengampu', function ($rps) {
+                return optional($rps->mappingMatakuliah->dosen)->name ?? '-';
+            });
+        } elseif ($userRole === 'dosen') {
+            $dataTable->addColumn('admin_verifier', function ($rps) {
+                return optional($rps->mappingMatakuliah->adminVerifier)->name ?? '-';
+            });
+        }
+
+        return $dataTable->rawColumns(['action']);
     }
+
 
     /**
      * Get the query source of dataTable.
@@ -55,7 +79,14 @@ class RpsMatakuliahDataTable extends DataTable
             });
         }
 
-        return $model->newQuery()->whereIn('id', array_column($rpsMatakuliah, 'id'))->with(['mappingMatakuliah.matakuliah', 'mappingMatakuliah.tahunAjaran']);
+        return $model->newQuery()
+            ->whereIn('id', array_column($rpsMatakuliah, 'id'))
+            ->with([
+                'mappingMatakuliah.matakuliah',
+                'mappingMatakuliah.tahunAjaran',
+                'mappingMatakuliah.dosen',
+                'mappingMatakuliah.adminVerifier',
+            ]);
     }
 
     /**
@@ -81,18 +112,29 @@ class RpsMatakuliahDataTable extends DataTable
      */
     public function getColumns(): array
     {
-        return [
+        $columns = [
             Column::make('id')->title('No')->addClass('w-10px pe-2')->orderable(false)->searchable(false),
             Column::make('mapping_matakuliah.tahun_ajaran.tahun_ajaran')->title('Tahun Ajaran')->orderable(false),
             Column::make('mapping_matakuliah.matakuliah.nama_matakuliah')->title('Nama Matakuliah')->orderable(false),
-            Column::make('mapping_matakuliah.semester')->title('Semester')->orderable(false)->addClass('text-center'),
-            Column::make('tanggal_mulai')->title('Tanggal Mulai'),
-            Column::make('tanggal_selesai')->title('Tanggal Selesai'),
-            Column::computed('action')->addClass('text-center')
-                ->exportable(false)
-                ->printable(false)
-                ->width(60),
         ];
+
+        $userRole = Auth::user()->roles->first()->name;
+
+        if ($userRole === 'super-admin') {
+            $columns[] = Column::computed('admin_verifier')->title('Admin Verifier');
+            $columns[] = Column::computed('dosen_pengampu')->title('Dosen Pengampu');
+        } elseif ($userRole === 'admin-matakuliah') {
+            $columns[] = Column::computed('dosen_pengampu')->title('Dosen Pengampu');
+        } elseif ($userRole === 'dosen') {
+            $columns[] = Column::computed('admin_verifier')->title('Admin Verifier');
+        }
+
+        $columns[] = Column::make('mapping_matakuliah.semester')->title('Semester')->orderable(false)->addClass('text-center');
+        $columns[] = Column::make('tanggal_mulai')->title('Tanggal Mulai');
+        $columns[] = Column::make('tanggal_selesai')->title('Tanggal Selesai');
+        $columns[] = Column::computed('action')->addClass('text-center')->exportable(false)->printable(false)->width(60);
+
+        return $columns;
     }
 
     /**

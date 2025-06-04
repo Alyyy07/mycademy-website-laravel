@@ -9,6 +9,7 @@ use App\Models\MappingMatakuliah;
 use App\Models\RpsMatakuliah;
 use App\Models\Materi;
 use App\Models\Kuis;
+use App\Models\RpsDetail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -37,6 +38,7 @@ class DashboardController extends Controller
         //
         $maps = MappingMatakuliah::with('matakuliah')
             ->where('dosen_id', $user->id)
+            ->orWhere('admin_verifier_id', $user->id)
             ->get();
 
         // siapkan array untuk masing‑masing metrik
@@ -89,8 +91,31 @@ class DashboardController extends Controller
         // total kuis
         $kuis = array_sum($kuis);
 
+        if ($role == 'admin-matakuliah') {
+            $pendingList = RpsDetail::with([
+                // kita butuh data relasi untuk tampilan (nanti di Blade)
+                'rpsMatakuliah.mappingMatakuliah.matakuliah',
+                'rpsMatakuliah.mappingMatakuliah.dosen'
+            ])
+                ->where('status_pengganti', 'pending')->whereNotNull('tanggal_pengganti')
+                ->whereHas('rpsMatakuliah', function ($q) {
+                    $q->whereHas('mappingMatakuliah', function ($q2) {
+                        $q2->where('admin_verifier_id', Auth::id());
+                    });
+                })
+                ->orderBy('tanggal_pengganti', 'asc')
+                ->get();
 
-        // kirim ke view admin.index
+
+            return view('admin.index', compact(
+                'matakuliah',
+                'mahasiswa',
+                'materi',
+                'kuis',
+                'pendingList'
+            ));
+        }
+
         return view('admin.index', compact(
             'matakuliah',
             'mahasiswa',

@@ -33,11 +33,11 @@
                                 <td>{{
                                     \Carbon\Carbon::parse($detail->tanggal_pertemuan)->locale('id')->translatedFormat('l,
                                     d F Y') }}</td>
-                                <td>{{ $detail->capaian_pembelajaran }}</td>
-                                <td>{{ $detail->indikator }}</td>
-                                <td>{{ $detail->metode_pembelajaran }}</td>
-                                <td>{{ $detail->kriteria_penilaian }}</td>
-                                <td>{{ $detail->materi_pembelajaran }}</td>
+                                <td>{!! $detail->capaian_pembelajaran !!}</td>
+                                <td>{!! $detail->indikator !!}</td>
+                                <td>{!! $detail->metode_pembelajaran !!}</td>
+                                <td>{!! $detail->kriteria_penilaian !!}</td>
+                                <td>{!! $detail->materi_pembelajaran !!}</td>
                             </tr>
                             @empty
                             <tr>

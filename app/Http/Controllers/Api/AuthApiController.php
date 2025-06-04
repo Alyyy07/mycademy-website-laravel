@@ -293,10 +293,13 @@ class AuthApiController extends Controller
         return response()->json(['status' => 'success', 'data' => [
             'id' => $mapping->rpsMatakuliahs()->pluck('id'),
             'rps_details' => $mapping->rpsMatakuliahs->rpsDetails->map(function ($rpsDetail) use ($user) {
+                $tglEfektif = ($rpsDetail->status_pengganti === 'approved' && $rpsDetail->tanggal_pengganti)
+                    ? $rpsDetail->tanggal_pengganti
+                    : $rpsDetail->tanggal_pertemuan;
                 return [
                     'id' => $rpsDetail->id,
                     'sesi_pertemuan' => $rpsDetail->sesi_pertemuan,
-                    'tanggal_pertemuan' => $rpsDetail->tanggal_pertemuan,
+                    'tanggal_pertemuan' => $tglEfektif,
                     'tanggal_realisasi' => $rpsDetail->tanggal_realisasi,
                     'materi_selesai_all' => $rpsDetail->materi
                         ->filter(fn($materi) => $materi->status === 'verified')
@@ -366,7 +369,17 @@ class AuthApiController extends Controller
 
         // ambil kuis beserta soal & opsi
         $kuis = Kuis::with('questions.options')->findOrFail($request->query('id'));
+        $rpsDetail = $kuis->rpsDetail;
         $nextRpsDetail = $kuis->rpsDetail->nextRpsDetail();
+
+        // 3. Ambil RpsDetail berikutnya (jika ada), kemudian hitung tanggal efektif next
+        $nextRpsDetail = $rpsDetail->nextRpsDetail();
+        $tglEfektifNext = null;
+        if ($nextRpsDetail) {
+            $tglEfektifNext = ($nextRpsDetail->status_pengganti === 'approved' && $nextRpsDetail->tanggal_pengganti)
+                ? $nextRpsDetail->tanggal_pengganti
+                : $nextRpsDetail->tanggal_pertemuan;
+        }
 
         // cek apakah mahasiswa sudah pernah menyelesaikan
         $km = KuisMahasiswa::with('answers')
@@ -385,7 +398,9 @@ class AuthApiController extends Controller
                     'option_id'   => $a->option_id,
                 ])->toArray()
                 : [],
-            'can_view_history' => Carbon::now()->greaterThanOrEqualTo($nextRpsDetail->tanggal_pertemuan) ?? false,
+            'can_view_history' =>  $tglEfektifNext
+                ? Carbon::now()->greaterThanOrEqualTo($tglEfektifNext)
+                : false,
         ]);
 
         return response()->json([

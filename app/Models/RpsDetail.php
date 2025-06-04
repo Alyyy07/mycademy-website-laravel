@@ -11,9 +11,16 @@ class RpsDetail extends Model
 
     protected $guarded = ['id'];
 
+     protected $casts = [
+        'tanggal_pertemuan'   => 'date',
+        'tanggal_pengganti'   => 'date',
+        'tanggal_realisasi'   => 'datetime',
+        'close_forum'         => 'boolean',
+    ];
+
     public function rpsMatakuliah()
     {
-        return $this->belongsTo(RpsMatakuliah::class,'rps_id','id');
+        return $this->belongsTo(RpsMatakuliah::class,'rps_matakuliah_id','id');
     }
 
     public function materi(){
