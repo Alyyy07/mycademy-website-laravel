@@ -49,7 +49,6 @@ class RpsDetailController extends Controller
 
     public function update(RpsDetailRequest $request, RpsDetail $rpsDetail)
     {
-        $request->validated();
         $result = $rpsDetail->update($request->all());
         if ($result) {
             return response()->json(['status' => 'success', 'message' => 'Data berhasil disimpan']);
