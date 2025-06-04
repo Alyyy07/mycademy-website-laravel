@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "barryvdh/laravel-dompdf": "^3.1",
         "itsgoingd/clockwork": "^5.3",
         "lab404/laravel-impersonate": "^1.7",
         "laravel/framework": "^11.9",

@@ -36,6 +36,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('/rps-matakuliah', RpsMatakuliahController::class)->names('rps-matakuliah')->except('show');
 
     Route::resource('/rps-detail', RpsDetailController::class)->names('rps-detail')->except('show');
+    Route::get('/rps-matakuliah/{rpsMatakuliah}/print', [RpsMatakuliahController::class, 'printPdf'])
+        ->name('rps-matakuliah.print');
 });
 
 Route::get('/test', function () {
