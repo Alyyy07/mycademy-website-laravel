@@ -65,18 +65,11 @@
 								<div class="d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-8">
 									<div></div>
 								</div>
-								<!--end::Wrapper-->
-								<!--begin::Submit button-->
 								<div class="d-grid mb-10">
 									<button type="submit" class="btn btn-primary">
-										<!--begin::Indicator label-->
 										<span class="indicator-label">Log In</span>
-										<!--end::Indicator label-->
-
-										<!--end::Indicator progress-->
 									</button>
 								</div>
-								<!--end::Submit button-->
 							</form>
 							<!--end::Form-->
 						</div>
