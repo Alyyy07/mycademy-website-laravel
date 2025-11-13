@@ -160,24 +160,24 @@
                             @if ($rpsDetail->tanggal_realisasi == null && Auth::user()->roles->first()->name == 'dosen')
                             {{-- Hanya tampil jika sesi sudah “mulai” menurut $tglEfektif (≤ now()) --}}
                             @if($rpsDetail->status_pengganti !== 'pending' ||$rpsDetail->tanggal_pengganti == null)
-                            <button type="button" class="btn btn-light-info ajukan-pengganti-btn"
+                            <button type="button" class="btn btn-light-info ajukan-pengganti-btn fs-7"
                                 data-id="{{ $rpsDetail->id }}" data-bs-toggle="modal"
                                 data-bs-target="#modalAjukanPengganti">
                                 <i class="bi bi-calendar-date fs-2 me-1"></i>Ajukan Tanggal Pengganti
                             </button>
                             @endif
                             @if ($tglEfektif <= now()) <button type="button"
-                                class="btn btn-light-danger akhiri-pertemuan-btn" data-id="{{ $rpsDetail->id }}">
+                                class="btn btn-light-danger akhiri-pertemuan-btn fs-7" data-id="{{ $rpsDetail->id }}">
                                 <i class="ki-outline ki-check fs-2"></i> Akhiri Pertemuan
                                 </button>
                                 @endif
                                 <button type="button" button-action="show" modal-id="#materi-modal"
                                     button-url="{{ route('modul-pembelajaran.materi.create',['id' => $rpsDetail->id]) }}"
-                                    class="btn btn-light-primary">
+                                    class="btn btn-light-primary fs-7">
                                     <i class="ki-duotone ki-plus fs-2"></i>Tambah Materi
                                 </button>
                                 <a href="{{ route('modul-pembelajaran.kuis.create',['id'=>$rpsDetail->id]) }}"
-                                    class="btn btn-light-warning">
+                                    class="btn btn-light-warning fs-7">
                                     <i class="ki-duotone ki-plus fs-2"></i>Tambah Kuis
                                 </a>
                                 @endif
