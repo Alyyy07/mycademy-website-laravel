@@ -98,7 +98,7 @@ class RoleController extends Controller
     private function getSimplifiedRole()
     {
         $rawRoles = Cache::rememberForever('roles_with_permissions', function () {
-            return Roles::with('permissions', 'users')->get();
+            return Roles::with('permissions', 'users')->where('name','!=','super-admin')->get();
         });
         $integratedRoles = $rawRoles->map(function ($role) {
             $permissions = $role->permissions->pluck('name')->map(function ($permission) {
