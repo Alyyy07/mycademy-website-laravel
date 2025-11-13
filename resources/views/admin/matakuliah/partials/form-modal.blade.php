@@ -44,7 +44,7 @@
                             </select>
                         </div>
                         <div class="fv-row mb-7">
-                            <label class="required fw-semibold fs-6 mb-2">Deskripsi</label>
+                            <label class="Pfw-semibold fs-6 mb-2">Deskripsi</label>
                             <textarea name="deskripsi" class="form-control form-control-solid mb-3 mb-lg-0"
                                 placeholder="Masukkan Deskripsi Matakuliah">{{ $matakuliah->deskripsi ?? old('deskripsi') }}</textarea>
                         </div>

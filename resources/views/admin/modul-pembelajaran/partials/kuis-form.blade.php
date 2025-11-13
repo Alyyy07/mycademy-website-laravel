@@ -30,7 +30,7 @@
                     placeholder="Masukkan Judul Kuis" autofocus value="{{ $kuis->title ?? old('title') }}" />
                 </div>
                 <div class="fv-row mb-7">
-                    <label class="required fw-semibold fs-6 mb-2">Deskripsi</label>
+                    <label class="fw-semibold fs-6 mb-2">Deskripsi</label>
                     <textarea name="description"
                         @if($kuis->status !== 'draft') disabled @endif class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Masukkan Deskripsi Kuis" data-kt-autosize="true">{{ $kuis->description ?? old('description') }}</textarea>
                     <input type="hidden" name="status" id="status_input" value="draft">

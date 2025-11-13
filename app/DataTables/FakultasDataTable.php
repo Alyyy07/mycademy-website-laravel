@@ -41,6 +41,9 @@ class FakultasDataTable extends DataTable
                             <span>$fakultas->email</span>
                         </div>";
             })
+            ->editColumn('deskripsi', function (Fakultas $fakultas) {
+                return $fakultas->deskripsi ?? "Tidak ada deskripsi";
+            })
             ->rawColumns(['action', 'kode_fakultas', 'nama_fakultas']);
     }
 

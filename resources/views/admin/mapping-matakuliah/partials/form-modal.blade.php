@@ -17,23 +17,19 @@
             <div class="modal-body px-5 my-7">
                 <div
                     class="notice d-flex bg-light-warning rounded border-warning border border-dashed  p-6 ms-10 me-14 mb-10">
-                    <!--begin::Wrapper-->
                     <i class="ki-duotone ki-information fs-3tx text-warning me-4">
                         <span class="path1"></span>
                         <span class="path2"></span>
                         <span class="path3"></span>
                     </i>
                     <div class="d-flex flex-column flex-grow-1">
-                        <!--begin::Content-->
                         <h4 class="text-gray-900 fw-bold text-">Harap Diperhatikan!</h4>
                         <div class="fw-semibold">
                             <div class="fs-6 text-gray-700">Matakuliah akan ditambahkan pada Tahun Ajaran {{
                                 $tahunAktif['tahun_ajaran'] }}
                             </div>
                         </div>
-                        <!--end::Content-->
                     </div>
-                    <!--end::Wrapper-->
                 </div>
                 <form id="mapping-matakuliah-form" class="form" action="{{ $route }}" modal-action="{{ $action }}"
                     enctype="multipart/form-data">
@@ -97,15 +93,11 @@
             <div class="modal-body px-5">
                 <div class="d-flex flex-column scroll-y px-5 px-lg-10">
                     <div class="notice d-flex bg-light-danger rounded border-danger border border-dashed rounded-3 p-6">
-                        <!--begin::Wrapper-->
                         <div class="d-flex flex-stack flex-grow-1">
-                            <!--begin::Content-->
                             <div class="fw-semibold">
                                 <div class="fs-6 text-gray-700">Tidak ada Tahun Ajaran Aktif</div>
                             </div>
-                            <!--end::Content-->
                         </div>
-                        <!--end::Wrapper-->
                     </div>
                 </div>
             </div>
