@@ -31,7 +31,7 @@ class FakultasRequest extends FormRequest
                 Rule::unique('fakultas', 'kode_fakultas')->ignore($fakultasId),
             ],
             "nama_fakultas" => "required|string|max:255",
-            "deskripsi" => "required|string",
+            "deskripsi" => "nullable|string",
             "email" => [
                 'required',
                 'email',

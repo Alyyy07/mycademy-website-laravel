@@ -32,7 +32,7 @@ class ProdiRequest extends FormRequest
             ],
             'nama_prodi' => ['required', 'string', 'max:255'],
             'fakultas_id' => ['required', 'integer'],
-            'deskripsi' => ['required', 'string'],
+            'deskripsi' => ['nullable', 'string'],
         ];
     }
 }

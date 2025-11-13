@@ -27,13 +27,13 @@ class MatakuliahRequest extends FormRequest
             'kode_matakuliah' => [
                 'required',
                 'string',
-                'max:5',
+                'max:7',
                 Rule::unique('matakuliahs', 'kode_matakuliah')->ignore($matakuliahId)
             ],
             'nama_matakuliah' => ['required', 'string', 'max:255'],
             'prodi_id' => ['required', 'integer'],
             'sks' => ['required', 'integer'],
-            'deskripsi' => ['required', 'string'],
+            'deskripsi' => ['string', 'nullable'],
         ];
     }
 }

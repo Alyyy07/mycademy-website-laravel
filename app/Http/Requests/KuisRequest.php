@@ -35,7 +35,7 @@ class KuisRequest extends FormRequest
         return [
             'rps_detail_id' => 'required|integer',
             'title' => 'required|string|max:255',
-            'description' => 'required|string|max:500',
+            'description' => 'nullable|string|max:500',
             'questions' => 'required|array|min:1',
             'questions.*.question_text' => 'required|string|max:255',
             'questions.*.options' => 'required|array|min:1',
