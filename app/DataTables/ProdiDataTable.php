@@ -45,6 +45,9 @@ class ProdiDataTable extends DataTable
             ->editColumn('kode_prodi', function (Prodi $prodi) {
                 return "<span class='badge badge-light-primary fs-7 py-3 px-4 text-capitalize'>$prodi->kode_prodi</span>";
             })
+            ->editColumn('deskripsi', function (Prodi $prodi) {
+                return $prodi->deskripsi ?? "Tidak ada deskripsi";
+            })
             ->rawColumns(['action','fakultas.nama_fakultas', 'kode_prodi']);
     }
 
