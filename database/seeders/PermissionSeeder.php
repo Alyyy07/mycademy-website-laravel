@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Setting\Access;
+use App\Models\Setting\Menus;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
@@ -13,6 +15,29 @@ class PermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        Permission::create(['name' => 'login dashboard', 'guard_name' => 'web']);
+        $menus = Menus::all();
+        $access = ['create', 'read', 'update', 'delete'];
+        $permissions = [];
+        $accesses = [];
+
+        foreach ($menus as $menu) {
+            $permissions[] = [
+                'name' => $menu->module,
+                'guard_name' => 'web',
+            ];
+            foreach ($access as $acc) {
+                $permissions[] = [
+                    'name' => $menu->module.'-'.$acc,
+                    'guard_name' => 'web',
+                ];
+                $accesses[] = [
+                    'name' => "$menu->name $acc",
+                    'module' => $menu->module.'-'.$acc,
+                    'menus_id' => $menu->id,
+                ];
+            }
+        }
+        Permission::insert($permissions);
+        Access::insert($accesses);
     }
 }

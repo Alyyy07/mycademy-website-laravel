@@ -37,7 +37,11 @@
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Profile') }}
                         </x-dropdown-link>
-
+                        @impersonating($guard='web')
+                        <x-dropdown-link :href="route('user-management.impersonate.leave')">
+                            {{ __('Leave impersonation') }}
+                        </x-dropdown-link>
+                        @else
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -48,6 +52,7 @@
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
                         </form>
+                        @endImpersonating
                     </x-slot>
                 </x-dropdown>
             </div>

@@ -2,12 +2,14 @@
 
 namespace App\Http\Requests\Auth;
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Spatie\Permission\Models\Role;
 
 class LoginRequest extends FormRequest
 {
@@ -41,12 +43,30 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
+
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
-            throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
-            ]);
+            throw new AuthenticationException('Invalid credentials.');
+        }
+
+        if(!Auth::user()->is_active) {
+            Auth::logout();
+            RateLimiter::clear($this->throttleKey());
+            throw  new AuthenticationException('Your account is not active. Please contact the administrator.');
+        }
+
+        if(!Auth::user()->email_verified_at) {
+            Auth::logout();
+            RateLimiter::clear($this->throttleKey());
+            throw  new AuthenticationException('Your email is not verified. Please check your email.');
+        }
+
+
+        if(Role::findByName('mahasiswa')->users->contains(Auth::user())) {
+            Auth::logout();
+            RateLimiter::clear($this->throttleKey());
+            throw  new AuthenticationException('You are not allowed to access this page.');
         }
 
         RateLimiter::clear($this->throttleKey());

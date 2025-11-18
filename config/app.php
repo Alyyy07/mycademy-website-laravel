@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'timezone' => env('APP_TIMEZONE', 'UTC'),
+    'timezone' => env('APP_TIMEZONE', 'Asia/Jakarta'),
 
     /*
     |--------------------------------------------------------------------------
@@ -123,4 +123,10 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Client ID
+    |--------------------------------------------------------------------------
+    */
+    'client_id' => env('CLIENT_ID', 'rHCiM=r"cjxoC.hrU*s:kRv6#,ok"-{:W7Qp;Ftcmv@4.o9pwGaUdb}]*/EO;;fl'),
 ];

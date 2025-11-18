@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserSeeder extends Seeder
 {
@@ -14,24 +15,28 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $admin = User::create([
-            'name' => 'admin',
-            'email' => 'admin@gmail.com',
+        $superAdmin = User::create([
+            'name' => 'Super Admin',
+            'email' => 'superadmin@gmail.com',
             'email_verified_at' => now(),
-            'password' => Hash::make('password'),
+            'password' => '12345',
             'remember_token' => Str::random(10),
         ]);
 
-        $admin->assignRole('admin');
+        $superAdmin->assignRole('super-admin');
 
-        $camaba = User::create([
-            'name' => 'camaba',
-            'email' => 'camaba@gmail.com',
+        $adminMatakuliah1 = User::create([
+            'id' => 'd7d74b70-bfb2-463d-b8aa-e3ee8ce95b71',
+            'name' => 'Admin Matakuliah',
+            'email' => 'adminmatakuliah@gmail.com',
             'email_verified_at' => now(),
-            'password' => Hash::make('password'),
+            'password' => '12345',
             'remember_token' => Str::random(10),
         ]);
 
-        $camaba->assignRole('camaba');
+        $adminMatakuliah1->assignRole('admin-matakuliah');
+
+
+        Excel::import(new \App\Imports\DosenImport, storage_path('app/public/seeder/seederDosen.xlsx'));
     }
 }

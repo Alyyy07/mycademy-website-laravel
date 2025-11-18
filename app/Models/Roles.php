@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Traits\HasRoles;
 
 class Roles extends Model
 {
-    use HasFactory;
+    use HasFactory,HasRoles;
 
     protected $fillable = [
         'name',
@@ -17,7 +18,12 @@ class Roles extends Model
     
     public function permissions()
     {
-        return $this->belongsToMany(Permission::class, 'role_has_permissions');
+        return $this->belongsToMany(Permission::class, 'role_has_permissions', 'role_id', 'permission_id');
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'model_has_roles', 'role_id', 'model_id');
     }
 
 }

@@ -1,0 +1,138 @@
+[
+    {
+        "name": "Dashboard",
+        "module": "dashboard",
+        "slug": "dashboard",
+        "icon": "ki-outline ki-category",
+        "url": "/dashboard",
+        "order": 0,
+        "childrens": []
+    },
+    {
+        "name": "Akademik",
+        "module": "akademik",
+        "slug": "akademik",
+        "icon": "ki-outline ki-teacher",
+        "url": "",
+        "order": 1,
+        "childrens": [
+            {
+                "name": "Tahun Ajaran",
+                "module": "akademik.tahun_ajaran",
+                "slug": "akademik-tahun-ajaran",
+                "icon": "ki-outline ki-calendar",
+                "url": "/akademik/tahun-ajaran",
+                "order": 0,
+                "childrens": []
+            },
+            {
+                "name": "Fakultas",
+                "module": "akademik.fakultas",
+                "slug": "akademik-fakultas",
+                "icon": "ki-outline ki-bank",
+                "url": "/akademik/fakultas",
+                "order": 1,
+                "childrens": []
+            },
+            {
+                "name": "Prodi",
+                "module": "akademik.prodi",
+                "slug": "akademik-prodi",
+                "icon": "ki-outline ki-financial-schedule",
+                "url": "/akademik/prodi",
+                "order": 2,
+                "childrens": []
+            },
+            {
+                "name": "Matakuliah",
+                "module": "akademik.matakuliah",
+                "slug": "akademik-matakuliah",
+                "icon": "ki-outline ki-book",
+                "url": "/akademik/matakuliah",
+                "order": 3,
+                "childrens": []
+            },
+            {
+                "name":"Data Mahasiswa",
+                "module":"akademik.data_mahasiswa",
+                "slug":"akademik-data-mahasiswa",
+                "icon":"ki-outline ki-user",
+                "url":"/akademik/data-mahasiswa",
+                "order":4,
+                "childrens":[]
+            }
+        ]
+    },
+    {
+        "name": "Mapping Matakuliah",
+        "module": "mapping_matakuliah",
+        "slug": "mapping-matakuliah",
+        "icon": "ki-outline ki-clipboard",
+        "url": "/mapping-matakuliah",
+        "order": 2,
+        "childrens": []
+    },
+    {
+        "name": "RPS Matakuliah",
+        "module": "rps_matakuliah",
+        "slug": "rps-matakuliah",
+        "icon": "ki-outline ki-book-square",
+        "url": "/rps-matakuliah",
+        "order": 3,
+        "childrens": []
+    },
+    {
+        "name": "Modul Pembelajaran",
+        "module": "modul_pembelajaran",
+        "slug": "modul-pembelajaran",
+        "icon": "ki-outline ki-book",
+        "url": "/modul-pembelajaran",
+        "order": 4,
+        "childrens": []
+    },
+    {
+        "name": "User Management",
+        "module": "user_management",
+        "slug": "user_management",
+        "icon": "ki-outline ki-people",
+        "url": "",
+        "order": 5,
+        "childrens": [
+            {
+                "name": "User List",
+                "module": "user_management.user_list",
+                "slug": "user-management-user-list",
+                "icon": "ki-outline ki-profile-user",
+                "url": "/user-management/users",
+                "order": 0,
+                "childrens": []
+            },{
+                "name":"Roles",
+                "module":"user_management.roles",
+                "slug":"user-management-roles",
+                "icon":"ki-outline ki-medal-star",
+                "url":"/user-management/roles",
+                "order":1,
+                "childrens": []
+            }
+        ]
+    },
+    {
+        "name": "Forum Diskusi",
+        "module": "forum_diskusi",
+        "slug": "forum-diskusi",
+        "icon": "ki-outline ki-messages",
+        "url": "/forum-diskusi",
+        "order": 6,
+        "childrens": []
+    },
+    {
+        "name": "Laporan Metode",
+        "module": "laporan_metode",
+        "slug": "laporan-metode",
+        "icon": "ki-outline ki-chart-pie-4",
+        "url": "/laporan-metode",
+        "order": 7,
+        "childrens": []
+    }
+]
