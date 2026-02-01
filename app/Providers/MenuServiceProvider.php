@@ -21,11 +21,16 @@ class MenuServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (Schema::hasTable('menus')) {
-            $menus = Menus::with(['childrens' => function($q){
-                $q->where('is_active', '1')->orderBy('order', 'asc');
-            }])->where('parent_id', null)->where('is_active', '1')->orderBy('order', 'asc')->get();
-            view()->share('menus', $menus);
+        try {
+            if (Schema::hasTable('menus')) {
+                $menus = Menus::with(['childrens' => function ($q) {
+                    $q->where('is_active', '1')->orderBy('order', 'asc');
+                }])->where('parent_id', null)->where('is_active', '1')->orderBy('order', 'asc')->get();
+                view()->share('menus', $menus);
+            }
+        } catch (\Exception $e) {
+            // Database not ready or not configured yet
+            // Fail silently to allow other artisan commands (like migrate) to run
         }
     }
 }
