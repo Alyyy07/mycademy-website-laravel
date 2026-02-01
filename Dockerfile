@@ -44,4 +44,4 @@ RUN chown -R www-data:www-data /var/www
 EXPOSE 8000
 
 # Start Laravel server
-CMD sh -c "php artisan package:discover --ansi && php artisan config:cache && php artisan route:cache && php artisan view:cache && php -S 0.0.0.0:${PORT:-8000} -t public/"
+CMD sh -c "php artisan package:discover --ansi && php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan storage:link && php -S 0.0.0.0:${PORT:-8000} -t public/"
