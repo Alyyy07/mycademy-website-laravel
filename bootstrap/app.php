@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias(['role' => Spatie\Permission\Middleware\RoleMiddleware::class, 'permission' => Spatie\Permission\Middleware\PermissionMiddleware::class, 'checkClientId' => App\Http\Middleware\checkClientId::class]);
+        $middleware->trustProxies(at: '*');
     })
     ->withCommands([
         App\Console\Commands\ServeAll::class,
