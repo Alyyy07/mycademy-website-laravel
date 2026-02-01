@@ -72,7 +72,7 @@ class MahasiswaImport implements ToCollection
                 'tanggal_lahir' => $tanggalLahir, // kolom I
                 'alamat' => $row[9] . ' ' . $row[10], // kolom J + K
                 'no_hp' => $row[11], // kolom L
-                'semester' => $row[13], // kolom O
+                'semester' => $row[14], // kolom O
                 'prodi_id' => 2,
             ]);
         }
