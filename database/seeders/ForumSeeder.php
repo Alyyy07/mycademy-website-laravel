@@ -20,9 +20,10 @@ class ForumSeeder extends Seeder
         $faker = Factory::create();
         $now   = Carbon::now();
 
-        // Ambil semua dosen dan mahasiswa
-        $dosenIotId = User::where('name', 'like', 'Arda Gusema%')->first()->id;
-        $dosenAndroidId = User::where('name', 'like', 'Iddrus%')->first()->id;
+        // Get first two lecturers (will be used for IoT and Android courses)
+        $dosens = User::role('dosen')->get();
+        $dosenIotId = $dosens->get(0)->id;
+        $dosenAndroidId = $dosens->get(1)->id;
         $mahasiswaIds = User::whereHas('mahasiswa', function ($q) {
             $q->where('semester', 8);
         })->pluck('id');
@@ -61,7 +62,7 @@ class ForumSeeder extends Seeder
             DB::table('discussion_messages')->insert([
                 'materi_id'  => $materi->id,
                 'sender_id'  => $senderDosen,
-                'message'    => $faker->sentence(mt_rand(6,12)),
+                'message'    => $faker->sentence(mt_rand(6, 12)),
                 'created_at' => $questionTime,
                 'updated_at' => $questionTime,
             ]);
@@ -82,7 +83,7 @@ class ForumSeeder extends Seeder
                 DB::table('discussion_messages')->insert([
                     'materi_id'  => $materi->id,
                     'sender_id'  => $userId,
-                    'message'    => $faker->sentence(mt_rand(8,15)),
+                    'message'    => $faker->sentence(mt_rand(8, 15)),
                     'created_at' => $replyTime,
                     'updated_at' => $replyTime,
                 ]);

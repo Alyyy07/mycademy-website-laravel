@@ -13,8 +13,10 @@ class KuisSeeder extends Seeder
      */
     public function run(): void
     {
-        $dosenIotId = User::where('name', 'like', 'Arda Gusema%')->first()->id;
-        $dosenAndroidId = User::where('name', 'like', 'Iddrus%')->first()->id;
+        // Get first two lecturers (will be used for IoT and Android courses)
+        $dosens = User::role('dosen')->get();
+        $dosenIotId = $dosens->get(0)->id;
+        $dosenAndroidId = $dosens->get(1)->id;
 
         $kuisIoT = require_once database_path('seeders/data/kuis_iot.php');
         $kuisAndroid = require_once database_path('seeders/data/kuis_android.php');
@@ -50,7 +52,7 @@ class KuisSeeder extends Seeder
                     ]);
                 }
             }
-        } 
+        }
 
         foreach ($kuisAndroid as $rpsDetailId => $quizData) {
             $quizId = DB::table('kuisses')->insertGetId([
