@@ -18,9 +18,10 @@ class MateriSeeder extends Seeder
      */
     public function run(): void
     {
-        // Teknologi IoT
-        $dosenIotId = User::where('name', 'like', 'Arda Gusema%')->first()->id;
-        $dosenAndroidId = User::where('name', 'like', 'Iddrus%')->first()->id;
+        // Get first two lecturers (will be used for IoT and Android courses)
+        $dosens = User::role('dosen')->get();
+        $dosenIotId = $dosens->get(0)->id;
+        $dosenAndroidId = $dosens->get(1)->id;
 
         Storage::disk('public')
             ->copy('seeder/iot_pertemuan_1.pdf', 'materi/pdf/iot_pertemuan_1.pdf');

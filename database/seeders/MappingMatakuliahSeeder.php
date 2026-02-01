@@ -13,10 +13,12 @@ class MappingMatakuliahSeeder extends Seeder
      */
     public function run(): void
     {
-        $dosenIot = User::where('name','like','Arda Gusema%')->first();
-        $dosenAndroid = User::where('name','like','Iddrus%')->first();
-        
-         MappingMatakuliah::create([
+        // Get first two lecturers (will be used for IoT and Android courses)
+        $dosens = User::role('dosen')->get();
+        $dosenIot = $dosens->get(0);
+        $dosenAndroid = $dosens->get(1);
+
+        MappingMatakuliah::create([
             'tahun_ajaran_id' => '5',
             'matakuliah_id' => '5',
             'dosen_id' => $dosenIot->id,
