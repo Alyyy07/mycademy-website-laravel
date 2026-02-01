@@ -180,7 +180,11 @@ class LaporanMetodeController extends Controller
         // 3) skor maksimal (N × 4)
         $maxSkorMateri = $countMateriResponses * 4;
 
-        $skalaLikert = ($sumSkorMateri / $maxSkorMateri) * 100;
+        if ($maxSkorMateri > 0) {
+            $skalaLikert = ($sumSkorMateri / $maxSkorMateri) * 100;
+        } else {
+            $skalaLikert = 0;
+        }
 
         $Wm = 0.4;
         $Wt = 0.4;
