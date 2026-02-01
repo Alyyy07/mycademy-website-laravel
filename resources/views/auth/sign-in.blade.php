@@ -39,7 +39,7 @@
 						<!--begin::Wrapper-->
 						<div class="d-flex flex-center flex-column flex-column-fluid pb-15 pb-lg-20">
 							<!--begin::Form-->
-							<form class="form w-100" method="POST" action="{{ route('login') }}">
+							<form class="form w-100" method="POST" action="{{ route('login.store') }}">
 								<div class="text-center mb-11">
 									<h1 class="text-dark fw-bolder mb-3">Selamat Datang</h1>
 									<div class="text-gray-500 fw-semibold fs-6">Silahkan Login untuk Mengakses MyCademy
