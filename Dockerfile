@@ -32,15 +32,10 @@ WORKDIR /var/www
 COPY . .
 
 # Install PHP dependencies (ignore platform requirements)
-RUN composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-zip --ignore-platform-req=ext-gd
+RUN composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-zip --ignore-platform-req=ext-gd --no-scripts
 
 # Install Node dependencies and build assets
 RUN npm ci && npm run build
-
-# Optimize Laravel
-RUN php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www
@@ -49,4 +44,4 @@ RUN chown -R www-data:www-data /var/www
 EXPOSE 8000
 
 # Start Laravel server
-CMD php artisan serve --host=0.0.0.0 --port=${PORT:-8000}
+CMD sh -c "php artisan package:discover --ansi && php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"
