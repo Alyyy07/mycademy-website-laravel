@@ -14,17 +14,17 @@ class FakultasSeeder extends Seeder
     public function run(): void
     {
         Fakultas::create([
-            'kode_fakultas' => 'FK',
-            'nama_fakultas' => 'Fakultas Kedokteran',
-            'email' => 'kedokteran@gmail.com',
-            'deskripsi' => 'Fakultas ini adalah fakultas kedokteran',
+            'kode_fakultas' => 'FST',
+            'nama_fakultas' => 'Fakultas Sains dan Teknologi',
+            'email' => 'fst@university.ac.id',
+            'deskripsi' => 'Fakultas Sains dan Teknologi',
             'logo' => 'image/fakultas-logo/dd1cfe2f182da4742bd948fd4bf6e03c8cbb08a3aadfbd99af0df876b648bf03.png',
         ]);
         Fakultas::create([
-            'kode_fakultas' => 'FT',
-            'nama_fakultas' => 'Fakultas Teknik',
-            'email' => 'teknik@gmail.com',
-            'deskripsi' => 'Fakultas ini adalah fakultas teknik',
+            'kode_fakultas' => 'FTI',
+            'nama_fakultas' => 'Fakultas Teknik dan Informatika',
+            'email' => 'fti@university.ac.id',
+            'deskripsi' => 'Fakultas Teknik dan Informatika',
         ]);
     }
 }
