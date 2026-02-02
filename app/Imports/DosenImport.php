@@ -20,9 +20,14 @@ class DosenImport implements ToCollection
                 continue;
             }
             
+            // Generate deterministic email
+            $nameParts = explode(',', $row[0]);
+            $cleanName = strtolower(str_replace(' ', '', $nameParts[0]));
+            $email = $cleanName . '@dosen.com';
+
             $dosen = User::create([
                 'name' => ucwords(strtolower($row[0])),
-                'email' => fake()->unique()->safeEmail(),
+                'email' => $email,
                 'email_verified_at' => now(),
                 'password' => '12345',
                 'remember_token' => Str::random(10),
