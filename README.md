@@ -4,19 +4,6 @@
 
 A web application designed for **lecturers** and **administrators** to manage thesis projects and academic administrative tasks. This web portal serves as the backend and management interface for the MyCademy ecosystem.
 
-## Live Demo
-
-🚀 **[Access the Live Website](https://web-production-290a5.up.railway.app/)**
-
-### Login Credentials (Default Password: `12345`)
-
-| Role                   | Email                       | Password | Note                              |
-| :--------------------- | :-------------------------- | :------- | :-------------------------------- |
-| **Super Admin**        | `superadmin@gmail.com`      | `12345`  | Full access                       |
-| **Admin Matakuliah**   | `adminmatakuliah@gmail.com` | `12345`  | Manage courses                    |
-| **Lecturer (IoT)**     | `budisantoso@dosen.com`     | `12345`  | Assigned to 'Teknologi IoT'       |
-| **Lecturer (Android)** | `sitirahayu@dosen.com`      | `12345`  | Assigned to 'Pemrograman Android' |
-
 ## Key Features
 
 This platform supports student learning through comprehensive management and analytical tools:
